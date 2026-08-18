@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador · Solicitud Cuenta Empresa (CRM)</title>
+<meta name="sim:category" content="CRM">
+<meta name="sim:title" content="Solicitud Cuenta Empresa (CRM)">
+<meta name="sim:description" content="Alta y seguimiento de la solicitud de Cuenta Empresa en CRM.">
+<style>
+:root{
+  --nar:#ff5d15;
+  --neg:#1D2026;
+  --gri:#efeff8;
+  --bla:#ffffff;
+  --ok:#1f9d55;
+  --wa:#c98a00;
+  --ba:#d93025;
+  --r:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{
+  font-family:Poppins,"Poppins",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--neg);background:var(--gri);font-size:15px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit}
+.app{height:100%;display:flex;flex-direction:column;min-height:0}
+
+/* ---------- top bar ---------- */
+.top{
+  flex:0 0 auto;display:flex;align-items:center;gap:14px;overflow:hidden;
+  padding:10px 20px;background:var(--bla);border-bottom:1px solid rgba(29,32,38,.10);
+}
+.brand,.prog,.tbtn{flex:0 0 auto}
+.brand{font-weight:700;font-size:15px;letter-spacing:-.01em}
+.brand span{color:var(--nar)}
+.prog{font-size:13px;font-weight:600;color:rgba(29,32,38,.55);white-space:nowrap}
+.bar{flex:1;height:6px;background:var(--gri);border-radius:99px;overflow:hidden;min-width:60px;max-width:420px}
+.bar i{display:block;height:100%;background:var(--nar);border-radius:99px;transition:width .25s}
+.top .sp{flex:1}
+.tbtn{
+  border:1px solid rgba(29,32,38,.18);background:var(--bla);color:var(--neg);
+  border-radius:10px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;
+}
+.tbtn:hover{border-color:var(--neg)}
+.tbtn[disabled]{opacity:.35;cursor:not-allowed}
+.esc{font-size:11px;color:rgba(29,32,38,.45);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.libre{display:flex;align-items:center;gap:6px}
+.libre select{
+  font-family:inherit;font-size:12px;border:1px solid rgba(29,32,38,.18);
+  border-radius:8px;padding:5px 7px;background:var(--bla);color:var(--neg);max-width:200px;
+}
+
+/* ---------- split ---------- */
+.main{flex:1;display:flex;min-height:0}
+.left{width:60%;min-width:0;overflow-y:auto;padding:22px 26px 60px}
+.right{width:40%;min-width:0;overflow-y:auto;background:var(--neg);color:var(--bla);padding:20px 22px 60px}
+.left::-webkit-scrollbar,.right::-webkit-scrollbar{width:9px}
+.left::-webkit-scrollbar-thumb{background:rgba(29,32,38,.18);border-radius:9px}
+.right::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:9px}
+
+/* ---------- CRM form ---------- */
+.crm{max-width:620px;margin:0 auto}
+.card{background:var(--bla);border-radius:var(--r);padding:22px;box-shadow:0 1px 3px rgba(29,32,38,.10);margin-bottom:14px}
+.h1{font-size:21px;font-weight:700;margin:0 0 4px;letter-spacing:-.01em}
+.h2{font-size:16px;font-weight:700;margin:0 0 10px}
+.q{font-size:15px;font-weight:600;margin:10px 0 14px}
+.hint{font-size:13px;color:rgba(29,32,38,.60);margin:0 0 12px}
+.f{margin-bottom:14px}
+.f>label{display:block;font-size:13px;font-weight:600;color:rgba(29,32,38,.70);margin-bottom:5px}
+.inp,select.inp{
+  width:100%;font-family:inherit;font-size:15px;color:var(--neg);
+  background:var(--gri);border:1px solid rgba(29,32,38,.12);border-radius:10px;padding:11px 13px;
+}
+.inp:focus{outline:none;border-color:var(--nar);box-shadow:0 0 0 3px rgba(255,93,21,.16);background:var(--bla)}
+.inp[readonly]{background:#e6e6f0;color:rgba(29,32,38,.75);cursor:not-allowed}
+.row{display:flex;gap:10px}
+.row>*{flex:1;min-width:0}
+.money{position:relative}
+.money .inp{padding-left:28px}
+.money b{position:absolute;left:12px;top:11px;font-weight:600;color:rgba(29,32,38,.55)}
+.btn{
+  border:0;background:var(--nar);color:var(--bla);border-radius:12px;
+  padding:13px 20px;font-size:15px;font-weight:600;cursor:pointer;width:100%;
+}
+.btn:hover{filter:brightness(1.06)}
+.btn[disabled]{background:rgba(29,32,38,.16);color:rgba(29,32,38,.45);cursor:not-allowed;filter:none}
+.btn.gh{background:var(--bla);color:var(--neg);border:1px solid rgba(29,32,38,.20)}
+.btn.gh:hover{border-color:var(--neg);filter:none}
+.btn.sm{width:auto;padding:9px 15px;font-size:14px}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.btns .btn{width:auto;flex:1;min-width:150px}
+.err{color:var(--ba);font-size:14px;font-weight:600;margin:10px 0 0;display:flex;gap:6px;align-items:flex-start}
+.warn{color:var(--wa);font-size:14px;font-weight:600;margin:10px 0 0}
+.okmsg{color:var(--ok);font-size:15px;font-weight:600;margin:12px 0 0}
+.link{background:none;border:0;color:var(--nar);font-size:14px;font-weight:600;cursor:pointer;padding:0;text-decoration:underline}
+.link[disabled]{color:rgba(29,32,38,.40);text-decoration:none;cursor:default}
+.links{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+
+/* mención block inside CRM */
+.men{background:rgba(255,93,21,.07);border-left:3px solid var(--nar);border-radius:0 10px 10px 0;padding:14px 16px;margin:0 0 12px}
+.men .t{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--nar);margin-bottom:7px}
+.men p{margin:0;font-size:15px;font-weight:600;line-height:1.5}
+.conf{display:flex;align-items:center;gap:10px;margin:0 0 14px;flex-wrap:wrap}
+.conf .st{font-size:13px;font-weight:600;color:var(--ok)}
+.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:15px;font-weight:600;margin:14px 0}
+.chk input{width:19px;height:19px;margin:1px 0 0;accent-color:var(--nar);cursor:pointer;flex:0 0 auto}
+.opt{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:15px;background:var(--gri);border:1px solid rgba(29,32,38,.12);border-radius:10px;padding:11px 13px;margin-bottom:8px}
+.opt input{accent-color:var(--nar);width:18px;height:18px;cursor:pointer}
+.opt.on{border-color:var(--nar);background:rgba(255,93,21,.07)}
+
+/* map / address */
+.map{height:150px;border-radius:12px;background:
+  repeating-linear-gradient(0deg,#e4e4ef 0 1px,transparent 1px 26px),
+  repeating-linear-gradient(90deg,#e4e4ef 0 1px,transparent 1px 26px),#f6f6fb;
+  border:1px solid rgba(29,32,38,.12);position:relative;margin-bottom:12px;overflow:hidden}
+.map .pin{position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:var(--nar);box-shadow:0 0 0 6px rgba(255,93,21,.22)}
+.addr{width:100%;text-align:left;background:var(--gri);border:1px solid rgba(29,32,38,.12);border-radius:10px;padding:12px 13px;font-size:15px;font-family:inherit;cursor:pointer;margin-bottom:8px;color:var(--neg)}
+.addr:hover{border-color:var(--nar)}
+.addr.on{border-color:var(--nar);background:rgba(255,93,21,.07)}
+.addr small{display:block;font-size:12px;color:rgba(29,32,38,.55);margin-top:2px}
+
+/* slots */
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:6px 0 12px}
+.slots .d{font-size:12px;font-weight:700;text-align:center;padding:7px 2px;background:var(--gri);border-radius:8px}
+.slot{font-family:inherit;font-size:12.5px;font-weight:600;padding:9px 2px;border-radius:8px;border:1px solid rgba(29,32,38,.14);background:var(--bla);cursor:pointer;color:var(--neg)}
+.slot:hover{border-color:var(--nar)}
+.slot.on{background:var(--nar);border-color:var(--nar);color:var(--bla)}
+
+/* plans */
+.plan{display:flex;align-items:center;gap:12px;border:1px solid rgba(29,32,38,.14);border-radius:12px;padding:14px;margin-bottom:9px;cursor:pointer;background:var(--bla)}
+.plan.on{border-color:var(--nar);box-shadow:0 0 0 2px rgba(255,93,21,.18)}
+.plan input{accent-color:var(--nar);width:18px;height:18px;cursor:pointer}
+.plan .n{font-weight:700;font-size:16px;flex:1}
+.plan .p{font-weight:700;font-size:16px;color:var(--nar);white-space:nowrap}
+.promo{font-size:13px;font-weight:600;color:var(--nar);background:rgba(255,93,21,.09);border-radius:8px;padding:8px 11px;margin:-4px 0 9px}
+
+/* summary card screen 9 */
+.dcard{border:1px solid rgba(29,32,38,.14);border-radius:12px;padding:16px;margin-bottom:14px}
+.dcard .big{font-size:18px;font-weight:700;margin-bottom:12px}
+.dl{display:flex;gap:10px;font-size:14px;padding:7px 0;border-top:1px solid rgba(29,32,38,.08)}
+.dl b{flex:0 0 128px;color:rgba(29,32,38,.60);font-weight:600}
+
+/* spinner */
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid rgba(29,32,38,.14);border-top-color:var(--nar);animation:sp 1s linear infinite;margin:6px auto 16px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- prompter panel ---------- */
+.pt{font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.50);margin:0 0 8px}
+.pnum{font-size:19px;font-weight:700;margin:0 0 16px;letter-spacing:-.01em}
+.pb{margin-bottom:20px}
+.pb h3{font-size:11px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:rgba(255,255,255,.50);margin:0 0 8px}
+.pb .body{font-size:16px;line-height:1.52;color:rgba(255,255,255,.92)}
+.pb .body p{margin:0 0 10px}
+.pb .body p:last-child{margin-bottom:0}
+.pb .body b{color:var(--bla)}
+.pb code{background:rgba(255,255,255,.13);border-radius:5px;padding:1px 6px;font-family:inherit;font-size:14.5px;font-weight:600;white-space:nowrap}
+.say{background:rgba(255,255,255,.07);border-left:3px solid var(--nar);border-radius:0 10px 10px 0;padding:14px 15px;font-size:16px;line-height:1.5}
+.say.words{border-left-color:rgba(255,255,255,.35)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:5px 11px;margin-bottom:9px}
+.badge.lit{background:var(--nar);color:var(--bla)}
+.badge.wor{background:transparent;color:var(--bla);border:1.5px dashed rgba(255,255,255,.65)}
+.cli{background:rgba(255,255,255,.07);border-radius:10px;padding:13px 15px;font-size:16px;line-height:1.5;margin-bottom:8px}
+.cli:last-child{margin-bottom:0}
+.pb ul{margin:0;padding-left:19px}
+.pb li{margin-bottom:9px;font-size:16px;line-height:1.5}
+.pb li:last-child{margin-bottom:0}
+.pb ol{margin:0;padding-left:21px}
+details.fold{background:rgba(255,255,255,.06);border-radius:12px;padding:0;margin-bottom:14px;border:1px solid rgba(255,255,255,.12)}
+details.fold>summary{
+  cursor:pointer;list-style:none;padding:13px 15px;font-size:14.5px;font-weight:700;
+  display:flex;align-items:center;gap:9px;color:var(--bla);
+}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary::before{content:"›";font-size:20px;line-height:1;transform:rotate(0);transition:transform .15s;color:var(--nar)}
+details.fold[open]>summary::before{transform:rotate(90deg)}
+details.fold .in{padding:0 15px 15px}
+.pbtn{
+  border:0;background:var(--nar);color:var(--bla);border-radius:10px;padding:11px 16px;
+  font-size:14.5px;font-weight:700;cursor:pointer;margin-top:11px;
+}
+.pbtn.done{background:rgba(255,255,255,.14);cursor:default}
+.pbtn.gh{background:transparent;color:var(--bla);border:1px solid rgba(255,255,255,.35)}
+.note{font-size:14px;line-height:1.45;color:rgba(255,255,255,.62);border-top:1px solid rgba(255,255,255,.14);padding-top:12px;margin-top:4px}
+.cmp{width:100%;border-collapse:collapse;font-size:13.5px}
+.cmp th,.cmp td{border-bottom:1px solid rgba(255,255,255,.13);padding:7px 6px;text-align:left;vertical-align:top}
+.cmp th{font-weight:700;color:var(--bla)}
+.cmp td:first-child{color:rgba(255,255,255,.60);font-weight:600}
+.cmp b{color:var(--nar)}
+.alert{background:rgba(255,93,21,.16);border-radius:10px;padding:11px 13px;font-size:14.5px;font-weight:600;margin-top:10px}
+.qz{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);
+  border-radius:10px;padding:13px 15px;font-size:15.5px;line-height:1.45;color:var(--bla);font-family:inherit;cursor:pointer;margin-bottom:9px}
+.qz:hover{border-color:var(--nar)}
+.qz.bad{border-color:var(--ba);background:rgba(217,48,37,.16)}
+.qz.good{border-color:var(--ok);background:rgba(31,157,85,.18)}
+
+/* ---------- start / summary screens ---------- */
+.center{max-width:760px;margin:0 auto;padding:14px 0}
+.pick{display:block;width:100%;text-align:left;background:var(--bla);border:1px solid rgba(29,32,38,.14);
+  border-radius:var(--r);padding:17px 19px;margin-bottom:11px;cursor:pointer;font-family:inherit;color:var(--neg)}
+.pick:hover{border-color:var(--nar);box-shadow:0 2px 10px rgba(29,32,38,.10)}
+.pick .n{font-size:16px;font-weight:700;margin-bottom:3px}
+.pick .d{font-size:14px;color:rgba(29,32,38,.62)}
+.chk-row{display:flex;gap:12px;align-items:flex-start;background:var(--bla);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.chk-row .ic{font-size:17px;line-height:1.2;flex:0 0 auto}
+.chk-row .tx{flex:1}
+.chk-row .tx b{display:block;font-size:15px;margin-bottom:2px}
+.chk-row .tx span{font-size:14px;color:rgba(29,32,38,.62)}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);
+  background:var(--neg);color:var(--bla);border-radius:12px;padding:12px 18px;
+  font-size:14.5px;font-weight:600;box-shadow:0 8px 24px rgba(29,32,38,.28);z-index:50;max-width:70%;
+}
+.mask{position:fixed;inset:0;background:rgba(29,32,38,.55);display:flex;align-items:center;justify-content:center;z-index:60;padding:20px}
+.modal{background:var(--bla);border-radius:var(--r);padding:24px;max-width:420px;width:100%}
+.modal p{margin:0 0 18px;font-size:15px;font-weight:600}
+
+@media (max-width:1240px){
+  .bar{display:none}
+  .top{gap:10px;padding:9px 14px}
+}
+@media (max-width:1180px){
+  .left{padding:18px 18px 60px}
+  .right{padding:16px 16px 60px}
+  .pb .body,.pb li,.say,.cli{font-size:16px}
+  .slots{gap:6px}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+"use strict";
+
+/* =======================================================================
+   TEXTO EN REVISIÓN — constante aislada a propósito.
+   Esta línea de apertura del guion final está en revisión y muy
+   probablemente cambie. Se edita SOLO aquí, en un único lugar.
+   ======================================================================= */
+const FRASE_PREAPROBACION = "¡Buenas noticias! Tu solicitud fue pre-aprobada.";
+
+/* =======================================================================
+   TODO EL TEXTO DEL SIMULADOR VIVE EN ESTE OBJETO.
+   Para cambiar una redacción no hace falta tocar la lógica.
+   ======================================================================= */
+const CONTENIDO = {
+
+ui:{
+  marca:"Plata <span>CRM</span> · Cuenta Empresa",
+  progreso:"Pantalla {n} de 9",
+  atras:"Atrás",
+  reiniciar:"Reiniciar",
+  reiniciarPreg:"¿Reiniciar el escenario desde el principio? Se pierde lo capturado.",
+  si:"Sí, reiniciar",
+  no:"Cancelar",
+  modoLibre:"Estado:",
+  verResumen:"Ver cómo te fue",
+  bloques:["Qué le dices","Qué te contesta","Qué haces en la pantalla","Si algo se sale del guion"],
+  badgeLit:"🔒 Lee tal cual",
+  badgeWor:"💬 Con tus palabras",
+  yaMencione:"Ya lo mencioné al cliente",
+  yaMencionado:"Mencionado al cliente",
+  menciona:"Menciónalo al cliente",
+  pregunta:"Pregúntale al cliente",
+  continuar:"Continuar",
+  faltaMencion:"Primero menciónale el texto al cliente y confírmalo.",
+  inicioTitulo:"Simulador de solicitud · Cuenta Empresa",
+  inicioTexto:"Practica la solicitud completa antes de hacerla con un cliente real. A la izquierda, el CRM. A la derecha, qué decir, qué te van a contestar y qué presionar.",
+  inicioElige:"Elige un escenario"
+},
+
+escenariosLista:[
+  {id:"A",n:"A · Ana Lucía",d:"Recorrido directo, entrega por embajador, elección de día y ventana, promo Compañeros."},
+  {id:"B",n:"B · Jorge",d:"El número no era el suyo, zona sin entregas, domicilios guardados, entrega por paquetería."},
+  {id:"C",n:"C · Verónica",d:"Rechazo por scoring a media solicitud y el cliente pregunta por qué."},
+  {id:"L",n:"Modo libre",d:"Recorrido libre con selector de estados: puedes llamar cualquier pantalla de error a mano."}
+],
+
+escenarios:{
+  A:{
+    nombre:"Escenario A · Ana Lucía Ramírez Beltrán",
+    telPantalla:"+52 55 3214 2347", telPersonal:"+52 55 3214 2347", telOk:true,
+    codigo:"1234",
+    nombres:"Ana Lucía", ap1:"Ramírez", ap2:"Beltrán",
+    fnac:{d:"12",m:"03",a:"1985"}, homoclave:"H4A",
+    ingreso:"48,000",
+    actividad:"Comercio al por menor",
+    regimen:"Régimen de Actividades Empresariales y Profesionales",
+    documento:"INE",
+    guardados:[],
+    domicilio:{cp:"03100",ciudad:"Ciudad de México, CDMX",colonia:"Del Valle Centro",calle:"Av. Coyoacán",num:"1435"},
+    domicilioTexto:"Av. Coyoacán 1435, Col. Del Valle Centro, CDMX, C.P. 03100",
+    entrega:"embajador",
+    detalles:"Es el portón verde junto a la papelería. El timbre no funciona, mejor que me marquen.",
+    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    slot:{dia:"12 de jun, ju",vent:"12 – 3 p.m.",fechaLarga:"12 de junio"},
+    empleados:"Somos cuatro contando conmigo.",
+    plan:"Emprendedor", promoCompaneros:true,
+    scoring:"ok"
+  },
+  B:{
+    nombre:"Escenario B · Jorge Méndez Trujillo",
+    telPantalla:"+52 33 2200 1180", telPersonal:"+52 33 1188 4506", telOk:false,
+    codigo:"1234",
+    nombres:"Jorge", ap1:"Méndez", ap2:"Trujillo",
+    fnac:{d:"27",m:"09",a:"1979"}, homoclave:"R31",
+    ingreso:"22,000",
+    actividad:"Servicios profesionales",
+    regimen:"RESICO",
+    documento:"INE",
+    guardados:[
+      {t:"Calle Loma Bonita 214, Col. San Agustín, Tlajomulco de Zúñiga, Jal., C.P. 45645",zona:false},
+      {t:"Calle Pedro Moreno 855, Col. Americana, Guadalajara, Jal., C.P. 44160",zona:true,
+       campos:{cp:"44160",ciudad:"Guadalajara, Jalisco",colonia:"Americana",calle:"Calle Pedro Moreno",num:"855"}}
+    ],
+    domicilio:{cp:"44160",ciudad:"Guadalajara, Jalisco",colonia:"Americana",calle:"Calle Pedro Moreno",num:"855"},
+    domicilioTexto:"Calle Pedro Moreno 855, Col. Americana, Guadalajara, Jal., C.P. 44160",
+    entrega:"paqueteria",
+    detalles:"Edificio azul de tres pisos, departamento 2, arriba de la tienda de abarrotes.",
+    fechaPostal:{dia:"19",mes:"mayo",anio:"2026",larga:"19 de mayo"},
+    empleados:"Nada más yo.",
+    plan:"Independiente", promoCompaneros:false,
+    scoring:"ok"
+  },
+  C:{
+    nombre:"Escenario C · Verónica Salas Ibarra",
+    telPantalla:"+52 55 4470 9921", telPersonal:"+52 55 4470 9921", telOk:true,
+    codigo:"1234",
+    nombres:"Verónica", ap1:"Salas", ap2:"Ibarra",
+    fnac:{d:"04",m:"07",a:"1988"}, homoclave:"K92",
+    ingreso:"31,000",
+    actividad:"Alimentos y bebidas",
+    regimen:"RESICO",
+    documento:"INE",
+    guardados:[],
+    domicilio:{cp:"06700",ciudad:"Ciudad de México, CDMX",colonia:"Roma Norte",calle:"Calle Orizaba",num:"92"},
+    domicilioTexto:"Calle Orizaba 92, Col. Roma Norte, CDMX, C.P. 06700",
+    entrega:"embajador",
+    detalles:"Portón negro, timbre del 3.",
+    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    slot:{dia:"11 de jun, mi",vent:"9 – 12 p.m.",fechaLarga:"11 de junio"},
+    empleados:"Somos tres.",
+    plan:"Emprendedor", promoCompaneros:false,
+    scoring:"rechazo"
+  },
+  L:{
+    nombre:"Modo libre",
+    telPantalla:"+52 55 0000 0000", telPersonal:"+52 55 0000 0000", telOk:true,
+    codigo:"1234",
+    nombres:"", ap1:"", ap2:"",
+    fnac:{d:"",m:"",a:""}, homoclave:"",
+    ingreso:"",
+    actividad:"", regimen:"", documento:"",
+    guardados:[],
+    domicilio:{cp:"",ciudad:"",colonia:"",calle:"",num:""},
+    domicilioTexto:"",
+    entrega:"embajador",
+    detalles:"",
+    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    slot:null,
+    fechaPostal:{dia:"19",mes:"mayo",anio:"2026",larga:"19 de mayo"},
+    empleados:"—",
+    plan:"", promoCompaneros:false,
+    scoring:"ok"
+  }
+},
+
+/* ---------------- textos de la forma (CRM) ---------------- */
+form:{
+  p1:{
+    titulo:"Vincular teléfono",
+    pregunta:"¿El número al que me estoy comunicando es tu número celular y personal?",
+    labelTel:"Número telefónico",
+    boton:"Verificar número telefónico"
+  },
+  p2:{
+    titulo:"Ingresa el código",
+    sub:"Lo enviamos al …{4} vía SMS y WhatsApp",
+    label:"Código",
+    cambiar:"Cambiar número",
+    reenviarCuenta:"Reenviar código en {s} seg",
+    reenviar:"Reenviar código",
+    ok:"El código es correcto",
+    agotado:"All attempts to validate the code have been exhausted",
+    malo:"El código no coincide. Intento {i} de 3.",
+    boton:"Validar código"
+  },
+  p3:{
+    titulo:"Obtener consentimiento del cliente",
+    aviso:"Al continuar con este proceso autorizas a Banco Plata, S.A., Institución de Banca Múltiple para tratar tus datos personales de conformidad con el Aviso de Privacidad disponible en bancoplata.mx",
+    check:"Recibí autorización del cliente",
+    error:"Confirma tener el consentimiento del cliente",
+    noAutoriza:"El cliente no autoriza",
+    cierreNoAutoriza:"No podemos continuar con el proceso de solicitud en este momento. Si es necesario, nos pondremos en contacto contigo."
+  },
+  p4:{
+    titulo:"Datos personales",
+    instruccion:"Pide al cliente que confirme su nombre completo tal como aparece en su identificación oficial",
+    nombres:"Nombre(s)", ap1:"Primer apellido", ap2:"Segundo apellido",
+    fnac:"Fecha de nacimiento", fnacHint:"DD / MM / AAAA",
+    rfcTitulo:"RFC", rfcHint:"Verifica que los datos sean correctos", generar:"Generar",
+    rfcNoEditable:"El RFC lo genera el sistema",
+    rfcFalta:"Captura nombre, apellidos y fecha de nacimiento para generar el RFC.",
+    ingreso:"Ingreso mensual", ingresoHint:"Ingresa el salario neto en pesos mexicanos"
+  },
+  p5:{
+    titulo:"Datos del negocio",
+    actividad:"Actividad del negocio",
+    actividadHint:"Selecciona la actividad que mejor describa el negocio del cliente",
+    actividadOpc:["Comercio al por menor","Comercio al por mayor","Servicios profesionales","Alimentos y bebidas","Transporte","Construcción","Otro"],
+    regimen:"Régimen fiscal",
+    regimenHint:"Selecciona el régimen fiscal de la Constancia de Situación Fiscal del cliente",
+    regimenOpc:["Régimen de Actividades Empresariales y Profesionales","RESICO","Régimen de Incorporación Fiscal","Arrendamiento"],
+    preguntaINE:"¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y con tus datos actualizados.",
+    docOpc:["INE","Permiso de residencia","Ninguna de las anteriores"],
+    error:"Selecciona una opción para continuar",
+    elige:"Selecciona una opción"
+  },
+  p6:{
+    titulo:"Revisión",
+    espera:"Revisando la información…",
+    texto:"Estamos revisando tu información para continuar con tu solicitud. Esto puede tomar unos momentos. ¡Gracias por tu paciencia!",
+    listo:"Revisión terminada. Confirma que le mencionaste el texto para continuar."
+  },
+  p7:{
+    titulo:"Domicilio de entrega",
+    sub:"Selecciona un domicilio en la zona de entrega",
+    subGuardados:"Selecciona el domicilio predeterminado o ingresa uno nuevo",
+    elegir:"Elegir ubicación",
+    buscar:"Buscar domicilio",
+    zonaNo:"Por el momento no tenemos entregas habilitadas en la zona, selecciona otra ubicación",
+    nuevo:"Ingresar un domicilio nuevo"
+  },
+  p7a:{
+    titulo:"Entrega por paquetería",
+    mencion:"La tarjeta será entregada en este domicilio por paquetería",
+    confirma:"Confirma el domicilio",
+    cp:"Código postal", ciudad:"Ciudad / Estado / Provincia", colonia:"Colonia",
+    calle:"Calle", num:"Número exterior",
+    detalles:"Detalles adicionales (depto., casa, entrada)",
+    instrucciones:"Instrucciones (sign, name of the housing complex) Opcional",
+    avisoDetalles:"Este campo sube la tasa de entrega exitosa. Llénalo con las palabras del cliente."
+  },
+  p7b:{
+    titulo:"Entrega por embajador",
+    mencion:"La tarjeta será entregada por un embajador de Plata en este domicilio",
+    detalles:"Detalles adicionales (depto., casa, entrada)",
+    instrucciones:"Instrucciones (sign, name of the housing complex) Opcional",
+    fechaTitulo:"Fecha y hora de la entrega",
+    fechaHint:"La reunión tomará alrededor de 20 minutos",
+    ventanas:["9 – 12 p.m.","12 – 3 p.m.","3 – 6 p.m."],
+    otroDia:"Otro día",
+    otroDiaAviso:"Se solicitarán nuevas fechas al servicio de entrega.",
+    faltaSlot:"Selecciona el día y la ventana de horario.",
+    avisoDetalles:"Este campo sube la tasa de entrega exitosa. Llénalo con las palabras del cliente."
+  },
+  p8:{
+    titulo:"Elige tu plan",
+    planes:[
+      {n:"Empresario",p:"$599/mes"},
+      {n:"Emprendedor",p:"$299/mes"},
+      {n:"Independiente",p:"Gratis"}
+    ],
+    promo:"Para Compañeros: los primeros 12 meses sin costo",
+    error:"Selecciona un plan para continuar"
+  },
+  p9:{
+    titulo:"Entrega programada",
+    tarjetaEmb:"Entrega el {fecha}, {ventana}",
+    tarjetaPost:"Entrega el {fecha}",
+    dir:"Dirección", cliente:"Cliente", instr:"Instrucciones (opcional)",
+    editar:"Editar entrega", cancelarEntrega:"Cancelar entrega", cancelarSolicitud:"Cancelar solicitud",
+    confEditar:"¿Regresar a la pantalla de domicilio para editar la entrega?",
+    confCancelarEntrega:"¿Cancelar la entrega programada? Tendrás que agendarla de nuevo.",
+    confCancelarSolicitud:"¿Cancelar toda la solicitud? Esto cancela el proceso completo, no solo la entrega.",
+    guionEmb:[
+      "{PREAPROBACION}",
+      "La visita será el día {fecha} entre las {v1} y las {v2}, la dirección registrada para la entrega es {dir}, el embajador se comunicará contigo ese mismo día para coordinar la hora exacta de la entrega y realizar una breve entrevista de identificación contigo.",
+      "Te sugerimos descargar la aplicación de Plata en tu celular. No olvides tener ese día tu INE física y vigente."
+    ],
+    guionPost:[
+      "{PREAPROBACION}",
+      "El día de entrega de tu tarjeta será el {dia} de {mes} del {anio}, la dirección confirmada para la entrega es {dir} — el método de entrega será por paquetería.",
+      "Te sugerimos descargar la aplicación de Plata en tu celular, en la misma aplicación te aparecerá un rastreador en el cual podrás conocer el estatus de la entrega de tu tarjeta.",
+      "Una vez que recibas tu tarjeta es importante que sigas los pasos que te aparecen en tu aplicación para que puedas vincular la tarjeta a tu cuenta y realices los últimos pasos del registro.",
+      "Recuerda que el repartidor se comunicará contigo para confirmar la entrega.",
+      "No olvides que debes de contar con tu INE física y vigente."
+    ]
+  }
+},
+
+/* ---------------- pantallas de error y paro ---------------- */
+errores:{
+  corner:{
+    titulo:"Corner case",
+    texto:"Lamentablemente no podemos continuar con tu solicitud en este momento. Te ofrecemos una disculpa por cualquier inconveniente. Agradecemos mucho tu tiempo y te deseamos un excelente día."
+  },
+  tecnico:{
+    titulo:"Error técnico",
+    texto:"Gracias por confirmar tus datos. En este momento estamos teniendo un problema técnico y no podemos continuar con tu solicitud. Te ofrecemos una disculpa por el inconveniente y te invitamos a intentarlo nuevamente más tarde. ¡Gracias por tu tiempo y que tengas un excelente día!"
+  },
+  rechazo:{
+    titulo:"Rechazo por scoring",
+    texto:"Lamentablemente no podemos continuar con tu solicitud en este momento. Te ofrecemos una disculpa por cualquier inconveniente. Agradecemos mucho tu tiempo y te deseamos un excelente día."
+  },
+  sindoc:{
+    titulo:"Sin documento válido",
+    texto:"Lamentablemente no podemos continuar con tu solicitud en este momento. Te ofrecemos una disculpa por cualquier inconveniente. Agradecemos mucho tu tiempo y te deseamos un excelente día."
+  },
+  otpAgotado:{
+    titulo:"Intentos de código agotados",
+    texto:"All attempts to validate the code have been exhausted"
+  },
+  zona:{
+    titulo:"Zona no habilitada",
+    texto:"Por el momento no tenemos entregas habilitadas en la zona, selecciona otra ubicación"
+  },
+  noAutoriza:{
+    titulo:"El cliente no autoriza",
+    texto:"No podemos continuar con el proceso de solicitud en este momento. Si es necesario, nos pondremos en contacto contigo."
+  }
+},
+
+/* ---------------- panel apuntador ---------------- */
+panel:{
+  p1:{
+    modo:"lit",
+    dice:"«¿El número al que me estoy comunicando es tu número celular y personal?»",
+    contesta:{
+      A:["«Sí, es mi celular.»"],
+      B:["«No, ese es el número de la tienda. Mi celular es 33 1188 4506.»"],
+      C:["«Sí, es mi celular.»"],
+      L:["Depende del cliente."]
+    },
+    haces:"Si el número es correcto, presiona <code>Verificar número telefónico</code>. Si el cliente te da otro, corrígelo en el campo <b>antes</b> de verificar.",
+    fuera:[
+      "<b>Si el número es de un familiar, del negocio o de un empleado</b> — pide el celular personal del titular. La cuenta se vincula a su teléfono, no al del local.",
+      "<b>Si contesta otra persona</b> — no continúes la venta con ella. Pregunta por el titular.",
+      "<b>Nunca te saltes este paso.</b> No solicitar la vinculación del dispositivo es una <b>falta grave</b>."
+    ]
+  },
+  p2:{
+    modo:"wor",
+    dice:"Avísale que el código llega <b>por SMS y también por WhatsApp</b>. Muchos clientes solo miran los mensajes y creen que no llegó.",
+    contesta:{
+      A:["«Ya me llegó: uno, dos, tres, cuatro.»"],
+      B:["«Ya me llegó: uno, dos, tres, cuatro.»"],
+      C:["«Ya me llegó: uno, dos, tres, cuatro.»"],
+      L:["«Ya me llegó: uno, dos, tres, cuatro.»"]
+    },
+    haces:"Captura los cuatro dígitos. Si el cliente no lo recibe, espera a que el botón <code>Reenviar código</code> se habilite — el contador tarda 25 segundos.",
+    fuera:[
+      "<b>No dejes el silencio.</b> Mientras esperas el código, sigue hablando con el cliente. El silencio es la razón más común por la que cuelgan.",
+      "<b>Si el número estaba mal</b> — <code>Cambiar número</code>.",
+      "<b>Si se agotan los intentos</b> — la pantalla te lo dice y el proceso no puede seguir. <b>Escalas</b>, no lo intentas por otra vía."
+    ]
+  },
+  p3:{
+    modo:"lit",
+    dice:"El texto del aviso, <b>palabra por palabra, directo de la pantalla.</b> No lo resumas, no lo digas «con tus palabras», no lo omitas porque el cliente ya dijo que sí.",
+    contesta:{A:["«Sí, autorizo.»"],B:["«Sí, autorizo.»"],C:["«Sí, autorizo.»"],L:["«Sí, autorizo.»"]},
+    haces:"Lees el aviso → marcas <code>Recibí autorización del cliente</code> → <code>Continuar</code>. En ese orden.",
+    fuera:[
+      "<b>Si el cliente no autoriza</b> — la pantalla tiene su propio cierre. Lo lees y terminas la llamada con cortesía.",
+      "<b>Cambiar o abreviar el aviso es una falta grave</b>, incluso si el cliente ya dijo que está de acuerdo.",
+      "El aviso <b>siempre se lee de la pantalla</b>, no de memoria ni de una hoja aparte: si la redacción cambia, la pantalla cambia contigo."
+    ]
+  },
+  p4:{
+    modo:"wor",
+    dice:"Pídele que te confirme su nombre completo <b>tal como aparece en su identificación oficial</b> — no como lo usa a diario. Luego pregúntale su fecha de nacimiento y su ingreso mensual neto.",
+    contesta:{
+      A:["«Ana Lucía Ramírez Beltrán.»","«12 de marzo de 1985.»","«Como cuarenta y ocho mil al mes, libres.»"],
+      B:["«Jorge Méndez Trujillo.»","«27 de septiembre de 1979.»","«Veintidós mil, más o menos.»"],
+      C:["«Verónica Salas Ibarra.»","«4 de julio de 1988.»","«Treinta y un mil.»"],
+      L:["Los datos que quieras capturar."]
+    },
+    hacesLista:[
+      "Capturas nombre y apellidos exactamente como te los dicta.",
+      "Capturas la fecha de nacimiento.",
+      "<b>Presionas <code>Generar</code>.</b> El sistema arma el RFC con los datos que ya capturaste.",
+      "<b>Le lees el RFC al cliente y confirmas con él que está correcto.</b>",
+      "Capturas el ingreso mensual neto."
+    ],
+    fuera:[
+      "<b>El RFC no lo capturas tú y no se lo pides al cliente.</b> Es el error más común de este módulo: agentes que le piden al cliente que les dicte el RFC de memoria o que lo busque en un documento. No hace falta: el sistema lo genera.",
+      "<b>Si el cliente dice que su RFC es distinto</b> — no lo edites. El campo no es editable a propósito. Anótalo y <b>escalas</b>.",
+      "<b>El ingreso es el neto</b>, lo que le queda, no lo que factura.",
+      "Si el cliente da un nombre distinto al de su identificación, se captura <b>el de la identificación</b>."
+    ]
+  },
+  p5:{
+    modo:"lit",
+    dice:"«¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y con tus datos actualizados.»",
+    diceWor:"Para los dos listados, <b>con tus palabras</b>: pregúntale a qué se dedica el negocio y cuál es su régimen fiscal.",
+    contesta:{
+      A:["«Tengo una tienda, vendo al menudeo.»","«Régimen de Actividades Empresariales y Profesionales.»","«Sí, tengo mi INE vigente.»"],
+      B:["«Doy servicios profesionales, soy contador.»","«Estoy en RESICO.»","«Sí, mi INE está vigente.»"],
+      C:["«Tengo una cocina económica.»","«RESICO.»","«Sí, tengo mi INE.»"],
+      L:["Lo que quieras seleccionar."]
+    },
+    haces:"Seleccionas actividad, régimen y la opción de documento que el cliente confirmó.",
+    fuera:[
+      "<b>El régimen fiscal viene de su Constancia de Situación Fiscal — pero eso no significa que haya que subir el documento.</b> El cliente lo consulta ahí o simplemente lo sabe. Son dos cosas distintas y se confunden seguido.",
+      "<b>Si el cliente no sabe su régimen</b> — que lo consulte en su Constancia. Tú no lo adivinas ni lo eliges «el más parecido».",
+      "<b>Si contesta <code>Ninguna de las anteriores</code>, el proceso se detiene ahí.</b> Cierras con cortesía. <b>Continuar sin el documento requerido es una falta grave.</b>",
+      "Fíjate en que el guion ya menciona al <b>embajador</b>, aunque el tipo de entrega todavía no está definido. No le prometas al cliente que irá un embajador: eso lo decide el sistema más adelante."
+    ]
+  },
+  p6:{
+    modo:"lit",
+    dice:"El texto de la pantalla.",
+    contesta:{A:["«Sí, aquí sigo.»"],B:["«Va, aquí espero.»"],C:["«Sí, sin problema.»"],L:["«Aquí espero.»"]},
+    haces:"Esperas. No cierras, no recargas.",
+    fuera:[
+      "<b>El scoring corre en segundo plano.</b> No siempre responde aquí: puede llegar un rechazo <b>en cualquier momento</b>, incluso más adelante en la forma.",
+      "<b>Este es el momento de mayor riesgo de que el cliente cuelgue.</b> Léele el texto y sigue conversando: confírmale lo que ya quedó registrado, recuérdale cuándo recibirá su tarjeta."
+    ]
+  },
+  p7:{
+    modo:"wor",
+    dice:"Pregúntale la dirección completa y — por separado — <b>cómo se encuentra la entrada</b>. Todavía no sabes el tipo de entrega: no lo prometas.",
+    contesta:{
+      A:["«Av. Coyoacán 1435, Del Valle Centro, código postal 03100.»"],
+      B:["«Tengo dos direcciones guardadas de antes, usa la que quieras.»"],
+      C:["«Calle Orizaba 92, Roma Norte, 06700.»"],
+      L:["La dirección que quieras capturar."]
+    },
+    haces:"Capturas o eliges el domicilio. Cuando el domicilio queda dentro de zona, la pantalla te dice el tipo de entrega.",
+    fuera:[
+      "<b>El tipo de entrega lo decide el CRM, no tú.</b> No le prometas al cliente ni paquetería ni embajador antes de que la pantalla lo diga.",
+      "<b>Si la zona no tiene entregas habilitadas</b> — pides otra dirección. Puede ser el domicilio del negocio, de un familiar, cualquiera donde el cliente pueda estar."
+    ]
+  },
+  p7a:{
+    modo:"lit",
+    dice:"«La tarjeta será entregada en este domicilio por paquetería»",
+    diceWor:"Y <b>con tus palabras</b>: pregúntale cómo se encuentra la entrada, con qué se identifica el lugar.",
+    contesta:{
+      A:["«Es el portón verde junto a la papelería. El timbre no funciona, mejor que me marquen.»"],
+      B:["«Edificio azul de tres pisos, departamento 2, arriba de la tienda de abarrotes.»"],
+      C:["«Portón negro, timbre del 3.»"],
+      L:["Lo que el cliente te diga."]
+    },
+    haces:"Confirmas el domicilio campo por campo → llenas <code>Detalles adicionales</code> con las palabras del cliente → <code>Continuar</code>.",
+    fuera:[
+      "<b><code>Detalles adicionales</code> se llena con las palabras del cliente.</b> No «casa blanca» si te dijo «el portón verde junto a la tienda de la esquina». Lo que él dice es lo que el repartidor va a buscar. Este campo es lo que más sube la tasa de entrega exitosa.",
+      "<b>En paquetería tú no eliges el día.</b> Lo asigna el servicio de entrega.",
+      "<b>El tipo de entrega lo decidió el CRM.</b> Si el cliente esperaba embajador, no se lo prometas ni lo negocies: explícale que la tarjeta llega por paquetería y qué sigue después."
+    ]
+  },
+  p7b:{
+    modo:"lit",
+    dice:"«La tarjeta será entregada por un embajador de Plata en este domicilio»",
+    diceWor:"Y <b>con tus palabras</b>: pregúntale cómo se encuentra la entrada y qué día y horario le acomoda. La reunión toma unos 20 minutos.",
+    contesta:{
+      A:["«Es el portón verde junto a la papelería. El timbre no funciona, mejor que me marquen.»","«El jueves 12, de doce a tres me queda bien.»"],
+      B:["«Edificio azul de tres pisos, departamento 2, arriba de la tienda de abarrotes.»","«El miércoles temprano.»"],
+      C:["«Portón negro, timbre del 3.»","«El miércoles 11 en la mañana.»"],
+      L:["Lo que el cliente te diga."]
+    },
+    haces:"Llenas <code>Detalles adicionales</code> con las palabras del cliente → eliges <b>día</b> y <b>ventana de horario</b> → <code>Continuar</code>.",
+    fuera:[
+      "<b><code>Detalles adicionales</code> se llena con las palabras del cliente.</b> No «casa blanca» si te dijo «el portón verde junto a la tienda de la esquina». Lo que él dice es lo que el repartidor va a buscar. Este campo es lo que más sube la tasa de entrega exitosa.",
+      "<b>En embajador sí eliges día y ventana</b> — y ahí sí preguntas al cliente cuándo le acomoda.",
+      "<b>Si ninguna ventana le sirve</b> — <code>Otro día</code>.",
+      "<b>El tipo de entrega lo decide el CRM, no tú.</b> No le prometas al cliente ni paquetería ni embajador antes de que la pantalla lo diga."
+    ]
+  },
+  p8:{
+    modo:"wor",
+    dice:"Recomiendas el plan según el número de empleados. Abre el guion que corresponde y dilo con tus palabras.",
+    contesta:{
+      A:["«Somos cuatro contando conmigo.»","«Va, me quedo con ese.»"],
+      B:["«Nada más yo.»","«Perfecto, el gratis.»"],
+      C:["«Somos tres.»"],
+      L:["Lo que quieras probar."]
+    },
+    haces:"Recomiendas el plan, y cuando el cliente lo confirma, lo marcas. <b>El sistema no sugiere nada</b>: los tres planes están en pantalla y la recomendación es tuya.",
+    fuera:[
+      "<b>Regla de partida — por número de empleados:</b> trabaja solo → <code>Independiente</code>; 2 a 5 → <code>Emprendedor</code>; más de 5 → <code>Empresario</code>.",
+      "<b>Pero es punto de partida, no la última palabra.</b> <code>Independiente</code> no incluye acceso web, emisión de CFDI ni modelo de roles. Si el cliente necesita algo de eso, va a <code>Emprendedor</code> aunque trabaje solo.",
+      "<b>Si el cliente prefiere un plan más bajo, lo respetas.</b> Insistir después de su decisión es una <b>falta grave</b>.",
+      "<b>Dos condiciones que puedes mencionar:</b> 2 meses de cortesía en cualquier plan de pago, y la promo Compañeros — 12 meses de <code>Emprendedor</code> sin costo. La promo <b>la muestra la pantalla cuando aplica</b>; tú no tienes que averiguar nada.",
+      "<b>Ojo con el orden.</b> En pantalla el plan más caro está arriba. En el curso los viste al revés. Lee el nombre, no la posición."
+    ]
+  },
+  p9:{
+    modo:"lit",
+    dice:"El guion de la pantalla, con los datos ya llenos.",
+    contesta:{
+      A:["«Perfecto, muchas gracias.»"],
+      B:["«Muy bien, quedo al pendiente.»"],
+      C:["«Gracias.»"],
+      L:["«Gracias.»"]
+    },
+    haces:"Lo lees completo. <b>Con esto la solicitud queda cerrada: esta es la entrega agendada.</b> El resultado de la llamada lo registras en el sistema de tu centro de contacto — en el CRM de Plata no hay campo para eso.",
+    fuera:[
+      "<b>Tres cosas que el cliente tiene que llevarse de esta llamada:</b> cuándo llega la tarjeta; que necesita su <b>INE física y vigente</b> — en los dos tipos de entrega; y qué sigue después de recibirla (en paquetería, vincular la tarjeta desde la app: el proceso no termina cuando llega el paquete).",
+      "<b>Esta pantalla no es un punto sin retorno.</b> Si el cliente cambia de opinión sobre el día mientras siguen hablando, <code>Editar entrega</code> te regresa.",
+      "<b><code>Cancelar solicitud</code> cancela todo</b>, no solo la entrega. No la uses para corregir un dato."
+    ]
+  },
+  paro:{
+    modo:"lit",
+    dice:"El texto de la pantalla, tal cual. Nada más.",
+    haces:"Lo lees, cierras con cortesía y terminas la llamada. El resultado lo registras en el sistema de tu centro de contacto.",
+    ojo:"<b>Fíjate:</b> el texto de <code>Corner case</code> y el de <code>Rechazo por scoring</code> son <b>idénticos</b>. No es un error del sistema, es a propósito: así <b>no puedes revelar, ni sin querer, si fue un rechazo o una cancelación</b>. La regla «no explicas la causa» no depende de tu memoria — la pantalla ya la cumple por ti.",
+    fuera:[
+      "<b>Nunca inventes una razón.</b> Ni «tal vez por tu historial», ni «puedes intentar de otra forma», ni «vuelve a llamar en un mes». Tú tampoco sabes la causa. Prometer una solución que no puedes garantizar es una <b>falta grave</b>.",
+      "<b>Si el cliente insiste</b> — le repites que no tienes el detalle y que no quieres especular. Es la respuesta correcta, aunque se sienta incómoda.",
+      "<b>Si se agotaron los intentos de código o hay un error técnico</b> — <b>escalas</b> por el canal de tu centro de contacto. No lo intentas por otra vía."
+    ]
+  },
+  zona:{
+    modo:"wor",
+    dice:"Explícale que en esa zona todavía no hay entregas y pídele otra dirección donde pueda estar.",
+    haces:"Selecciona otra ubicación o captura un domicilio nuevo.",
+    fuera:[
+      "<b>Puede ser cualquier domicilio donde el cliente pueda estar:</b> el del negocio, el de un familiar, el de un amigo. No tiene que ser su casa.",
+      "<b>No prometas que «pronto habrá cobertura».</b> No lo sabes."
+    ]
+  }
+},
+
+/* ---------------- guiones de plan ---------------- */
+planesGuion:{
+  Independiente:{
+    titulo:"Trabaja solo → Independiente",
+    texto:"«Perfecto, [Nombre]. Ya dejamos lista la entrega de tu tarjeta; ahora, para terminar, confirmemos el plan. Para quienes manejan su propio camino diseñamos el <b>Plan Independiente</b>, ideal para simplificar tu día a día sin gastar de más. Hoy es gratuito, con cualquier monto de depósito que reciba la cuenta y sin requisitos adicionales. Además tienes acceso completo a la app para hacer transferencias SPEI y pagos al SAT sin costo, y gestionar tu negocio desde la palma de tu mano. ¿Te parece que dejemos este plan para comenzar?»"
+  },
+  Emprendedor:{
+    titulo:"2 a 5 empleados → Emprendedor",
+    texto:"«Perfecto, [Nombre]. Con la entrega ya agendada, confirmemos el plan que mejor acompañe el crecimiento de tu equipo. Cuando un negocio empieza a crecer, la clave es delegar con seguridad, y para eso el <b>Plan Emprendedor</b> es el aliado perfecto. Incluye envíos SPEI gratuitos e inmediatos las 24 horas, acceso a la versión web con dos usuarios adicionales gratuitos — puedes darle acceso a tu asistente o a tu contador para que preparen los movimientos — y tres tarjetas de débito físicas sin costo de emisión, para controlar los gastos operativos de tu equipo. ¿Cómo ves estas herramientas para la dinámica actual de tu equipo?»"
+  },
+  Empresario:{
+    titulo:"Más de 5 empleados → Empresario",
+    texto:"«Estupendo, [Nombre]. Ya dejamos lista la entrega; ahora confirmemos el plan a la medida de tu empresa. Una empresa con esa estructura requiere control a nivel corporativo, pero sin la burocracia tradicional, y el <b>Plan Empresario</b> está diseñado justo para ese nivel de exigencia. El beneficio principal es una cuenta adicional sin costo, para un manejo más preciso al delegar. Para tu operación diaria ofrece cuatro accesos de usuario gratuitos y cincuenta facturas CFDI al mes. Con esto puedes separar los flujos de distintas sucursales, proyectos o cajas chicas, con visión clara de la rentabilidad de cada área. ¿Manejar tu tesorería con este nivel de control te haría sentido?»"
+  }
+},
+
+comparativa:{
+  titulo:"Ver comparativa de planes",
+  aviso:"En pantalla el orden es al revés: lee el nombre, no la posición.",
+  cols:["","Independiente","Emprendedor","Empresario"],
+  filas:[
+    ["Precio","<b>Gratis</b> (promoción vigente)","<b>$299 / mes</b> · $2 990 / año","<b>$599 / mes</b> · $5 990 / año"],
+    ["Para quién","Trabaja solo","2 – 5 empleados","Más de 5 empleados"],
+    ["Tarjetas físicas","1","3","10"],
+    ["Acceso a la versión web","<b>No</b>","Sí","Sí"],
+    ["Modelo de roles","<b>No</b>","Sí","Sí"],
+    ["Usuarios adicionales","—","2","4"],
+    ["CFDI gratis al mes","<b>No</b>","10","50"],
+    ["Pagos de nómina","<b>No</b>","Sí","Sí"],
+    ["Límite de transferencias","<b>compartido con la cuenta personal</b>","independiente","independiente"],
+    ["Extras","—","—","Gerente de cuenta dedicado · cuenta adicional sin costo"],
+    ["Cortesía inicial","ya es gratis","2 meses","2 meses"]
+  ],
+  pie:[
+    "En todos los planes: SPEI entrantes y salientes sin costo, transferencias entre cuentas Plata, pago de impuestos SAT y tarjetas virtuales sin costo.",
+    "Si el cliente quiere verlo antes de decidir, puede entrar al demo de la versión web: <code>empresa.bancoplata.mx/demo/inicio</code>."
+  ]
+},
+
+/* ---------------- escenario C: elección de respuesta ---------------- */
+quiz:{
+  pregunta:"«¿Y por qué no? Yo nunca he tenido problemas con el banco.»",
+  intro:"El cliente te pregunta directo. Elige qué le contestas.",
+  opciones:[
+    {t:"«No tengo el detalle de la razón, y no quiero especular. Lo que sí puedo hacer es agradecerte el tiempo…»",ok:true,
+     fb:"Correcto. No sabes la causa y no la inventas. Reconocer el límite y cerrar con cortesía es la respuesta esperada."},
+    {t:"«Puede ser por tu historial en el buró, a veces pasa.»",ok:false,
+     fb:"Falta grave: le diste una causa que no conoces. El cliente se queda creyendo algo que quizá es falso, y el banco queda expuesto. Nunca especules sobre la razón de un rechazo — vuelve a elegir."}
+  ]
+},
+
+/* ---------------- resumen ---------------- */
+resumen:{
+  titulo:"Cómo te fue",
+  intro:"No es una calificación: es una lista de hábitos. Mira lo que quedó en rojo y repite el escenario.",
+  items:{
+    aviso:{t:"Leíste el aviso de privacidad antes de capturar datos",
+      ok:"Lo confirmaste en la pantalla de consentimiento, antes de pedir datos personales.",
+      no:"No quedó confirmado. El aviso se lee de la pantalla antes de capturar cualquier dato."},
+    rfc:{t:"Generaste el RFC con el botón",
+      ok:"Usaste <code>Generar</code>. Así es: el sistema lo arma.",
+      no:"Intentaste escribir el RFC a mano {n} vez(veces). El campo no es editable: el RFC lo genera el sistema y no se le pide al cliente."},
+    menciones:{t:"Le mencionaste al cliente cada texto obligatorio",
+      ok:"Confirmaste {a} de {b} textos obligatorios.",
+      no:"Confirmaste {a} de {b} textos obligatorios. Los textos marcados 🔒 se leen tal cual, siempre."},
+    detalles:{t:"Llenaste <code>Detalles adicionales</code>",
+      ok:"Con las palabras del cliente. Es el campo que más sube la tasa de entrega exitosa.",
+      no:"Quedó vacío o demasiado corto. Escribe lo que el cliente dice: es lo que el repartidor va a buscar."},
+    guion:{t:"Leíste el guion final completo",
+      ok:"Cerraste con la entrega agendada — el objetivo de la llamada.",
+      no:"No llegaste a confirmar el guion final. La entrega agendada es el objetivo de la llamada."},
+    tiempo:{t:"Tiempo total",ok:"{t} · solo información, no se evalúa.",no:"{t} · solo información, no se evalúa."}
+  },
+  repetir:"Repetir este escenario",
+  otro:"Probar otro escenario"
+}
+
+};
+
+/* =======================================================================
+   ESTADO — todo vive en memoria: sin almacenamiento del navegador, sin red.
+   ======================================================================= */
+const app = document.getElementById("app");
+const C = CONTENIDO, F = C.form, P = C.panel;
+const PARO = ["corner","tecnico","rechazo","sindoc","noAutoriza"];
+const NUM = {"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"7a":7,"7b":7,"8":8,"9":9};
+
+let S = {};
+function nuevoEstado(id){
+  return {
+    esc:id, pant:"1", hist:[], num:1,
+    campos:{tel:"",codigo:"",nombres:"",ap1:"",ap2:"",fd:"",fm:"",fa:"",rfc:"",ingreso:"",
+            actividad:"",regimen:"",doc:"",cp:"",ciudad:"",colonia:"",calle:"",num:"",
+            detalles:"",instr:"",dia:"",vent:"",plan:"",buscar:""},
+    conf:{}, vistos:{}, consent:false,
+    otpIntentos:0, otpOk:false, otpAgotado:false, otpErr:"", reenvio:25,
+    err:"", rfcManual:0, entrega:"", addrSel:null, zonaErr:false, nuevoAddr:false,
+    revListo:false, quizEstado:null, verResumen:false,
+    t0:Date.now(), tFin:0, modal:null, toast:""
+  };
+}
+S = {pant:"inicio", esc:null, campos:{}, conf:{}, vistos:{}, modal:null, toast:"", hist:[]};
+
+let tReenvio=null, tRevision=null, tToast=null;
+function limpiarTimers(){ clearInterval(tReenvio); clearTimeout(tRevision); tReenvio=null; tRevision=null; }
+function esc(){ return C.escenarios[S.esc] || C.escenarios.A; }
+function toast(t){ S.toast=t; render(); clearTimeout(tToast); tToast=setTimeout(function(){S.toast="";render();},4200); }
+
+/* =======================================================================
+   NAVEGACIÓN
+   ======================================================================= */
+function go(p,sinHistoria){
+  if(!sinHistoria && S.pant) S.hist.push(S.pant);
+  S.pant=p; S.err="";
+  if(NUM[p]) S.num=NUM[p];
+  limpiarTimers();
+  if(p==="2"){ S.reenvio=25; tReenvio=setInterval(tick,1000); }
+  if(p==="6"){ S.revListo=false; tRevision=setTimeout(revisionLista,3500); }
+  render();
+}
+function tick(){ if(S.reenvio>0){ S.reenvio--; render(); } else { clearInterval(tReenvio); tReenvio=null; } }
+function revisionLista(){
+  S.revListo=true;
+  if(S.conf["6"]) salirRevision(); else render();
+}
+function salirRevision(){
+  if(esc().scoring==="rechazo") go("rechazo"); else go("7");
+}
+function atras(){
+  if(!S.hist.length) return;
+  const p=S.hist.pop();
+  S.pant=p; S.err=""; S.zonaErr=false;
+  if(NUM[p]) S.num=NUM[p];
+  limpiarTimers();
+  if(p==="2"){ S.reenvio=0; }
+  if(p==="6"){ S.revListo=true; }
+  render();
+}
+function iniciar(id){
+  limpiarTimers();
+  S=nuevoEstado(id);
+  S.campos.tel=C.escenarios[id].telPantalla;   /* el CRM trae el número precargado */
+  go("1",true);
+}
+function alResumen(){ S.tFin=Date.now(); limpiarTimers(); S.pant="resumen"; render(); }
+
+/* =======================================================================
+   UTILIDADES
+   ======================================================================= */
+function v(k){ return S.campos[k]||""; }
+function set(k,val){ S.campos[k]=val; }
+function digitos(s){ return (s||"").replace(/\D/g,""); }
+function ult4(){ const d=digitos(v("tel")); return d.slice(-4)||"0000"; }
+function esc_(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function marcar(k){ if(!S.vistos[k]) S.vistos[k]=true; }
+
+function generarRFC(){
+  const n=v("nombres").trim(), a1=v("ap1").trim(), a2=v("ap2").trim();
+  const sinAcento=function(s){return s.normalize?s.normalize("NFD").replace(/[\u0300-\u036f]/g,""):s;};
+  const A1=sinAcento(a1).toUpperCase(), A2=sinAcento(a2).toUpperCase(), N=sinAcento(n).toUpperCase();
+  const vocal=(A1.slice(1).match(/[AEIOU]/)||["X"])[0];
+  const letras=(A1[0]||"X")+vocal+(A2[0]||"X")+(N[0]||"X");
+  const fecha=digitos(v("fa")).slice(-2)+digitos(v("fm")).padStart(2,"0").slice(-2)+digitos(v("fd")).padStart(2,"0").slice(-2);
+  let homo=esc().homoclave;
+  if(!homo){
+    const base=letras+fecha; let h=0;
+    for(let i=0;i<base.length;i++) h=(h*31+base.charCodeAt(i))%9973;
+    const AB="ABCDEFGHIJKLMNPQRSTUVWXYZ";
+    homo=AB[h%25]+String(h%10)+AB[(h*7)%25];
+  }
+  return letras+fecha+homo;
+}
+function datosPersonalesListos(){ return v("nombres")&&v("ap1")&&v("ap2")&&digitos(v("fd"))&&digitos(v("fm"))&&digitos(v("fa")).length>=4; }
+function direccionTexto(){
+  const c=S.campos;
+  if(c.calle||c.colonia||c.cp){
+    let t=(c.calle||"")+(c.num?" "+c.num:"");
+    if(c.colonia) t+=(t?", ":"")+"Col. "+c.colonia;
+    if(c.ciudad) t+=(t?", ":"")+c.ciudad;
+    if(c.cp) t+=(t?", ":"")+"C.P. "+c.cp;
+    return t;
+  }
+  return esc().domicilioTexto||"—";
+}
+function ventanaPartes(){
+  const p=(v("vent")||"").split("–");
+  return {v1:(p[0]||"").trim(), v2:(p[1]||"").trim()};
+}
+function fechaLarga(){
+  const e=esc();
+  if(S.entrega==="embajador"){
+    if(e.slot && e.slot.dia===v("dia")) return e.slot.fechaLarga;
+    const d=(v("dia")||"").replace(/,.*$/,"");
+    return d.replace(" de jun"," de junio")||"—";
+  }
+  return (e.fechaPostal&&e.fechaPostal.larga)||"—";
+}
+function guionFinal(){
+  const e=esc(), d=direccionTexto(), w=ventanaPartes();
+  const rep=function(t){
+    return t.replace("{PREAPROBACION}",FRASE_PREAPROBACION)
+            .replace("{fecha}",fechaLarga()).replace("{v1}",w.v1||"__").replace("{v2}",w.v2||"__")
+            .replace("{dir}",d)
+            .replace("{dia}",(e.fechaPostal&&e.fechaPostal.dia)||"__")
+            .replace("{mes}",(e.fechaPostal&&e.fechaPostal.mes)||"__")
+            .replace("{anio}",(e.fechaPostal&&e.fechaPostal.anio)||"__");
+  };
+  return (S.entrega==="embajador"?F.p9.guionEmb:F.p9.guionPost).map(rep);
+}
+function tiempoTexto(){
+  const ms=(S.tFin||Date.now())-(S.t0||Date.now());
+  const s=Math.max(0,Math.round(ms/1000));
+  const m=Math.floor(s/60);
+  return m+" min "+String(s%60).padStart(2,"0")+" s";
+}
+
+/* =======================================================================
+   RENDER
+   ======================================================================= */
+function render(){
+  const a=document.activeElement;
+  const fk=(a&&a.dataset&&a.dataset.k)?a.dataset.k:null;
+  let pos=null;
+  try{ pos=(a&&a.selectionStart!=null)?a.selectionStart:null; }catch(e){}
+  app.innerHTML=view();
+  if(fk){
+    const el=app.querySelector('[data-k="'+fk+'"]');
+    if(el){ el.focus(); if(pos!=null){ try{ el.setSelectionRange(pos,pos); }catch(e){} } }
+  }
+}
+
+function view(){
+  if(S.pant==="inicio") return topbar()+'<div class="main"><div class="left" style="width:100%">'+inicioHTML()+"</div></div>"+overlays();
+  if(S.pant==="resumen") return topbar()+'<div class="main"><div class="left" style="width:100%">'+resumenHTML()+"</div></div>"+overlays();
+  return topbar()+'<div class="main"><div class="left">'+formHTML()+'</div><div class="right">'+panelHTML()+"</div></div>"+overlays();
+}
+
+function topbar(){
+  const enFlujo=S.pant!=="inicio"&&S.pant!=="resumen";
+  const n=S.num||1;
+  let h='<div class="top"><div class="brand">'+C.ui.marca+"</div>";
+  if(enFlujo){
+    h+='<div class="prog">'+C.ui.progreso.replace("{n}",n)+'</div><div class="bar"><i style="width:'+Math.round(n/9*100)+'%"></i></div>';
+  }
+  h+='<div class="sp"></div>';
+  if(enFlujo && S.esc==="L"){
+    h+='<div class="libre"><span class="esc">'+C.ui.modoLibre+'</span><select data-act="libre">'+
+       '<option value="">—</option>'+
+       '<option value="zona">Zona no habilitada</option>'+
+       '<option value="otpAgotado">Intentos de código agotados</option>'+
+       '<option value="sindoc">Sin documento válido</option>'+
+       '<option value="corner">Corner case</option>'+
+       '<option value="tecnico">Error técnico</option>'+
+       '<option value="rechazo">Rechazo por scoring</option>'+
+       "</select></div>";
+  }
+  if(S.esc) h+='<span class="esc">'+esc_(esc().nombre)+"</span>";
+  if(enFlujo){
+    h+='<button class="tbtn" data-act="atras"'+(S.hist.length?"":" disabled")+">"+C.ui.atras+"</button>";
+    h+='<button class="tbtn" data-act="pedirReinicio">'+C.ui.reiniciar+"</button>";
+  }
+  return h+"</div>";
+}
+
+function overlays(){
+  let h="";
+  if(S.toast) h+='<div class="toast">'+S.toast+"</div>";
+  if(S.modal){
+    h+='<div class="mask"><div class="modal"><p>'+S.modal.texto+"</p>"+
+       '<div class="btns"><button class="btn" data-act="modalSi">'+(S.modal.si||C.ui.si)+"</button>"+
+       '<button class="btn gh" data-act="modalNo">'+C.ui.no+"</button></div></div></div>";
+  }
+  return h;
+}
+
+/* ---------- pantalla de inicio ---------- */
+function inicioHTML(){
+  let h='<div class="center"><div class="card"><div class="h1">'+C.ui.inicioTitulo+"</div>"+
+        '<p class="hint" style="font-size:15px">'+C.ui.inicioTexto+"</p></div>"+
+        '<div class="pt" style="color:rgba(29,32,38,.5)">'+C.ui.inicioElige+"</div>";
+  C.escenariosLista.forEach(function(e){
+    h+='<button class="pick" data-act="iniciar" data-v="'+e.id+'"><div class="n">'+e.n+'</div><div class="d">'+e.d+"</div></button>";
+  });
+  return h+"</div>";
+}
+
+/* =======================================================================
+   FORMA (réplica del CRM)
+   ======================================================================= */
+function menBloque(titulo,texto,key,parrafos){
+  marcar(key);
+  let cuerpo="";
+  if(parrafos) cuerpo=parrafos.map(function(p){return "<p>"+p+"</p>";}).join("");
+  else cuerpo="<p>"+texto+"</p>";
+  let h='<div class="men"><div class="t">'+titulo+"</div>"+cuerpo+"</div>";
+  h+='<div class="conf">';
+  if(S.conf[key]) h+='<span class="st">✓ '+C.ui.yaMencionado+"</span>";
+  else h+='<button class="btn gh sm" data-act="confirmar" data-v="'+key+'">'+C.ui.yaMencione+"</button>";
+  h+="</div>";
+  return h;
+}
+function campo(label,k,extra){
+  return '<div class="f"><label>'+label+'</label><input class="inp" data-k="'+k+'" value="'+esc_(v(k))+'" '+(extra||"")+"></div>";
+}
+function btnCont(act,cond,texto){
+  return '<button class="btn" data-act="'+act+'"'+(cond?"":" disabled")+">"+(texto||C.ui.continuar)+"</button>";
+}
+function errHTML(){ return S.err?'<div class="err"><span>⚠</span><span>'+S.err+"</span></div>":""; }
+
+function formHTML(){
+  const e=esc();
+  switch(S.pant){
+
+  /* ---------- 1 ---------- */
+  case "1": {
+    marcar("1");
+    return '<div class="crm"><div class="card">'+
+      '<div class="h1">'+F.p1.titulo+"</div>"+
+      '<div class="q">'+F.p1.pregunta+"</div>"+
+      campo(F.p1.labelTel,"tel",'inputmode="tel"')+
+      btnCont("verificar",S.conf["1"]&&digitos(v("tel")).length>=10,F.p1.boton)+
+      (S.conf["1"]?"":'<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>")+
+      errHTML()+"</div></div>";
+  }
+
+  /* ---------- 2 ---------- */
+  case "2": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p2.titulo+"</div>";
+    if(S.otpAgotado){
+      h+='<div class="men"><div class="t">'+C.ui.menciona+"</div><p>"+C.errores.otpAgotado.texto+"</p></div>";
+      h+='<div class="hint">'+F.p2.agotado+"</div>";
+      h+='<div class="conf">'+(S.conf.otpAgotado?'<span class="st">✓ '+C.ui.yaMencionado+"</span>":
+        '<button class="btn gh sm" data-act="confirmar" data-v="otpAgotado">'+C.ui.yaMencione+"</button>")+"</div>";
+      h+='<button class="btn gh" data-act="resumen">'+C.ui.verResumen+"</button>";
+      return h+"</div></div>";
+    }
+    h+='<p class="hint">'+F.p2.sub.replace("{4}",ult4())+"</p>";
+    h+='<div class="f"><label>'+F.p2.label+'</label><input class="inp" data-k="codigo" inputmode="numeric" maxlength="4" style="letter-spacing:.5em;font-size:19px;font-weight:700;max-width:180px" value="'+esc_(v("codigo"))+'"></div>';
+    if(S.otpErr) h+='<div class="err"><span>⚠</span><span>'+S.otpErr+"</span></div>";
+    if(S.otpOk) h+='<div class="okmsg">✓ '+F.p2.ok+"</div>";
+    h+='<div class="links"><button class="link" data-act="cambiarNumero">'+F.p2.cambiar+"</button>"+
+       '<button class="link" data-act="reenviar"'+(S.reenvio>0?" disabled":"")+">"+
+       (S.reenvio>0?F.p2.reenviarCuenta.replace("{s}",S.reenvio):F.p2.reenviar)+"</button></div>";
+    h+='<div style="margin-top:16px">'+
+       (S.otpOk?btnCont("aConsentimiento",true):btnCont("validarOTP",digitos(v("codigo")).length===4,F.p2.boton))+"</div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 3 ---------- */
+  case "3": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p3.titulo+"</div>";
+    h+=menBloque(C.ui.menciona,F.p3.aviso,"3");
+    h+='<label class="chk"><input type="checkbox" data-act="consent"'+(S.consent?" checked":"")+">"+
+       "<span>"+F.p3.check+"</span></label>";
+    h+=errHTML();
+    h+=btnCont("contConsent",S.conf["3"]);
+    if(!S.conf["3"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    h+='<div class="links"><button class="link" data-act="noAutoriza">'+F.p3.noAutoriza+"</button></div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 4 ---------- */
+  case "4": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p4.titulo+"</div>";
+    h+='<p class="hint">'+F.p4.instruccion+"</p>";
+    h+=campo(F.p4.nombres,"nombres")+campo(F.p4.ap1,"ap1")+campo(F.p4.ap2,"ap2");
+    h+='<div class="f"><label>'+F.p4.fnac+" · "+F.p4.fnacHint+'</label><div class="row">'+
+       '<input class="inp" data-k="fd" inputmode="numeric" maxlength="2" placeholder="DD" value="'+esc_(v("fd"))+'">'+
+       '<input class="inp" data-k="fm" inputmode="numeric" maxlength="2" placeholder="MM" value="'+esc_(v("fm"))+'">'+
+       '<input class="inp" data-k="fa" inputmode="numeric" maxlength="4" placeholder="AAAA" value="'+esc_(v("fa"))+'">'+
+       "</div></div>";
+    h+="</div>";
+    h+='<div class="card"><div class="h2">'+F.p4.rfcTitulo+'</div><p class="hint">'+F.p4.rfcHint+"</p>"+
+       '<div class="row" style="align-items:flex-start"><input class="inp" data-k="rfc" readonly value="'+esc_(v("rfc"))+'" style="letter-spacing:.08em;font-weight:700;text-transform:uppercase">'+
+       '<button class="btn sm" data-act="generarRFC" style="flex:0 0 auto"'+(datosPersonalesListos()?"":" disabled")+">"+F.p4.generar+"</button></div>"+
+       (datosPersonalesListos()?"":'<div class="hint" style="margin:10px 0 0">'+F.p4.rfcFalta+"</div>")+"</div>";
+    h+='<div class="card"><div class="h2">'+F.p4.ingreso+'</div><p class="hint">'+F.p4.ingresoHint+"</p>"+
+       '<div class="money"><b>$</b><input class="inp" data-k="ingreso" inputmode="numeric" value="'+esc_(v("ingreso"))+'"></div>'+
+       errHTML()+'<div style="margin-top:16px">'+btnCont("contPersonales",datosPersonalesListos()&&v("rfc")&&v("ingreso"))+"</div></div>";
+    return h+"</div>";
+  }
+
+  /* ---------- 5 ---------- */
+  case "5": {
+    const opc=function(k,lista){
+      let o='<option value="">'+F.p5.elige+"</option>";
+      lista.forEach(function(x){ o+='<option value="'+esc_(x)+'"'+(v(k)===x?" selected":"")+">"+esc_(x)+"</option>"; });
+      return o;
+    };
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p5.titulo+"</div>"+
+      '<div class="f"><label>'+F.p5.actividad+'</label><p class="hint">'+F.p5.actividadHint+"</p>"+
+      '<select class="inp" data-k="actividad">'+opc("actividad",F.p5.actividadOpc)+"</select></div>"+
+      '<div class="f"><label>'+F.p5.regimen+'</label><p class="hint">'+F.p5.regimenHint+"</p>"+
+      '<select class="inp" data-k="regimen">'+opc("regimen",F.p5.regimenOpc)+"</select></div></div>";
+    h+='<div class="card">'+menBloque(C.ui.pregunta,F.p5.preguntaINE,"5");
+    F.p5.docOpc.forEach(function(o){
+      h+='<label class="opt'+(v("doc")===o?" on":"")+'"><input type="radio" name="doc" data-act="doc" data-v="'+esc_(o)+'"'+(v("doc")===o?" checked":"")+"><span>"+o+"</span></label>";
+    });
+    h+=errHTML()+'<div style="margin-top:14px">'+btnCont("contNegocio",S.conf["5"]&&!!v("actividad")&&!!v("regimen"))+"</div>";
+    if(!S.conf["5"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 6 ---------- */
+  case "6": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p6.titulo+"</div>";
+    if(!S.revListo) h+='<div class="spin"></div><p class="hint" style="text-align:center">'+F.p6.espera+"</p>";
+    h+=menBloque(C.ui.menciona,F.p6.texto,"6");
+    if(S.revListo&&!S.conf["6"]) h+='<div class="warn">'+F.p6.listo+"</div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 7 ---------- */
+  case "7": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7.titulo+"</div>";
+    const guardados=e.guardados&&e.guardados.length&&!S.nuevoAddr;
+    h+='<p class="hint">'+(guardados?F.p7.subGuardados:F.p7.sub)+"</p>";
+    if(guardados){
+      e.guardados.forEach(function(g,i){
+        h+='<button class="addr'+(S.addrSel===i?" on":"")+'" data-act="elegirGuardado" data-v="'+i+'">'+esc_(g.t)+"</button>";
+      });
+      h+='<button class="btn gh sm" data-act="nuevoAddr" style="margin-top:6px">'+F.p7.nuevo+"</button>";
+    }else{
+      h+='<div class="map"><div class="pin"></div></div>';
+      h+='<div class="f"><label>'+F.p7.buscar+'</label><input class="inp" data-k="buscar" value="'+esc_(v("buscar"))+'"></div>';
+      h+=btnCont("elegirUbicacion",true,F.p7.elegir);
+    }
+    if(S.zonaErr) h+='<div class="err"><span>⚠</span><span>'+F.p7.zonaNo+"</span></div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 7a paquetería ---------- */
+  case "7a": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7a.titulo+"</div>"+
+      menBloque(C.ui.menciona,F.p7a.mencion,"7")+"</div>";
+    h+='<div class="card"><div class="h2">'+F.p7a.confirma+"</div>"+
+      campo(F.p7a.cp,"cp",'inputmode="numeric"')+campo(F.p7a.ciudad,"ciudad")+campo(F.p7a.colonia,"colonia")+
+      campo(F.p7a.calle,"calle")+campo(F.p7a.num,"num")+"</div>";
+    h+='<div class="card">'+detallesHTML(F.p7a)+errHTML()+
+      '<div style="margin-top:6px">'+btnCont("contEntrega",S.conf["7"])+"</div>"+
+      (S.conf["7"]?"":'<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>")+"</div>";
+    return h+"</div>";
+  }
+
+  /* ---------- 7b embajador ---------- */
+  case "7b": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7b.titulo+"</div>"+
+      menBloque(C.ui.menciona,F.p7b.mencion,"7")+"</div>";
+    h+='<div class="card">'+detallesHTML(F.p7b)+"</div>";
+    h+='<div class="card"><div class="h2">'+F.p7b.fechaTitulo+'</div><p class="hint">'+F.p7b.fechaHint+"</p>";
+    h+='<div class="slots">';
+    (e.dias||[]).forEach(function(d){ h+='<div class="d">'+esc_(d.d)+"</div>"; });
+    F.p7b.ventanas.forEach(function(w){
+      (e.dias||[]).forEach(function(d){
+        const on=(v("dia")===d.d&&v("vent")===w);
+        h+='<button class="slot'+(on?" on":"")+'" data-act="slot" data-v="'+esc_(d.d)+"|"+esc_(w)+'">'+w+"</button>";
+      });
+    });
+    h+="</div>";
+    h+='<button class="btn gh sm" data-act="otroDia">'+F.p7b.otroDia+"</button>";
+    h+=errHTML()+'<div style="margin-top:16px">'+btnCont("contEntrega",S.conf["7"])+"</div>";
+    if(!S.conf["7"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 8 ---------- */
+  case "8": {
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p8.titulo+"</div>";
+    F.p8.planes.forEach(function(pl){
+      h+='<label class="plan'+(v("plan")===pl.n?" on":"")+'"><input type="radio" name="plan" data-act="plan" data-v="'+esc_(pl.n)+'"'+(v("plan")===pl.n?" checked":"")+">"+
+         '<span class="n">'+pl.n+'</span><span class="p">'+pl.p+"</span></label>";
+      if(pl.n==="Emprendedor"&&e.promoCompaneros) h+='<div class="promo">'+F.p8.promo+"</div>";
+    });
+    h+=errHTML()+'<div style="margin-top:16px">'+btnCont("contPlan",true)+"</div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- 9 ---------- */
+  case "9": {
+    const g=guionFinal();
+    const titulo=S.entrega==="embajador"
+      ? F.p9.tarjetaEmb.replace("{fecha}",fechaLarga()).replace("{ventana}",v("vent")||"—")
+      : F.p9.tarjetaPost.replace("{fecha}",fechaLarga());
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p9.titulo+"</div>"+
+      '<div class="dcard"><div class="big">'+titulo+"</div>"+
+      '<div class="dl"><b>'+F.p9.dir+"</b><span>"+esc_(direccionTexto())+"</span></div>"+
+      '<div class="dl"><b>'+F.p9.cliente+"</b><span>"+esc_((v("nombres")+" "+v("ap1")+" "+v("ap2")).trim()||"—")+" · "+esc_(v("tel"))+"</span></div>"+
+      '<div class="dl"><b>'+F.p9.instr+"</b><span>"+esc_(v("instr")||v("detalles")||"—")+"</span></div></div>";
+    h+=menBloque(C.ui.menciona,"","9",g);
+    h+='<div class="btns"><button class="btn gh" data-act="editarEntrega">'+F.p9.editar+"</button>"+
+       '<button class="btn gh" data-act="cancelarEntrega">'+F.p9.cancelarEntrega+"</button>"+
+       '<button class="btn gh" data-act="cancelarSolicitud">'+F.p9.cancelarSolicitud+"</button></div>";
+    return h+"</div></div>";
+  }
+
+  /* ---------- pantallas de paro ---------- */
+  case "corner": case "tecnico": case "rechazo": case "sindoc": case "noAutoriza": {
+    const d=C.errores[S.pant];
+    let h='<div class="crm"><div class="card"><div class="h1">'+d.titulo+"</div>"+
+      menBloque(C.ui.menciona,d.texto,S.pant)+"</div>";
+    if(S.conf[S.pant]&&puedeResumen()) h+='<div class="card"><button class="btn gh" data-act="resumen">'+C.ui.verResumen+"</button></div>";
+    return h+"</div>";
+  }
+  }
+  return "";
+}
+
+function detallesHTML(t){
+  let h='<div class="f"><label>'+t.detalles+'</label><textarea class="inp" data-k="detalles" rows="3">'+esc_(v("detalles"))+"</textarea>";
+  if(v("detalles").trim().length<20) h+='<div class="warn">'+t.avisoDetalles+"</div>";
+  h+="</div>";
+  h+='<div class="f"><label>'+t.instrucciones+'</label><input class="inp" data-k="instr" value="'+esc_(v("instr"))+'"></div>';
+  return h;
+}
+function puedeResumen(){
+  if(S.pant==="rechazo"&&S.esc==="C") return S.quizEstado==="ok";
+  return true;
+}
+
+/* =======================================================================
+   PANEL APUNTADOR
+   ======================================================================= */
+const TITULOS = {
+  "1":F.p1.titulo,"2":F.p2.titulo,"3":F.p3.titulo,"4":F.p4.titulo,"5":F.p5.titulo,
+  "6":F.p6.titulo,"7":F.p7.titulo,"7a":F.p7a.titulo,"7b":F.p7b.titulo,"8":F.p8.titulo,"9":F.p9.titulo,
+  "corner":C.errores.corner.titulo,"tecnico":C.errores.tecnico.titulo,"rechazo":C.errores.rechazo.titulo,
+  "sindoc":C.errores.sindoc.titulo,"noAutoriza":C.errores.noAutoriza.titulo
+};
+function panelKey(){
+  if(S.pant==="2"&&S.otpAgotado) return "paro";
+  if(PARO.indexOf(S.pant)>=0) return "paro";
+  if(S.pant==="7"&&S.zonaErr) return "zona";
+  return "p"+S.pant;
+}
+function bloque(titulo,cuerpo){ return '<div class="pb"><h3>'+titulo+'</h3><div class="body">'+cuerpo+"</div></div>"; }
+function badge(modo){ return '<div><span class="badge '+(modo==="lit"?"lit":"wor")+'">'+(modo==="lit"?C.ui.badgeLit:C.ui.badgeWor)+"</span></div>"; }
+function lista(items){ return "<ul>"+items.map(function(i){return "<li>"+i+"</li>";}).join("")+"</ul>"; }
+
+function panelHTML(){
+  const k=panelKey(), d=P[k]||P.paro, e=esc();
+  let h='<div class="pt">'+(S.pant==="2"&&S.otpAgotado?C.errores.otpAgotado.titulo:(TITULOS[S.pant]||""))+"</div>";
+  h+='<div class="pnum">'+(NUM[S.pant]&&k!=="paro"?C.ui.progreso.replace("{n}",NUM[S.pant]):"Cierre de la llamada")+"</div>";
+
+  /* 1 · Qué le dices */
+  let dice=badge(d.modo)+'<div class="say'+(d.modo==="lit"?"":" words")+'">'+(d.dice||"")+"</div>";
+  if(d.diceWor) dice+='<div style="margin-top:12px">'+badge("wor")+'<div class="say words">'+d.diceWor+"</div></div>";
+  if(k==="p9") dice+='<div class="say" style="margin-top:12px">'+guionFinal().map(function(p){return "<p style=\'margin:0 0 10px\'>"+p+"</p>";}).join("")+"</div>";
+  if(k==="paro"&&S.pant!=="2") dice+='<div class="say" style="margin-top:12px">'+(C.errores[S.pant]?C.errores[S.pant].texto:"")+"</div>";
+  if(k==="p1"){
+    dice+= S.conf["1"]
+      ? '<button class="pbtn done">✓ '+C.ui.yaMencionado+"</button>"
+      : '<button class="pbtn" data-act="confirmar" data-v="1">'+C.ui.yaMencione+"</button>";
+  }
+  h+=bloque(C.ui.bloques[0],dice);
+
+  /* 2 · Qué te contesta */
+  let resp=null;
+  if(d.contesta) resp=d.contesta[S.esc]||d.contesta.A;
+  if(k==="paro"&&S.pant==="rechazo"&&S.esc==="C") resp=null;
+  if(resp) h+=bloque(C.ui.bloques[1],resp.map(function(r){return '<div class="cli">'+r+"</div>";}).join(""));
+
+  /* extras de la pantalla 8 */
+  if(k==="p8"){
+    let ex="";
+    const orden=["Independiente","Emprendedor","Empresario"];
+    orden.forEach(function(n){
+      const g=C.planesGuion[n];
+      const abierto=(e.plan===n)?" open":"";
+      ex+='<details class="fold"'+abierto+'><summary>Ver guion completo · '+g.titulo+'</summary><div class="in"><div class="say words">'+g.texto+"</div></div></details>";
+    });
+    ex+='<details class="fold"><summary>'+C.comparativa.titulo+'</summary><div class="in">'+
+        '<div class="alert">'+C.comparativa.aviso+"</div>"+
+        '<div style="overflow-x:auto"><table class="cmp"><tr>'+C.comparativa.cols.map(function(c){return "<th>"+c+"</th>";}).join("")+"</tr>"+
+        C.comparativa.filas.map(function(f){return "<tr>"+f.map(function(c){return "<td>"+c+"</td>";}).join("")+"</tr>";}).join("")+
+        "</table></div>"+
+        C.comparativa.pie.map(function(p){return '<div class="note" style="border:0;padding-top:10px;margin:0">'+p+"</div>";}).join("")+
+        "</div></details>";
+    h+='<div class="pb">'+ex+"</div>";
+  }
+
+  /* 3 · Qué haces en la pantalla */
+  let haces = d.hacesLista ? "<ol>"+d.hacesLista.map(function(i){return "<li>"+i+"</li>";}).join("")+"</ol>" : "<p>"+(d.haces||"")+"</p>";
+  h+=bloque(C.ui.bloques[2],haces);
+
+  /* quiz del escenario C */
+  if(S.pant==="rechazo"&&S.esc==="C"&&S.conf.rechazo){
+    let q='<div class="cli">'+C.quiz.pregunta+'</div><p style="margin:10px 0">'+C.quiz.intro+"</p>";
+    C.quiz.opciones.forEach(function(o,i){
+      const cl=(S.quizEstado==="ok"&&o.ok)?" good":((S.quizEstado==="mal"&&!o.ok)?" bad":"");
+      q+='<button class="qz'+cl+'" data-act="quiz" data-v="'+i+'">'+o.t+"</button>";
+    });
+    if(S.quizEstado==="ok") q+='<div class="alert">'+C.quiz.opciones[0].fb+"</div>";
+    if(S.quizEstado==="mal") q+='<div class="alert">'+C.quiz.opciones[1].fb+"</div>";
+    h+=bloque("Qué le contestas",q);
+  }
+
+  /* nota del paro */
+  if(k==="paro"&&d.ojo) h+='<div class="pb"><div class="body"><div class="alert">'+d.ojo+"</div></div></div>";
+
+  /* 4 · Si algo se sale del guion — plegado por defecto */
+  if(d.fuera&&d.fuera.length){
+    h+='<details class="fold"><summary>'+C.ui.bloques[3]+'</summary><div class="in"><div class="body">'+lista(d.fuera)+"</div></div></details>";
+  }
+
+  /* salida al resumen */
+  if((S.pant==="9"&&S.conf["9"])||(k==="paro"&&S.conf[S.pant]&&puedeResumen())){
+    h+='<button class="pbtn gh" data-act="resumen">'+C.ui.verResumen+"</button>";
+  }
+  return h;
+}
+
+/* =======================================================================
+   RESUMEN
+   ======================================================================= */
+function resumenHTML(){
+  const R=C.resumen, it=R.items;
+  const vistos=Object.keys(S.vistos);
+  const b=vistos.length, a=vistos.filter(function(x){return !!S.conf[x];}).length;
+  const filas=[
+    {ok:!!S.conf["3"], t:it.aviso.t, tx:S.conf["3"]?it.aviso.ok:it.aviso.no},
+    {ok:S.rfcManual===0, t:it.rfc.t, tx:S.rfcManual===0?it.rfc.ok:it.rfc.no.replace("{n}",S.rfcManual)},
+    {ok:(b>0&&a===b), t:it.menciones.t, tx:(a===b?it.menciones.ok:it.menciones.no).replace("{a}",a).replace("{b}",b)},
+    {ok:(v("detalles").trim().length>=20), t:it.detalles.t, tx:(v("detalles").trim().length>=20)?it.detalles.ok:it.detalles.no},
+    {ok:!!S.conf["9"], t:it.guion.t, tx:S.conf["9"]?it.guion.ok:it.guion.no},
+    {info:true, t:it.tiempo.t, tx:it.tiempo.ok.replace("{t}",tiempoTexto())}
+  ];
+  let h='<div class="center"><div class="card"><div class="h1">'+R.titulo+'</div><p class="hint" style="font-size:15px">'+R.intro+"</p></div>";
+  filas.forEach(function(f){
+    h+='<div class="chk-row"><div class="ic">'+(f.info?"🟡":(f.ok?"🟢":"🔴"))+'</div><div class="tx"><b>'+f.t+"</b><span>"+f.tx+"</span></div></div>";
+  });
+  h+='<div class="btns" style="margin-top:16px"><button class="btn" data-act="repetir">'+R.repetir+"</button>"+
+     '<button class="btn gh" data-act="otro">'+R.otro+"</button></div></div>";
+  return h;
+}
+
+/* =======================================================================
+   EVENTOS
+   ======================================================================= */
+function fijarEntrega(tipo){
+  S.entrega=tipo||"embajador";
+  go(S.entrega==="paqueteria"?"7a":"7b");
+}
+function llenarDomicilio(o){
+  if(!o) return;
+  set("cp",o.cp||""); set("ciudad",o.ciudad||""); set("colonia",o.colonia||"");
+  set("calle",o.calle||""); set("num",o.num||"");
+}
+
+app.addEventListener("click",function(ev){
+  const t=ev.target.closest("[data-act]");
+  if(!t) return;
+  const act=t.dataset.act, val=t.dataset.v, e=esc();
+
+  switch(act){
+  case "iniciar": iniciar(val); return;
+  case "atras": atras(); return;
+  case "pedirReinicio": S.modal={texto:C.ui.reiniciarPreg,accion:"reinicio"}; render(); return;
+  case "modalNo": S.modal=null; render(); return;
+  case "modalSi": {
+    const m=S.modal; S.modal=null;
+    if(!m) return render();
+    if(m.accion==="reinicio") return iniciar(S.esc);
+    if(m.accion==="editar"){ S.zonaErr=false; return go("7"); }
+    if(m.accion==="cancelarEntrega"){ set("dia","");set("vent",""); S.conf["7"]=false; S.zonaErr=false; return go("7"); }
+    if(m.accion==="cancelarSolicitud") return go("corner");
+    render(); return;
+  }
+  case "confirmar":
+    S.conf[val]=true;
+    if(val==="6"&&S.revListo) return salirRevision();
+    render(); return;
+
+  case "verificar": S.otpIntentos=0; S.otpOk=false; S.otpAgotado=false; S.otpErr=""; set("codigo",""); return go("2");
+  case "validarOTP":
+    if(v("codigo")===e.codigo){ S.otpOk=true; S.otpErr=""; }
+    else{
+      S.otpIntentos++;
+      if(S.otpIntentos>=3){ S.otpAgotado=true; S.otpErr=""; }
+      else S.otpErr=F.p2.malo.replace("{i}",S.otpIntentos);
+      set("codigo","");
+    }
+    render(); return;
+  case "cambiarNumero": return go("1");
+  case "reenviar": S.reenvio=25; clearInterval(tReenvio); tReenvio=setInterval(tick,1000); toast("Código reenviado por SMS y WhatsApp."); return;
+  case "aConsentimiento": return go("3");
+
+  case "consent": S.consent=!S.consent; S.err=""; render(); return;
+  case "contConsent":
+    if(!S.consent){ S.err=F.p3.error; return render(); }
+    return go("4");
+  case "noAutoriza": return go("noAutoriza");
+
+  case "generarRFC":
+    if(!datosPersonalesListos()){ S.err=F.p4.rfcFalta; return render(); }
+    set("rfc",generarRFC()); S.err=""; render(); return;
+  case "contPersonales": return go("5");
+
+  case "doc": set("doc",val); S.err=""; render(); return;
+  case "contNegocio":
+    if(!v("doc")){ S.err=F.p5.error; return render(); }
+    if(v("doc")==="Ninguna de las anteriores") return go("sindoc");
+    return go("6");
+
+  case "elegirGuardado": {
+    const g=e.guardados[Number(val)];
+    S.addrSel=Number(val);
+    if(!g.zona){ S.zonaErr=true; return render(); }
+    S.zonaErr=false; llenarDomicilio(g.campos||e.domicilio);
+    return fijarEntrega(e.entrega);
+  }
+  case "nuevoAddr": S.nuevoAddr=true; S.zonaErr=false; render(); return;
+  case "elegirUbicacion":
+    S.zonaErr=false; llenarDomicilio(e.domicilio);
+    return fijarEntrega(e.entrega);
+
+  case "slot": {
+    const p=val.split("|"); set("dia",p[0]); set("vent",p[1]); S.err=""; render(); return;
+  }
+  case "otroDia": set("dia",""); set("vent",""); toast(F.p7b.otroDiaAviso); return;
+  case "contEntrega":
+    if(S.entrega==="embajador"&&(!v("dia")||!v("vent"))){ S.err=F.p7b.faltaSlot; return render(); }
+    if(v("detalles").trim().length<20) toast(F.p7a.avisoDetalles);
+    S.err=""; return go("8");
+
+  case "plan": set("plan",val); S.err=""; render(); return;
+  case "contPlan":
+    if(!v("plan")){ S.err=F.p8.error; return render(); }
+    return go("9");
+
+  case "editarEntrega": S.modal={texto:F.p9.confEditar,accion:"editar"}; render(); return;
+  case "cancelarEntrega": S.modal={texto:F.p9.confCancelarEntrega,accion:"cancelarEntrega"}; render(); return;
+  case "cancelarSolicitud": S.modal={texto:F.p9.confCancelarSolicitud,accion:"cancelarSolicitud"}; render(); return;
+
+  case "quiz": {
+    const o=C.quiz.opciones[Number(val)];
+    S.quizEstado=o.ok?"ok":"mal";
+    render(); return;
+  }
+  case "resumen": return alResumen();
+  case "repetir": return iniciar(S.esc);
+  case "otro":
+    limpiarTimers();
+    S={pant:"inicio",esc:null,campos:{},conf:{},vistos:{},modal:null,toast:"",hist:[]};
+    render(); return;
+  }
+});
+
+app.addEventListener("input",function(ev){
+  const k=ev.target.dataset?ev.target.dataset.k:null;
+  if(!k) return;
+  set(k,ev.target.value);
+  if(k==="detalles"||k==="codigo"||k==="tel"||k==="ingreso"||k==="nombres"||k==="ap1"||k==="ap2"||k==="fd"||k==="fm"||k==="fa"){
+    if(k!=="codigo") S.err="";
+  }
+  render();
+});
+
+app.addEventListener("change",function(ev){
+  const el=ev.target;
+  if(el.dataset&&el.dataset.act==="libre"){
+    const val=el.value;
+    if(!val) return;
+    if(val==="zona"){ go("7"); S.zonaErr=true; render(); return; }
+    if(val==="otpAgotado"){ S.otpAgotado=true; go("2"); return; }
+    go(val); return;
+  }
+  if(el.dataset&&el.dataset.k){ set(el.dataset.k,el.value); S.err=""; render(); }
+});
+
+app.addEventListener("keydown",function(ev){
+  const el=ev.target;
+  if(el.dataset&&el.dataset.k==="rfc"){
+    const libres=["Tab","Shift","Control","Alt","Meta","Escape","Enter","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"];
+    if(libres.indexOf(ev.key)>=0||ev.metaKey||ev.ctrlKey) return;
+    ev.preventDefault();
+    S.rfcManual++;
+    toast(F.p4.rfcNoEditable);
+  }
+});
+app.addEventListener("paste",function(ev){
+  const el=ev.target;
+  if(el.dataset&&el.dataset.k==="rfc"){
+    ev.preventDefault(); S.rfcManual++; toast(F.p4.rfcNoEditable);
+  }
+});
+
+render();
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Simulador TS + Tipificación CRM (Autocontenido)</title>
+<meta name="sim:category" content="CRM">
+<meta name="sim:title" content="TS + Tipificación CRM">
+<meta name="sim:description" content="Troubleshooting y tipificación de casos en CRM.">
+  <style id="theme-styles">
+    :root{
+      --text-primary-rgb: 16,24,40;
+      --bg-primary-rgb: 255,255,255;
+      --brand: #ff5d15; /* Naranja Plata */
+      --brand-pressed: #e75413;
+      --brand-soft: rgba(255,93,21,.12);
+      --ink: rgba(var(--text-primary-rgb),1);
+      --ink-soft: rgba(var(--text-primary-rgb),.55);
+      --ink-softer: rgba(var(--text-primary-rgb),.38);
+      --surface: rgba(var(--text-primary-rgb),.04);
+      --stroke: rgba(var(--text-primary-rgb),.12);
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --round: 14px;
+      --page-bg: #f2f4f7;
+      --panel-field: #e9edf2;
+      --blue-highlight-bg: #eaf3ff;
+      --blue-highlight-border: #4e8df6;
+      --error-bg: #ffe8e8;
+      --error-border: #ffb3b3;
+      --error-ink: #c62828;
+    }
+    html,body{
+      margin:0;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+      color: var(--ink);
+      background: var(--page-bg);
+    }
+    *,*::before,*::after{ box-sizing:border-box; }
+
+    /* ===== Shell ===== */
+    .shell{ max-width:1320px; margin:0 auto; padding:20px; }
+
+    /* ===== Top Call Bar ===== */
+    .topbar{
+      background:#fff; border:1px solid var(--stroke); border-radius:18px;
+      height:72px; display:flex; align-items:center; justify-content:space-between;
+      padding:0 18px; margin-bottom:20px; box-shadow:0 1px 2px rgba(16,24,40,.04);
+    }
+    .mic-btn{
+      width:44px; height:44px; border-radius:12px; border:1px solid var(--stroke);
+      background:#eef1f5; display:grid; place-items:center; cursor:pointer;
+    }
+    .mic-btn svg{ width:20px; height:20px; fill: var(--ink-soft); }
+    .top-title{ font-size:16px; font-weight:600; color:var(--ink); text-align:center; flex:1; padding:0 12px; }
+    .hangup{
+      display:inline-flex; align-items:center; gap:10px; height:44px; padding:0 16px;
+      border-radius:12px; border:1px solid #ffc9c9; background:#fff; color:#e5484d;
+      font-weight:700; font-size:15px; cursor:pointer; transition:all .15s;
+    }
+    .hangup:hover{ background:#fff5f5; }
+    .hangup svg{ width:18px; height:18px; fill:#e5484d; }
+    .hangup.ended{ opacity:.55; cursor:default; }
+
+    /* ===== CRM grid ===== */
+    .crm-grid{ display:grid; grid-template-columns: 1fr 360px; gap:20px; align-items:start; }
+    .col-left{
+      background:#fff; border:1px solid var(--stroke); border-radius:18px;
+      padding:24px; min-height:560px; box-shadow:0 1px 2px rgba(16,24,40,.04);
+    }
+    .col-right{
+      background:#fff; border:1px solid var(--stroke); border-radius:18px;
+      padding:22px 20px; position:sticky; top:20px; box-shadow:0 1px 2px rgba(16,24,40,.04);
+    }
+
+    /* ===== Task card ===== */
+    .task{ background:#fff8e6; border-left:4px solid var(--brand); border-radius:12px; padding:14px 16px; margin-bottom:24px; }
+    .task .title{ font-weight:700; }
+
+    /* ===== Headings / text ===== */
+    .heading{ font-size:22px; font-weight:700; margin:0 0 8px; }
+    .sub{ font-size:14px; color:var(--ink-soft); margin-bottom:16px; }
+    .label{ font-size:14px; font-weight:700; margin:0 0 8px; }
+    .helper{ font-size:12px; color:var(--ink-softer); }
+
+    /* ===== Layout helpers ===== */
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+    .block{ background:transparent; border:0; border-radius:0; padding:0; }
+    .row{ display:flex; gap:14px; flex-wrap:wrap; position: relative; }
+    .grow{ flex:1 1 220px; }
+    .spacer{ height:8px; }
+    .mt16{ margin-top:16px; }
+    .mb16{ margin-bottom:16px; }
+    .mb24{ margin-bottom:24px; }
+
+    /* ===== Inputs ===== */
+    .input, .select{
+      width:100%; height:44px; padding:0 14px; border-radius:12px; border:1px solid var(--stroke); background:#f6f7f9;
+      outline:none; font-size:14px; color:var(--ink); transition:border-color .15s;
+    }
+    .input:focus,.select:focus{ border-color:var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+    .input[readonly]{ background:#f1f2f4; }
+    .text-area{ width:100%; min-height:80px; resize:vertical; padding:12px 14px; border-radius:12px; border:1px solid var(--stroke); background:#f6f7f9; }
+    .error{ border-color:var(--danger) !important; }
+    .error-text{ color:var(--danger); font-size:12px; margin-top:6px; }
+
+    /* ===== Buttons ===== */
+    .btn{ height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; cursor:pointer; font-weight:700; transition:all .15s; }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+    .btn-primary{ background:var(--brand); color:#fff; }
+    .btn-primary:hover{ background:var(--brand-pressed); }
+    .btn-secondary{ background:#eef1f5; color:var(--ink); border-color:var(--stroke); }
+    .btn-secondary:hover{ background:#e6eaf0; }
+    .btn-ghost{ background:transparent; color:var(--brand); }
+    .controls{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:24px; flex-wrap:wrap; }
+
+    /* ===== Queue selector ===== */
+    .queue-selector{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+    .queue-btn{ height:36px; padding:0 14px; border-radius:10px; border:2px solid var(--stroke); background:#fff; cursor:pointer; font-weight:700; font-size:13px; }
+    .queue-btn.active{ background:var(--brand); color:#fff; border-color:var(--brand); }
+    .queue-btn:not(.active):hover{ background:#fff5ef; }
+
+    /* ===== Map mock ===== */
+    .map{
+      position:relative; height:200px; border-radius:16px;
+      background: #f0f0f0;
+      background-image:
+        linear-gradient(rgba(180,180,180,.7) 2px, transparent 2px),
+        linear-gradient(90deg, rgba(180,180,180,.7) 2px, transparent 2px),
+        linear-gradient(rgba(200,200,200,.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,200,200,.5) 1px, transparent 1px);
+      background-size: 120px 120px, 120px 120px, 30px 30px, 30px 30px;
+      background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
+      border:1px solid #d0d0d0; overflow:hidden;
+    }
+    .map::before{
+      content:""; position:absolute; inset:18% 14% 24% 14%; border:3px dashed rgba(0,0,0,.08); border-radius:12px; transform:rotate(-2deg);
+    }
+    .pin{
+      position:absolute; top:50%; left:50%; width:26px; height:26px; transform:translate(-50%,-60%);
+      background:var(--brand); border-radius:50% 50% 50% 0; rotate:45deg; cursor:grab; box-shadow:0 4px 10px rgba(0,0,0,.15);
+    }
+    .pin:active { cursor: grabbing; }
+    .pin::after{ content:""; position:absolute; width:10px; height:10px; background:#fff; border-radius:50%; left:8px; top:8px; }
+    .map-controls{ position:absolute; right:12px; top:12px; display:flex; flex-direction:column; gap:8px; }
+    .mc{ width:36px; height:36px; border-radius:10px; background:#fff; border:1px solid var(--stroke); display:grid; place-items:center; font-weight:900; cursor:pointer; }
+
+    /* ===== Lists / radios ===== */
+    .address-list{
+      border:1px solid var(--stroke); border-radius:12px; overflow:hidden; max-height:210px; overflow-y:auto; background:#fff;
+      display: none; position: absolute; width: 100%; top: 46px; z-index: 5;
+    }
+    .address-item{ padding:12px; display:flex; gap:10px; align-items:flex-start; border-bottom:1px solid var(--stroke); cursor: pointer; }
+    .address-item:last-child{ border-bottom:none; }
+    .address-item label{ cursor: pointer; display:flex; align-items:center; width:100%; }
+    .address-item input[type="radio"]{ margin-right:8px; }
+    .note{ background:#eaf3ff; border-left:4px solid #4e8df6; padding:12px 14px; border-radius:10px; font-size:14px; }
+    .note.warning{ background:#fff7e6; border-left-color:#ffd465; }
+
+    /* Autorización */
+    .auth-checkbox-wrapper { border: 1px solid var(--stroke); border-radius: 12px; padding: 12px; background: #fff; display:flex; align-items:center; gap:8px; }
+
+    /* Documentos de identidad */
+    .iddoc-option{
+      border:1px solid var(--stroke); border-radius:12px; padding:12px 16px; margin-bottom:8px; background:#fff; cursor:pointer;
+      display:flex; align-items:center; gap:10px; transition: all 0.15s ease-in-out;
+    }
+    .iddoc-option:last-child{ margin-bottom:0; }
+    .iddoc-option input[type="radio"]{ margin:0; accent-color: var(--brand); }
+    .iddoc-option.selected{ background: var(--blue-highlight-bg); border-color: var(--blue-highlight-border); }
+    .iddoc-option.selected input[type="radio"]{ accent-color: var(--brand); }
+    .iddoc-option.error-selected{
+      background: var(--error-bg);
+      border-color: var(--error-border);
+      color: var(--error-ink);
+    }
+    .iddoc-error-note{
+      display:none;
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:10px;
+      background: var(--error-bg);
+      border-left:4px solid var(--error-ink);
+      color: var(--ink);
+      font-size:14px;
+    }
+    .iddoc-error-note strong{ color: var(--error-ink); }
+
+    /* ===== Date & Hours ===== */
+    .dates{ display:grid; grid-template-columns: repeat(4,minmax(100px,1fr)); gap:10px; margin-top:6px; }
+    .date-col { display:flex; flex-direction:column; gap:8px; }
+    .date-header { background:#f1f2f4; border:1px solid var(--stroke); border-radius:12px; padding:10px; text-align:center; font-weight:700; }
+    .date-header .small { font-size:12px; color: var(--ink-soft); font-weight:400; }
+    .slot{ padding:10px 12px; border-radius:12px; border:2px solid var(--stroke); background:#fff; text-align:center; cursor:pointer; font-weight:600; }
+    .slot.selected{ background: var(--brand); color:#fff; border-color: var(--brand); }
+    .slot.disabled{ opacity:.65; cursor:not-allowed; background:#f1f2f4; border-color:#f1f2f4; }
+
+    /* ===== Confirm Cards ===== */
+    .info-card{ border:1px solid var(--stroke); border-radius:16px; padding:18px; background:#fff; }
+
+    /* Calendario modal */
+    #calendar-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; padding: 20px; display: none; align-items: center; justify-content: center; }
+    #calendar-modal { background:#fff; border-radius:24px; padding:16px; width:100%; max-width:320px; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
+    .cal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-weight:700; font-size:18px; }
+    .cal-nav-btn { background: var(--surface); border:1px solid var(--stroke); border-radius:50%; width:32px; height:32px; cursor:pointer; font-weight:700; }
+    .cal-nav-btn:hover{ background:#eee; }
+    .cal-weekdays{ display:grid; grid-template-columns: repeat(7, 1fr); gap:4px; margin-bottom:8px; font-size:12px; color:var(--ink-soft); text-align:center; }
+    .cal-dates{ display:grid; grid-template-columns: repeat(7, 1fr); gap:2px; }
+    .cal-day{ height:36px; display:grid; place-items:center; border-radius:50%; cursor:pointer; font-weight:600; }
+    .cal-day:hover:not(.disabled){ background: var(--brand-soft); }
+    .cal-day.other-month{ color: var(--ink-softer); opacity:.5; cursor:not-allowed; }
+    .cal-day.disabled{ color: var(--ink-softer); cursor:not-allowed; text-decoration: line-through; opacity:.7; }
+
+    /* ===== RIGHT PANEL: ¿Qué pasó? (tipificación siempre visible) ===== */
+    .panel-title{ font-size:20px; font-weight:700; margin:0 0 16px; }
+    .tip-field{
+      width:100%; height:44px; padding:0 14px; border-radius:12px; border:1px solid transparent;
+      background:var(--panel-field); color:var(--ink); font-size:14px; font-weight:500; outline:none;
+      margin-bottom:12px; transition: border-color .15s, box-shadow .15s;
+    }
+    select.tip-field{ appearance:none; -webkit-appearance:none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23667085' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+      background-repeat:no-repeat; background-position:right 14px center; padding-right:36px;
+    }
+    .tip-field::placeholder{ color: var(--ink-soft); }
+    .tip-field:focus{ border-color: var(--brand); box-shadow:0 0 0 3px var(--brand-soft); }
+    textarea.tip-field{ height:auto; min-height:44px; padding:12px 14px; resize:vertical; font-family:inherit; }
+    .close-task-btn{
+      width:100%; height:46px; border-radius:12px; border:none; cursor:not-allowed;
+      background:var(--panel-field); color:var(--ink); font-size:15px; font-weight:700;
+      transition: background .2s, color .2s; margin-top:4px;
+    }
+    .close-task-btn.active{ background:var(--brand); color:#fff; cursor:pointer; }
+    .close-task-btn.active:hover{ background:var(--brand-pressed); }
+    .grace-note{
+      display:none; margin-top:14px; padding:12px 14px; border-radius:10px;
+      background:#fff7e6; border-left:4px solid var(--warning); font-size:13px; font-weight:600;
+    }
+    .grace-note .grace-num{ color:var(--danger); font-weight:800; }
+    .panel-done{ display:none; text-align:center; padding:24px 8px; }
+    .panel-done h3{ margin:0 0 10px; font-size:19px; }
+    .panel-done p{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0 0 18px; }
+    .tid{ font-size:10px; color:var(--ink-softer); text-align:center; margin-top:14px; word-break:break-all; }
+
+    /* ===== Responsive ===== */
+    @media (max-width:980px){
+      .crm-grid{ grid-template-columns: 1fr; }
+      .col-right{ position:static; top:auto; }
+    }
+    @media (max-width:760px){
+      .shell{ padding:12px; }
+      .dates{ grid-template-columns: repeat(2,1fr); }
+      .top-title{ font-size:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <!-- ===== TOP CALL BAR ===== -->
+    <div class="topbar" role="banner" aria-label="Estado de llamada">
+      <button class="mic-btn" id="mic-btn" title="Silencio" aria-label="Silencio">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg>
+      </button>
+      <div class="top-title" id="top-title">Banco Plata · Vinculación de tarjeta · <span id="top-phone">0624</span></div>
+      <button class="hangup" id="hangup-btn" title="Colgar llamada">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.996.996 0 0 1-.29-.7c0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28a11.27 11.27 0 0 0-2.66-1.85.995.995 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+        <span id="call-timer">0:00</span>
+      </button>
+    </div>
+
+    <!-- ===== CRM TWO-COLUMN GRID ===== -->
+    <div class="crm-grid">
+      <!-- LEFT: form flow -->
+      <div class="col-left">
+        <div class="queue-selector" aria-label="Seleccionar cola">
+          <button class="queue-btn" data-queue="hot">Hot Queue</button>
+          <button class="queue-btn" data-queue="warm">Warm Queue</button>
+          <button class="queue-btn active" data-queue="cold">Cold Queue</button>
+        </div>
+        <div class="task">
+          <div class="title" id="task-title">BAF SIN ANUALIDAD (NOMBRE DEL CLIENTE) - SIN ANUALIDAD. Fue invitado por (NOMBRE DEL CLIENTE QUE INVITÓ)</div>
+        </div>
+
+        <section class="screen active" id="scr-initial">
+          <div class="block">
+            <h2 class="heading" id="initial-question">¿Quieres vincular la tarjeta al teléfono terminado en 0624?</h2>
+            <div class="row mt16">
+              <button class="btn btn-primary" id="btn-initial-continue">Sí, continuar</button>
+              <button class="btn btn-secondary" id="btn-initial-change">No, cambiar teléfono</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-phone">
+          <div class="block">
+            <h3 class="heading">Ingresa el teléfono que quieres vincular</h3>
+            <div class="sub">Formato: 10 dígitos (MX). Al guardar, se simula la llamada y se avanza.</div>
+            <div class="row">
+              <div class="grow">
+                <label class="label" for="phone-input">Teléfono</label>
+                <div style="position:relative;">
+                  <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6;">+52</span>
+                  <input id="phone-input" class="input" style="padding-left:44px;" maxlength="10" placeholder="10 dígitos" />
+                </div>
+                <div class="error-text" id="phone-error" style="display:none;">Ingrese 10 dígitos numéricos</div>
+              </div>
+            </div>
+            <div class="controls">
+              <div></div>
+              <div class="row">
+                <button class="btn btn-primary" id="btn-call">Llamar al nuevo teléfono</button>
+                <button class="btn btn-secondary" id="btn-cancel-phone">Cancelar</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-timer">
+          <div class="block">
+            <div style="text-align:center;margin-bottom:16px;">
+              <div style="font-size:48px; font-weight:800; color:var(--brand);" id="count-num">5</div>
+              <div class="sub">segundos antes de que la tarea se cierre automáticamente</div>
+            </div>
+            <button class="btn btn-primary" id="btn-redial">Volver a llamar</button>
+            <div class="spacer"></div>
+            <h4 class="heading" style="margin-top:12px;">Motivo de la solicitud</h4>
+            <div class="row"><input class="input grow" placeholder="Agregar etiqueta…" /></div>
+            <div class="row mt16"><textarea class="text-area" placeholder="Comentarios…"></textarea></div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-confirm">
+          <div class="block">
+            <h2 class="heading" id="confirm-question">¿Quieres vincular la tarjeta al teléfono terminado en 9359?</h2>
+            <div class="row mt16">
+              <button class="btn btn-primary" id="btn-confirm-yes">✓ Sí, continuar</button>
+              <button class="btn btn-secondary" id="btn-confirm-edit">No, cambiar teléfono</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONSENT (COLD/BAF) -->
+        <section class="screen" id="scr-consent">
+          <div class="block">
+            <h3 class="heading">Obtener consentimiento del cliente</h3>
+            <div class="note">
+              <strong>Menciónalo al cliente:</strong>
+              Al continuar con este trámite autorizas a <b>Banco Plata, S.A., Institución de Banca Múltiple</b> para tratar tus datos personales de conformidad con el Aviso de Privacidad visible en bancoplata.mx
+            </div>
+            <div class="auth-checkbox-wrapper mt16">
+              <label><input type="checkbox" id="consent-auth" /> Recibí autorización del cliente</label>
+            </div>
+            <div class="row mt16">
+              <button class="btn btn-primary" id="btn-consent-ok" disabled>Continuar</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-main">
+          <div class="block">
+            <h2 class="heading">Información del cliente</h2>
+            <div class="sub">Completa la información requerida del cliente</div>
+            <div class="label">Nombre completo</div>
+            <div class="sub">Confirma nombre tal como en INE/pasaporte/residencia</div>
+            <div class="row">
+              <div class="grow"><input id="first-name" class="input" placeholder="Nombre" /></div>
+            </div>
+            <div class="row mt16">
+              <div class="grow"><input id="last-name" class="input" placeholder="Apellido" /></div>
+            </div>
+            <div class="row mt16">
+              <div class="grow"><input id="second-last-name" class="input" placeholder="Segundo apellido" /></div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <label class="label" for="birth-date">Fecha de nacimiento</label>
+                <input id="birth-date" class="input" placeholder="DD/MM/AAAA" maxlength="10" />
+              </div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <div class="label">RFC</div>
+                <div class="sub">Verifica que los datos sean correctos</div>
+                <button class="btn btn-secondary" id="btn-gen-rfc" disabled>Generar</button>
+                <div id="rfc-wrap" style="display:none; margin-top:12px;">
+                  <input id="rfc-field" class="input" readonly />
+                  <div class="auth-checkbox-wrapper mt16">
+                    <label><input type="checkbox" id="rfc-auth" /> Recibí autorización del cliente</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <h3 class="heading" style="font-size:18px;">Obtener consentimiento del cliente</h3>
+                <div class="note">
+                  <strong>Menciónalo al cliente:</strong>
+                  Para continuar (para efectos de calidad de la llamada), necesitamos tu autorización para realizar una consulta ante las Sociedades de Información Crediticia, por lo que ¿Nos autorizas a <b>Banco Plata, S.A., Institución de Banca Múltiple</b> para proceder?
+                </div>
+                <div class="auth-checkbox-wrapper mt16">
+                  <label><input type="checkbox" id="client-auth" /> Recibí autorización del cliente</label>
+                </div>
+              </div>
+            </div>
+            <div class="controls">
+              <div></div>
+              <button class="btn btn-primary" id="btn-main-continue">Continuar →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-extra">
+          <div class="block">
+            <h2 class="heading">Información adicional</h2>
+            <div class="sub">Profesión e ingresos</div>
+            <div class="row">
+              <div class="grow">
+                <label class="label">Profesión</label>
+                <div class="sub">¿A qué se dedica el cliente?</div>
+                <select id="occupation" class="select">
+                  <option value="">Seleccionar</option>
+                  <option value="empleado-sector-privado">Empleado del sector privado</option>
+                  <option value="trabajador-independiente">Trabajador independiente</option>
+                  <option value="emprendedor">Emprendedor</option>
+                  <option value="servidor-publico">Servidor público</option>
+                  <option value="trabajo-domestico">Trabajo doméstico</option>
+                  <option value="agricultura">Agricultura</option>
+                  <option value="ganaderia">Ganadería</option>
+                  <option value="servicios-limpieza">Empresa de servicios de limpieza</option>
+                  <option value="construccion-obras-completas">Contratación de obras completas de construcción</option>
+                  <option value="silvicultura">Silvicultura</option>
+                  <option value="transporte-general">Servicios relacionados con el transporte en general</option>
+                  <option value="caza">Caza</option>
+                  <option value="servicios-medicos-consultorios">Servicios médicos generales y especializados en consultorios</option>
+                  <option value="fabricacion-prendas-textiles">Fabricación de prendas de vestir y textiles excepto calzado</option>
+                  <option value="fabricacion-hule-plastico">Fabricación de productos de hule y de plástico</option>
+                  <option value="usuarios-menores-comercios">Usuarios de menores comercios</option>
+                  <option value="usuarios-menores-maquinaria-electricos">Usuarios menores fabricación, maquinaria y artículos eléctricos</option>
+                  <option value="usuarios-siderurgica-metalicos">Usuarios de industria siderúrgica y productos metálicos</option>
+                  <option value="servicios-personales-hogar-diversos">Servicios personales, para el hogar y diversos</option>
+                  <option value="seguridad-privada">Empresas de seguridad privada</option>
+                  <option value="recreativos-ocio">Servicios recreativos y de ocio</option>
+                  <option value="retirado">Retirado</option>
+                  <option value="ensenanza-investigacion-cultura">Servicios de enseñanza, investigación científica y difusión cultural</option>
+                  <option value="desempleado-estudiante">Desempleado o estudiante</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <label class="label">Ingreso mensual neto</label>
+                <input id="monthly" class="input" placeholder="$000,000" />
+              </div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <label class="label">Límite de crédito solicitado</label>
+                <input id="limit" class="input" placeholder="$000,000" />
+              </div>
+            </div>
+            <div class="row mt16">
+              <div class="grow">
+                <h3 class="heading" style="font-size:18px;">Documento para verificación de identidad</h3>
+                <div class="note">
+                  <strong>Menciónalo al cliente:</strong><br>
+                  Deberás mostrarle este documento al embajador cuando recibas tu tarjeta. Considera que el documento debe ser válido (no roto, no vencido y con datos actualizados).
+                </div>
+                <div class="iddoc-options mt16">
+                  <div class="iddoc-option" data-opt="ine">
+                    <label><input type="radio" name="iddoc" value="ine"> INE</label>
+                  </div>
+                  <div class="iddoc-option" data-opt="res">
+                    <label><input type="radio" name="iddoc" value="res"> Permiso de residencia y pasaporte</label>
+                  </div>
+                  <div class="iddoc-option" id="iddoc-none" data-opt="none">
+                    <label><input type="radio" name="iddoc" value="none"> Ninguna de las anteriores</label>
+                  </div>
+                </div>
+                <div id="iddoc-error" class="iddoc-error-note">
+                  <strong>Menciónalo al cliente</strong><br>
+                  Lo sentimos, no es posible abrir una cuenta sin INE o permiso de residencia. Puedes solicitar tu Plata Card otra vez en cuanto tengas estos documentos.
+                </div>
+              </div>
+            </div>
+            <div class="controls">
+              <div></div>
+              <button class="btn btn-primary" id="btn-extra-continue">Continuar →</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-address">
+          <div class="block">
+            <h2 class="heading">Dirección de la entrega</h2>
+            <div class="sub">Ingresa o selecciona una dirección en zona de cobertura</div>
+            <div class="map" id="map">
+              <div class="pin" id="pin" title="Arrástrame"></div>
+              <div class="map-controls">
+                <div class="mc" id="zoom-in">+</div>
+                <div class="mc" id="zoom-out">−</div>
+                <div class="mc" id="center">⦿</div>
+              </div>
+            </div>
+            <div class="label">Selecciona la dirección predeterminada o ingresa una nueva</div>
+            <div class="row mt16">
+              <input id="addr-search" class="input" placeholder="Buscar dirección" />
+              <div class="address-list" id="addr-list"></div>
+            </div>
+            <div class="note mt16" id="addr-note"></div>
+            <div id="courier-form" style="display:none; margin-top:16px;">
+              <h3 class="heading" style="font-size:18px;">Confirma la dirección</h3>
+              <div class="row">
+                <div class="grow">
+                  <label class="label">Código postal</label>
+                  <input class="input" id="cp" value="14300" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Ciudad / Estado / Provincia</label>
+                  <input class="input" id="city" value="Ciudad de México" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Calle</label>
+                  <input class="input" id="street" value="Calzada del Hueso" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Número exterior</label>
+                  <input class="input" id="ext" value="519" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Detalles adicionales (depto., casa, entrada)</label>
+                  <input class="input" id="det" placeholder="Depto, casa, entrada" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Instrucciones (opcional)</label>
+                  <input class="input" id="ins" placeholder="Indicaciones especiales" />
+                </div>
+              </div>
+            </div>
+            <div id="ambassador-form" style="display:none; margin-top:16px;">
+              <div class="row">
+                <div class="grow">
+                  <label class="label">Detalles adicionales (depto., casa, entrada)</label>
+                  <input class="input" id="amb-det" placeholder="Depto, casa, entrada" />
+                </div>
+              </div>
+              <div class="row mt16">
+                <div class="grow">
+                  <label class="label">Instrucciones (opcional)</label>
+                  <input class="input" id="amb-ins" placeholder="Indicaciones especiales" />
+                </div>
+              </div>
+              <div class="label mt16">Fecha y hora de la entrega</div>
+              <div class="sub">La reunión tomará alrededor de 20 minutos</div>
+              <div class="dates" id="dates"></div>
+            </div>
+            <div class="controls">
+              <button class="btn btn-secondary" id="btn-other-day">Otro día</button>
+              <button class="btn btn-primary" id="btn-address-continue" disabled>Continuar</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-courier-ok">
+          <div class="block">
+            <div class="note">
+              <strong>Dile al cliente: </strong> ¡FelicIDADES! Tienes una línea de crédito preaprobada. Descarga la app Plata para rastrear tu entrega y ten lista tu INE física y vigente el día de la entrega.
+            </div>
+            <div class="info-card mt16">
+              <h3 class="heading" style="font-size:18px;">📦 Entrega programada</h3>
+              <div class="sub"><strong>Dirección:</strong> <span id="cf-address">—</span></div>
+              <div class="sub"><strong>Fecha/Hora:</strong> <span id="cf-datetime">—</span></div>
+              <div class="sub"><strong>Teléfono:</strong> +52 <span id="cf-phone">—</span></div>
+              <div class="sub"><strong>Instrucciones:</strong> Call me in Whatsapp</div>
+            </div>
+            <div class="controls">
+              <div class="helper">Recuerda cerrar la tarea en el panel «¿Qué pasó?» →</div>
+              <button class="btn btn-primary" id="btn-restart-1">Reiniciar simulación</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" id="scr-amb-ok">
+          <div class="block">
+            <div class="note">
+              <strong>Menciónalo al cliente: </strong> ¡FelicIDADES! Tienes una línea de crédito preaprobada. Descarga la app Plata y ten lista tu INE física y vigente.
+            </div>
+            <div class="info-card mt16">
+              <h3 class="heading" style="font-size:18px;">📦 Entrega confirmada</h3>
+              <div class="sub"><strong>Dirección:</strong> <span id="amb-address">—</span></div>
+              <div class="sub"><strong>Fecha/Hora:</strong> <span id="amb-datetime">—</span></div>
+              <div class="sub"><strong>Teléfono:</strong> +52 <span id="amb-phone">—</span></div>
+              <div class="row mt16">
+                <button class="btn btn-secondary">Editar entrega</button>
+                <button class="btn btn-secondary">Cancelar entrega</button>
+                <button class="btn btn-secondary">Cancelar solicitud</button>
+              </div>
+            </div>
+            <div class="controls">
+              <div class="helper">Recuerda cerrar la tarea en el panel «¿Qué pasó?» →</div>
+              <button class="btn btn-primary" id="btn-restart-2">Reiniciar simulación</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- RIGHT: ¿Qué pasó? (siempre visible) -->
+      <aside class="col-right" aria-label="Tipificación de la llamada">
+        <div id="tip-active">
+          <h2 class="panel-title">¿Qué pasó?</h2>
+          <select id="resultado" class="tip-field" aria-label="Selecciona el resultado">
+            <option value="">Selecciona el resultado</option>
+            <option value="no-acuerdo">Respuesta - No está de acuerdo</option>
+            <option value="contesto-otra-persona">Respuesta - Contesto otra persona/Número de teléfono de una organización</option>
+            <option value="sin-respuesta-buzon">Sin respuesta - Buzón de voz</option>
+            <option value="sin-respuesta-no-disponible">Sin respuesta - Llamada no disponible/Número incorrecto</option>
+            <option value="reaccion-negativa">Respuesta - Reacción de forma negativa/Solicita que no le vuelvan a llamar</option>
+            <option value="que-vuelvan-llamar">Respuesta - Que le vuelvan a llamar</option>
+            <option value="reunion-programada">Respuesta - Reunión programada</option>
+            <option value="no-tengo-ine">Respuesta - No tengo INE</option>
+            <option value="direccion-no-disponible">Respuesta - La dirección no está disponible</option>
+            <option value="problema-tecnico">Respuesta - Problema técnico</option>
+            <option value="otro">Respuesta - Otro</option>
+            <option value="sin-respuesta-otro">Sin respuesta - Otro</option>
+            <option value="cierre-automatico">Cierre automático</option>
+            <option value="ninguna-llamada">Ninguna llamada</option>
+          </select>
+          <textarea id="comentario" class="tip-field" placeholder="Comentario del resultado"></textarea>
+          <button id="closeButton" class="close-task-btn" aria-disabled="true">Cerrar tarea</button>
+          <div id="grace-note" class="grace-note">
+            Llamada finalizada. Te quedan <span class="grace-num" id="grace-num">10</span> s para seleccionar el resultado y cerrar la tarea.
+          </div>
+          <div class="tid">TID <span id="taskId">e152a1aa-d58a-d0da-b190-3227484b4b80</span></div>
+        </div>
+        <div id="tip-done" class="panel-done">
+          <h3 id="done-title" style="color:#27ae60;">¡Tarea cerrada!</h3>
+          <p id="done-text">Registraste el resultado de la llamada correctamente.</p>
+          <button id="restartButton" class="btn btn-primary" style="width:100%;">Practicar de nuevo</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- Calendario -->
+  <div id="calendar-modal-overlay">
+    <div id="calendar-modal">
+      <div class="cal-header">
+        <button id="cal-prev" class="cal-nav-btn">&lt;</button>
+        <span id="cal-month-year">Octubre 2025</span>
+        <button id="cal-next" class="cal-nav-btn">&gt;</button>
+      </div>
+      <div class="cal-weekdays">
+        <div>Do</div><div>Lu</div><div>Ma</div><div>Mi</div><div>Ju</div><div>Vi</div><div>Sá</div>
+      </div>
+      <div class="cal-dates"></div>
+      <button id="cal-cancel" class="btn btn-secondary" style="width:100%; margin-top:16px;">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- ===== JS: FLUJO IZQUIERDA ===== -->
+  <script>
+    (function(){
+      const state = {
+        queue: 'cold',
+        phone: '0624',
+        fullPhone: '',
+        timer: 0,
+        timerInt: null,
+        callEnded: false,
+        countdown: null,
+        deliveryType: 'ambassador',
+        selectedDate: null,
+        selectedSlot: null,
+        selectedAddress: 'Paseo de la Reforma 222, Cuauhtémoc, 06600 CDMX'
+      };
+      const ADDRESS_BOOK = [
+        {text:'Paseo de la Reforma 222, Cuauhtémoc, 06600 CDMX', type:'ambassador'},
+        {text:'Av. Insurgentes Sur 1000, Col del Valle, 03100 CDMX', type:'courier'},
+        {text:'Calle Madero 1, Centro Histórico, 06000 CDMX', type:'courier'},
+        {text:'Av. Revolución 123, San Ángel, 01000 CDMX', type:'courier'},
+        {text:'Av. Universidad 3000, Coyoacán, 04510 CDMX', type:'ambassador'},
+        {text:'Calz. de Tlalpan 1500, Portales, 03300 CDMX', type:'courier'},
+        {text:'Eje Central Lázaro Cárdenas 10, Centro, 06000 CDMX', type:'ambassador'},
+        {text:'Av. Álvaro Obregón 90, Roma Norte, 06700 CDMX', type:'ambassador'},
+        {text:'Av. Patriotismo 201, San Pedro de los Pinos, 03800 CDMX', type:'courier'},
+        {text:'Av. Río Churubusco 500, Iztapalapa, 09030 CDMX', type:'courier'},
+        {text:'Av. Miguel Ángel de Quevedo 250, Coyoacán, 04010 CDMX', type:'ambassador'},
+        {text:'Av. Vasco de Quiroga 3800, Santa Fe, 05348 CDMX', type:'courier'},
+        {text:'Av. Montevideo 279, Lindavista, 07300 CDMX', type:'ambassador'},
+        {text:'Calz. Ignacio Zaragoza 100, Venustiano Carranza, 15000 CDMX', type:'courier'}
+      ];
+      const dummy = {
+        hot:  { first:'Verónica', last:'Mondragón', second:'Navarro', birth:'15/08/1985', phone:'9359', occupation:'empleado-sector-privado', monthly:'$45,000', limit:'$25,000' },
+        warm: { first:'Santiago', last:'García', second:'López', birth:'22/04/1990', phone:'9359', occupation:'emprendedor', monthly:'$35,000', limit:'$20,000' },
+        cold: { phone:'0624' }
+      };
+      let calDisplayDate = new Date();
+      const $  = sel => document.querySelector(sel);
+      const $$ = sel => document.querySelectorAll(sel);
+      const show = id => { $$('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); };
+      const setText = (id, txt) => { const el = (id.startsWith('#')?$(id):document.getElementById(id.replace('#',''))); if(el) el.textContent = txt; };
+      const fmtMoney = v => { const d = v.replace(/\D/g,''); if(!d) return ''; return '$' + Number(d).toLocaleString('en-US'); };
+
+      // ---------- TOP CALL TIMER (cuenta hacia arriba) ----------
+      function startCallTimer(){
+        clearInterval(state.timerInt);
+        state.timerInt = setInterval(() => {
+          state.timer++;
+          const mm = Math.floor(state.timer/60), ss = String(state.timer%60).padStart(2,'0');
+          setText('#call-timer', `${mm}:${ss}`);
+        }, 1000);
+      }
+      startCallTimer();
+
+      // ---------- QUEUE SWITCH ----------
+      function switchQueue(q){
+        state.queue = q;
+        $$('.queue-btn').forEach(b=>b.classList.toggle('active', b.dataset.queue===q));
+        const data = dummy[q];
+        state.phone = data.phone || '0624';
+        setText('#top-phone', state.phone);
+        setText('#task-title', (q==='hot'
+          ? 'Hot - Meeting | El cliente ya tiene una pre-aprobación pero no completó el proceso, agenda la cita'
+          : q==='warm'
+            ? 'Warm - Application | No concluyó registro en App o Web | Concretar venta y agendar cita'
+            : 'BAF SIN ANUALIDAD (NOMBRE DEL CLIENTE) - SIN ANUALIDAD. Fue invitado por (NOMBRE DEL CLIENTE QUE INVITÓ)'));
+        setText('#initial-question', `¿Quieres vincular la tarjeta al teléfono terminado en ${state.phone}?`);
+        $('#first-name').value = data.first || '';
+        $('#last-name').value = data.last || '';
+        $('#second-last-name').value = data.second || '';
+        $('#birth-date').value = data.birth || '';
+        checkRFCReady();
+        $('#rfc-auth').checked = false;
+        $('#consent-auth').checked = false;
+        $('#btn-consent-ok').disabled = true;
+        $('#client-auth').checked = false;
+        $('#client-auth').disabled = false;
+        $$('.iddoc-option').forEach(div => { div.classList.remove('selected','error-selected'); });
+        const checkedIddocRadio = document.querySelector('input[name="iddoc"]:checked');
+        if (checkedIddocRadio) checkedIddocRadio.checked = false;
+        $('#iddoc-error').style.display = 'none';
+        $('#btn-extra-continue').disabled = false;
+        $('#occupation').value = data.occupation || '';
+        $('#monthly').value = data.monthly || '';
+        $('#limit').value   = data.limit   || '';
+        if (q !== 'hot') {
+          $('#rfc-wrap').style.display='none';
+          $('#btn-gen-rfc').disabled = !checkRFCReady();
+        } else {
+          $('#client-auth').checked = true;
+          $('#client-auth').disabled = true;
+          setTimeout(generateRFC, 50);
+        }
+        show('#scr-initial');
+      }
+
+      // ---------- INITIAL FLOW ----------
+      $('#btn-initial-continue').addEventListener('click', ()=>{
+        if (state.queue==='cold') show('#scr-consent');
+        else show('#scr-main');
+      });
+      $('#btn-initial-change').addEventListener('click', ()=> show('#scr-phone'));
+      $('#btn-cancel-phone').addEventListener('click', ()=> show('#scr-initial'));
+      $('#phone-input').addEventListener('input', (e)=>{
+        e.target.value = e.target.value.replace(/\D/g,'');
+        $('#phone-error').style.display = (e.target.value.length===10?'none':'' );
+      });
+      $('#btn-call').addEventListener('click', ()=>{
+        const v = $('#phone-input').value;
+        if (v.length!==10){ $('#phone-error').style.display=''; return; }
+        state.fullPhone = v;
+        show('#scr-timer');
+        startCountdown();
+      });
+      function startCountdown(){
+        clearInterval(state.countdown);
+        let n = 5;
+        setText('#count-num', n);
+        state.countdown = setInterval(()=>{
+          n--;
+          setText('#count-num', n);
+          if (n<=0){
+            clearInterval(state.countdown);
+            const last4 = (state.fullPhone || state.phone).slice(-4);
+            setText('#top-phone', last4);
+            if (state.queue === 'warm' || state.queue === 'hot') {
+              show('#scr-main');
+              return;
+            }
+            setText('#confirm-question', `¿Quieres vincular la tarjeta al teléfono terminado en ${last4}?`);
+            show('#scr-confirm');
+            setTimeout(() => {
+              if ($('#scr-confirm').classList.contains('active')) { $('#btn-confirm-yes').click(); }
+            }, 3000);
+          }
+        }, 1000);
+      }
+      $('#btn-redial').addEventListener('click', startCountdown);
+      $('#btn-confirm-yes').addEventListener('click', ()=>{
+        if (state.queue==='cold') show('#scr-consent');
+        else show('#scr-main');
+      });
+      $('#btn-confirm-edit').addEventListener('click', ()=> show('#scr-phone'));
+
+      // ---------- CONSENT (COLD/BAF) ----------
+      $('#consent-auth').addEventListener('change', (e)=>{
+        $('#btn-consent-ok').disabled = !e.target.checked;
+      });
+      $('#btn-consent-ok').addEventListener('click', ()=>{
+        $('#client-auth').checked = true;
+        $('#client-auth').disabled = true;
+        show('#scr-main');
+      });
+
+      // ---------- MAIN FORM ----------
+      function checkRFCReady(){
+        const ok = $('#first-name').value && $('#last-name').value && $('#birth-date').value.length===10;
+        $('#btn-gen-rfc').disabled = !ok;
+        return ok;
+      }
+      ['#first-name','#last-name','#birth-date','#second-last-name'].forEach(id=>{
+        $(id).addEventListener('input', checkRFCReady);
+      });
+      $('#birth-date').addEventListener('input', (e)=>{
+        let v = e.target.value.replace(/\D/g,'').slice(0,8);
+        if (v.length>=3) v = v.slice(0,2)+'/'+v.slice(2);
+        if (v.length>=6) v = v.slice(0,5)+'/'+v.slice(5);
+        e.target.value = v;
+        checkRFCReady();
+      });
+      $('#btn-gen-rfc').addEventListener('click', generateRFC);
+      function generateRFC(){
+        const f = $('#first-name').value.trim().toUpperCase();
+        const l1 = $('#last-name').value.trim().toUpperCase();
+        const l2 = $('#second-last-name').value.trim().toUpperCase() || 'X';
+        const bd = $('#birth-date').value;
+        if (!(f && l1 && bd.length===10)) return;
+        const r = l1.slice(0,2) + l2.slice(0,1) + f.slice(0,1) + bd.slice(8,10) + bd.slice(3,5) + bd.slice(0,2) + 'XXX';
+        $('#rfc-field').value = r;
+        $('#rfc-wrap').style.display = '';
+      }
+      $('#btn-main-continue').addEventListener('click', ()=>{
+        if ($('#rfc-wrap').style.display==='none'){ flash('#btn-gen-rfc'); return; }
+        if (!$('#client-auth').checked){ flash('#client-auth'); return; }
+        show('#scr-extra');
+      });
+
+      // ---------- EXTRA ----------
+      $('#monthly').addEventListener('input', (e)=> e.target.value = fmtMoney(e.target.value));
+      $('#limit').addEventListener('input', (e)=> e.target.value = fmtMoney(e.target.value));
+      function clearIddocUI(){
+        $$('.iddoc-option').forEach(div => div.classList.remove('selected','error-selected'));
+        $('#iddoc-error').style.display = 'none';
+        $('#btn-extra-continue').disabled = false;
+      }
+      $$('.iddoc-option').forEach(optionDiv => {
+        optionDiv.addEventListener('click', () => {
+          const radio = optionDiv.querySelector('input[type="radio"]');
+          radio.checked = true;
+          handleIddocChange(radio.value);
+        });
+        optionDiv.querySelector('input[type="radio"]').addEventListener('change', (e) => {
+          if (e.target.checked) handleIddocChange(e.target.value);
+        });
+      });
+      function handleIddocChange(value){
+        clearIddocUI();
+        const noneDiv = $('#iddoc-none');
+        if (value === 'none'){
+          noneDiv.classList.add('error-selected');
+          $('#iddoc-error').style.display = 'block';
+          $('#btn-extra-continue').disabled = true;
+        } else {
+          const selDiv = document.querySelector(`.iddoc-option[data-opt="${value}"]`);
+          if (selDiv) selDiv.classList.add('selected');
+        }
+      }
+      $('#btn-extra-continue').addEventListener('click', ()=> show('#scr-address'));
+
+      // ---------- ADDRESS ----------
+      const dayNames = ['do','lu','ma','mi','ju','vi','sá'];
+      const slotTimes = [
+        {id:'9-12', text:'9 a.m. – 12 p.m.'},
+        {id:'12-3', text:'12 p.m. – 3 p.m.'},
+        {id:'3-6', text:'3 p.m. – 6 p.m.'}
+      ];
+      function buildDates(startDate){
+        const wrap = $('#dates');
+        wrap.innerHTML='';
+        const now = startDate || new Date();
+        now.setHours(0,0,0,0);
+        state.selectedDate = null;
+        state.selectedSlot = null;
+        $('#btn-address-continue').disabled = true;
+        for (let i=0;i<4;i++){
+          const d = new Date(now);
+          d.setDate(now.getDate()+i);
+          const dateISO = d.toISOString().slice(0,10);
+          const col = document.createElement('div');
+          col.className = 'date-col';
+          const header = document.createElement('div');
+          header.className = 'date-header';
+          header.innerHTML = `<div>${d.getDate()} de ${d.toLocaleString('es-MX',{month:'short'})}</div> <div class="small">${dayNames[d.getDay()]}</div>`;
+          col.appendChild(header);
+          slotTimes.forEach((slot, idx) => {
+            const el = document.createElement('div');
+            el.className = 'slot';
+            el.textContent = slot.text;
+            el.dataset.date = dateISO;
+            el.dataset.slot = slot.id;
+            let disabled = false;
+            const currentDay = d.getDay();
+            if (currentDay === 0) disabled = true;
+            else if (currentDay === 6 && idx > 0) disabled = true;
+            else if (currentDay === 2 && idx === 1) disabled = true;
+            else if (currentDay === 3 && idx === 0) disabled = true;
+            if (disabled) {
+              el.classList.add('disabled');
+            } else {
+              el.addEventListener('click', ()=>{
+                if (el.classList.contains('disabled')) return;
+                $$('#dates .slot').forEach(x=>x.classList.remove('selected'));
+                el.classList.add('selected');
+                state.selectedDate = el.dataset.date;
+                state.selectedSlot = slot.id;
+                $('#btn-address-continue').disabled = false;
+              });
+            }
+            col.appendChild(el);
+          });
+          wrap.appendChild(col);
+        }
+      }
+      buildDates();
+      function updateDeliveryType(isAmbassador, addressString) {
+        state.deliveryType = isAmbassador ? 'ambassador' : 'courier';
+        const note = $('#addr-note');
+        const courierForm = $('#courier-form');
+        const ambassadorForm = $('#ambassador-form');
+        const otherDayBtn = $('#btn-other-day');
+        if (isAmbassador) {
+          note.classList.remove('warning');
+          note.innerHTML = '<strong>Menciónalo al cliente: </strong>La tarjeta será entregada por un embajador de Plata en esta dirección.';
+          courierForm.style.display = 'none';
+          ambassadorForm.style.display = 'block';
+          otherDayBtn.style.display = 'block';
+          $('#btn-address-continue').disabled = !state.selectedSlot;
+        } else {
+          note.classList.add('warning');
+          note.innerHTML = '<strong>Menciónalo al cliente: </strong>La tarjeta será entregada en esta dirección por paquetería';
+          courierForm.style.display = 'block';
+          ambassadorForm.style.display = 'none';
+          otherDayBtn.style.display = 'none';
+          $('#btn-address-continue').disabled = false;
+          if (addressString.includes('Madero')) {
+            $('#cp').value = '06000'; $('#city').value = 'Ciudad de México'; $('#street').value = 'Calle Madero'; $('#ext').value = '1';
+          } else if (addressString.includes('Revolución')) {
+            $('#cp').value = '01000'; $('#city').value = 'Ciudad de México'; $('#street').value = 'Av. Revolución'; $('#ext').value = '123';
+          } else if (addressString.includes('Insurgentes')) {
+            $('#cp').value = '03100'; $('#city').value = 'Ciudad de México'; $('#street').value = 'Av. Insurgentes Sur'; $('#ext').value = '1000';
+          } else {
+            $('#cp').value = '06000'; $('#city').value = 'Ciudad de México'; $('#street').value = '—'; $('#ext').value = '—';
+          }
+        }
+      }
+      function renderAddressList(){
+        const list = $('#addr-list');
+        list.innerHTML = '';
+        ADDRESS_BOOK.forEach((a, i) => {
+          const item = document.createElement('div');
+          item.className = 'address-item';
+          item.dataset.text = a.text;
+          item.dataset.type = a.type;
+          item.innerHTML = `
+            <label>
+              <input type="radio" name="addr" value="${a.text}" data-type="${a.type}">
+              ${a.text}
+            </label>`;
+          list.appendChild(item);
+        });
+        list.addEventListener('mousedown', (ev) => {
+          const row = ev.target.closest('.address-item');
+          if (!row) return;
+          ev.preventDefault();
+          const val = row.dataset.text;
+          const t = row.dataset.type;
+          state.selectedAddress = val;
+          $('#addr-search').value = val;
+          $('#addr-list').style.display = 'none';
+          updateDeliveryType(t === 'ambassador', val);
+          const radio = row.querySelector('input[type="radio"]');
+          if (radio) radio.checked = true;
+        });
+      }
+      renderAddressList();
+      const showAddrList = () => { $('#addr-list').style.display = 'block'; };
+      $('#addr-search').addEventListener('focus', showAddrList);
+      $('#addr-search').addEventListener('mousedown', showAddrList);
+      $('#addr-search').addEventListener('click', showAddrList);
+      $('#addr-search').addEventListener('blur', () => {
+        setTimeout(() => { $('#addr-list').style.display = 'none'; }, 150);
+      });
+      $('#addr-search').addEventListener('input', (e) => {
+        state.selectedAddress = e.target.value;
+      });
+      let dragging=false, start={x:0,y:0}, pinStart={x:0,y:0};
+      const pin = $('#pin'), map = $('#map');
+      function pickAddressByPos(x, y){
+        const m = map.getBoundingClientRect();
+        const cx = Math.max(0, Math.min(1, x / m.width));
+        const cy = Math.max(0, Math.min(1, y / m.height));
+        const col = Math.min(3, Math.floor(cx * 4));
+        const row = Math.min(3, Math.floor(cy * 4));
+        const idx = (row * 4 + col) % ADDRESS_BOOK.length;
+        return ADDRESS_BOOK[idx];
+      }
+      function updateAddressFromPinLocation(x, y) {
+        const addr = pickAddressByPos(x, y);
+        state.selectedAddress = addr.text;
+        $('#addr-search').value = addr.text;
+        $('#addr-list').style.display = 'none';
+        updateDeliveryType(addr.type === 'ambassador', addr.text);
+      }
+      pin.addEventListener('mousedown',startDrag);
+      pin.addEventListener('touchstart',startDrag,{passive:false});
+      function startDrag(e){
+        dragging=true;
+        const p = e.touches? e.touches[0]:e;
+        start.x=p.clientX; start.y=p.clientY;
+        const r = pin.getBoundingClientRect(), m = map.getBoundingClientRect();
+        pinStart.x = r.left-m.left; pinStart.y = r.top-m.top;
+        document.addEventListener('mousemove',drag);
+        document.addEventListener('mouseup',stopDrag);
+        document.addEventListener('touchmove',drag,{passive:false});
+        document.addEventListener('touchend',stopDrag);
+        e.preventDefault();
+      }
+      function drag(e){
+        if(!dragging) return;
+        const p = e.touches? e.touches[0]:e;
+        const m = map.getBoundingClientRect();
+        let nx = Math.max(0, Math.min(m.width-26, pinStart.x + (p.clientX-start.x)));
+        let ny = Math.max(0, Math.min(m.height-26, pinStart.y + (p.clientY-start.y)));
+        pin.style.left = nx+'px';
+        pin.style.top = ny+'px';
+        pin.style.transform = 'translate(0,0)';
+        updateAddressFromPinLocation(nx + 13, ny + 13);
+      }
+      function stopDrag(){
+        if(!dragging) return;
+        dragging=false;
+        const m = map.getBoundingClientRect(), r = pin.getBoundingClientRect();
+        const cx = (r.left-m.left)+13, cy = (r.top-m.top)+13;
+        updateAddressFromPinLocation(cx, cy);
+      }
+      $('#zoom-in').addEventListener('click', ()=>map.style.transform='scale(1.05)');
+      $('#zoom-out').addEventListener('click', ()=>map.style.transform='scale(1)');
+      $('#center').addEventListener('click', ()=>{
+        pin.removeAttribute('style');
+        pin.style.transform='translate(-50%,-60%)';
+        const m = map.getBoundingClientRect();
+        updateAddressFromPinLocation(m.width/2, m.height/2);
+      });
+      $('#btn-other-day').addEventListener('click', () => {
+        calDisplayDate = new Date();
+        buildCalendar(calDisplayDate);
+        showCalendarModal();
+      });
+      $('#btn-address-continue').addEventListener('click', ()=>{
+        let pretty = '';
+        if (state.deliveryType === 'ambassador') {
+          if (!state.selectedDate || !state.selectedSlot) {
+            alert("Por favor, selecciona una fecha y hora de entrega.");
+            return;
+          }
+          const d = new Date(state.selectedDate);
+          d.setMinutes(d.getMinutes() + d.getTimezoneOffset());
+          const slotText = slotTimes.find(s => s.id === state.selectedSlot)?.text || state.selectedSlot;
+          pretty = `${d.getDate()} ${d.toLocaleString('es-MX',{month:'short'})}, ${dayNames[d.getDay()]} — ${slotText}`;
+        } else {
+          pretty = 'Entrega por paquetería en 2-5 días hábiles';
+        }
+        if (state.deliveryType==='courier'){
+          setText('#cf-address', state.selectedAddress || '—');
+          setText('#cf-datetime', pretty);
+          setText('#cf-phone', (state.fullPhone? state.fullPhone : state.phone));
+          show('#scr-courier-ok');
+        } else {
+          setText('#amb-address', state.selectedAddress || '—');
+          setText('#amb-datetime', pretty);
+          setText('#amb-phone', (state.fullPhone? state.fullPhone : state.phone));
+          show('#scr-amb-ok');
+        }
+      });
+
+      // ---------- RESTART (completo) ----------
+      function restart(){
+        state.timer = 0;
+        setText('#call-timer', '0:00');
+        state.callEnded = false;
+        clearInterval(state.graceInt);
+        startCallTimer();
+        // panel tipificación
+        $('#hangup-btn').classList.remove('ended');
+        $('#grace-note').style.display = 'none';
+        $('#tip-done').style.display = 'none';
+        $('#tip-active').style.display = 'block';
+        $('#resultado').value = '';
+        $('#comentario').value = '';
+        window.__tipCompleted = false;
+        updateCloseButtonState();
+        generateTaskId();
+        // flujo
+        state.selectedSlot = null;
+        state.selectedDate = null;
+        $('#rfc-wrap').style.display='none';
+        $('#client-auth').checked=false;
+        $('#client-auth').disabled=false;
+        $('#consent-auth').checked=false;
+        $('#btn-consent-ok').disabled=true;
+        $('#rfc-auth').checked=false;
+        $('#occupation').value='';
+        $('#monthly').value='';
+        $('#limit').value='';
+        state.selectedAddress = ADDRESS_BOOK[0].text;
+        $('#addr-search').value = state.selectedAddress;
+        $('#courier-form').style.display='none';
+        buildDates();
+        pin.removeAttribute('style');
+        pin.style.transform='translate(-50%,-60%)';
+        updateDeliveryType(true, state.selectedAddress);
+        $$('.iddoc-option').forEach(div => div.classList.remove('selected','error-selected'));
+        const checkedIddocRadio = document.querySelector('input[name="iddoc"]:checked');
+        if (checkedIddocRadio) checkedIddocRadio.checked = false;
+        $('#iddoc-error').style.display = 'none';
+        $('#btn-extra-continue').disabled = false;
+        switchQueue(state.queue);
+      }
+      $('#btn-restart-1').addEventListener('click', restart);
+      $('#btn-restart-2').addEventListener('click', restart);
+
+      function flash(sel){
+        const el = $(sel);
+        if(!el) return;
+        el.style.outline = `3px solid ${getComputedStyle(document.documentElement).getPropertyValue('--brand-soft')}`;
+        setTimeout(()=> el.style.outline='', 600);
+      }
+      $$('.queue-btn').forEach(b=> b.addEventListener('click', ()=> switchQueue(b.dataset.queue)));
+
+      // ---------- Calendario ----------
+      const calOverlay = $('#calendar-modal-overlay');
+      const calDatesWrap = document.querySelector('.cal-dates');
+      const calMonthYear = $('#cal-month-year');
+      function showCalendarModal() { calOverlay.style.display = 'flex'; }
+      function hideCalendarModal() { calOverlay.style.display = 'none'; }
+      function buildCalendar(date) {
+        calDatesWrap.innerHTML = '';
+        const month = date.getMonth();
+        const year = date.getFullYear();
+        calMonthYear.textContent = date.toLocaleString('es-MX', { month: 'long', year: 'numeric' });
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const daysInPrevMonth = new Date(year, month, 0).getDate();
+        const today = new Date(); today.setHours(0,0,0,0);
+        for (let i = firstDayOfMonth; i > 0; i--) {
+          const dayEl = document.createElement('div');
+          dayEl.className = 'cal-day other-month';
+          dayEl.textContent = daysInPrevMonth - i + 1;
+          calDatesWrap.appendChild(dayEl);
+        }
+        for (let i = 1; i <= daysInMonth; i++) {
+          const dayEl = document.createElement('div');
+          dayEl.className = 'cal-day';
+          dayEl.textContent = i;
+          const thisDate = new Date(year, month, i);
+          const isSunday = thisDate.getDay() === 0;
+          const isPast = thisDate < today;
+          if (isSunday || isPast) {
+            dayEl.classList.add('disabled');
+          } else {
+            dayEl.addEventListener('click', () => {
+              buildDates(thisDate);
+              hideCalendarModal();
+            });
+          }
+          calDatesWrap.appendChild(dayEl);
+        }
+        const totalDaysInGrid = 42;
+        const daysSoFar = firstDayOfMonth + daysInMonth;
+        for (let i = 1; i <= totalDaysInGrid - daysSoFar; i++) {
+          const dayEl = document.createElement('div');
+          dayEl.className = 'cal-day other-month';
+          dayEl.textContent = i;
+          calDatesWrap.appendChild(dayEl);
+        }
+      }
+      $('#cal-prev').addEventListener('click', () => { calDisplayDate.setMonth(calDisplayDate.getMonth() - 1); buildCalendar(calDisplayDate); });
+      $('#cal-next').addEventListener('click', () => { calDisplayDate.setMonth(calDisplayDate.getMonth() + 1); buildCalendar(calDisplayDate); });
+      $('#cal-cancel').addEventListener('click', hideCalendarModal);
+      calOverlay.addEventListener('click', (e) => { if (e.target.id === 'calendar-modal-overlay') { hideCalendarModal(); } });
+
+      // ===================================================================
+      // ===== PANEL «¿QUÉ PASÓ?» (TIPIFICACIÓN SIEMPRE VISIBLE) ===========
+      // ===================================================================
+      const resultado = $('#resultado');
+      const closeButton = $('#closeButton');
+      window.__tipCompleted = false;
+
+      function generateTaskId(){
+        const chars = '0123456789abcdef';
+        const segs = [8,4,4,4,12];
+        const id = segs.map(len => Array.from({length:len}, () => chars[Math.floor(Math.random()*chars.length)]).join('')).join('-');
+        setText('#taskId', id);
+      }
+
+      function canComplete(){ return resultado.value !== '' && !window.__tipCompleted; }
+
+      function updateCloseButtonState(){
+        const ok = resultado.value !== '';
+        closeButton.classList.toggle('active', ok);
+        closeButton.style.cursor = ok ? 'pointer' : 'not-allowed';
+        closeButton.setAttribute('aria-disabled', String(!ok));
+      }
+      resultado.addEventListener('change', updateCloseButtonState);
+      updateCloseButtonState();
+
+      function completeTip(autoClosed){
+        if (window.__tipCompleted) return;
+        window.__tipCompleted = true;
+        clearInterval(state.graceInt);
+        clearInterval(state.timerInt);
+        $('#grace-note').style.display = 'none';
+        $('#tip-active').style.display = 'none';
+        $('#tip-done').style.display = 'block';
+        const t = $('#done-title'), p = $('#done-text');
+        if (autoClosed){
+          t.textContent = '¡Tiempo agotado!';
+          t.style.color = '#e74c3c';
+          p.textContent = 'El tiempo se agotó antes de seleccionar el resultado. En situaciones reales es clave tipificar la llamada antes de colgar.';
+        } else {
+          t.textContent = '¡Tarea cerrada!';
+          t.style.color = '#27ae60';
+          p.textContent = 'Registraste el resultado de la llamada correctamente. Recuerda: lo ideal es elegir el resultado antes de finalizar la interacción.';
+        }
+      }
+
+      closeButton.addEventListener('click', () => {
+        if (canComplete()) completeTip(false);
+      });
+      $('#restartButton').addEventListener('click', restart);
+
+      // ---------- HANG-UP: termina la llamada y abre ventana de 10 s ----------
+      function endCall(){
+        if (state.callEnded || window.__tipCompleted) return;
+        state.callEnded = true;
+        clearInterval(state.timerInt); // se detiene el cronómetro de llamada
+        $('#hangup-btn').classList.add('ended');
+        // Si ya está tipificado, no hace falta la ventana de gracia
+        if (resultado.value !== ''){ return; }
+        // ventana de gracia de 10 s
+        let g = 10;
+        $('#grace-num').textContent = g;
+        $('#grace-note').style.display = 'block';
+        clearInterval(state.graceInt);
+        state.graceInt = setInterval(() => {
+          g--;
+          $('#grace-num').textContent = g;
+          if (g <= 0){
+            clearInterval(state.graceInt);
+            if (resultado.value === '') completeTip(true);
+            else $('#grace-note').style.display = 'none';
+          }
+        }, 1000);
+      }
+      $('#hangup-btn').addEventListener('click', endCall);
+      // Al elegir resultado durante la ventana de gracia, se oculta el aviso
+      resultado.addEventListener('change', () => {
+        if (state.callEnded && resultado.value !== ''){
+          clearInterval(state.graceInt);
+          $('#grace-note').style.display = 'none';
+        }
+      });
+
+      // ---------- BOOT ----------
+      switchQueue('cold');
+      updateDeliveryType(true, state.selectedAddress);
+    })();
+  </script>
+</body>
+</html>

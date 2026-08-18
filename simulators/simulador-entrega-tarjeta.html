@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Simulador — Asignación de entrega de tarjeta (PyME / PFAE)</title>
+<meta name="sim:category" content="Tarjetas">
+<meta name="sim:title" content="Asignación de entrega de tarjeta">
+<meta name="sim:description" content="Elección y asignación de entrega de tarjeta (PyME / PFAE).">
+<style>
+  :root{
+    --bg:#f4f5f8;
+    --panel:#ffffff;
+    --text:#161a1f;
+    --muted:#8a9099;
+    --line:#e7e9ef;
+    --field:#eceef4;
+    --field2:#e4e7f0;
+    --orange:#f9531e;
+    --orange-dark:#e2440f;
+    --purple:#2d00ff;
+    --purple-soft:#ece7ff;
+    --blue-soft:#eef0ff;
+    --yellow:#fff6da;
+    --yellow-border:#f4c73f;
+    --green:#12bf4b;
+    --green-soft:#e3f7e9;
+    --red:#ff3b30;
+    --red-soft:#ffe9e7;
+    --shadow:0 10px 40px rgba(15,23,42,.12);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:#0c1526;color:var(--text);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    display:grid;place-items:center;padding:22px;
+  }
+  button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+  input,textarea{font:inherit;color:inherit}
+
+  .app{
+    width:min(1200px,100%);height:min(800px,calc(100vh - 44px));
+    background:var(--panel);border-radius:18px;overflow:hidden;
+    box-shadow:0 30px 90px rgba(6,14,30,.45);
+    display:flex;flex-direction:column;position:relative;isolation:isolate;
+  }
+
+  /* ---------- Call top bar ---------- */
+  .callbar{
+    height:62px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+    padding:0 22px;border-bottom:1px solid var(--line);background:#fff;
+  }
+  .cc-btn{width:44px;height:36px;border-radius:10px;display:grid;place-items:center;background:#eef0f4;color:#6b7079;transition:.15s;font-size:16px}
+  .cc-btn:hover{background:#e4e7ec}
+  .cc-btn.muted{background:#e3e6eb;color:#4b515a}
+  .calltitle{justify-self:center;font-size:15px;color:#3d434c;font-weight:600}
+  .hang{justify-self:end;display:flex;align-items:center;gap:9px;border:1.5px solid #ffc9c4;background:#fff5f4;color:var(--red);border-radius:11px;padding:7px 13px;font-weight:700;font-size:14px;transition:.15s}
+  .hang:hover{background:#ffe9e7}
+  .hang.ended{background:var(--red);color:#fff;border-color:var(--red)}
+  .hang .t{font-variant-numeric:tabular-nums}
+
+  /* ---------- Body split ---------- */
+  .split{flex:1;display:grid;grid-template-columns:1fr 350px;min-height:0}
+  .left{overflow-y:auto;padding:24px 30px 44px}
+  .right{border-left:1px solid var(--line);background:#fff;overflow-y:auto;padding:22px 22px 26px}
+
+  /* ---------- Left panel ---------- */
+  .todo{background:var(--yellow);border-left:5px solid var(--yellow-border);border-radius:10px;padding:12px 16px;margin-bottom:20px}
+  .todo b{display:block;font-size:14px;color:#6b5a1c;margin-bottom:2px}
+  .todo span{font-size:13px;color:#8a7a34}
+
+  .clientrow{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+  .clientrow .cn{font-size:18px;font-weight:800}
+  .clientrow .cancel{color:var(--orange);font-size:13.5px;font-weight:600}
+  .clientrow .cancel:hover{text-decoration:underline}
+
+  .left h2{font-size:19px;font-weight:800;margin:24px 0 4px;letter-spacing:-.2px}
+  .left h2:first-child{margin-top:0}
+  .left .lead{font-size:13.5px;color:#8a9099;margin:0 0 14px;line-height:1.45}
+
+  .infobox{background:var(--blue-soft);border-left:5px solid var(--purple);border-radius:10px;padding:14px 16px;margin:0 0 18px}
+  .infobox.warn{background:var(--red-soft);border-left-color:var(--red)}
+  .infobox.ok{background:var(--green-soft);border-left-color:var(--green)}
+  .infobox b{display:block;font-size:14px;margin-bottom:5px;color:#20223a}
+  .infobox p{margin:0;font-size:13.5px;color:#41455c;line-height:1.5}
+
+  .btn{min-height:52px;border-radius:12px;font-weight:700;font-size:16px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 22px;transition:.15s;width:100%;margin-top:20px}
+  .btn.primary{background:var(--orange);color:#fff}
+  .btn.primary:hover{background:var(--orange-dark)}
+  .btn.disabled{background:#e7e8ee;color:#a9aeb8;cursor:not-allowed}
+  .btn.ghost{background:#eef0f4;color:#3d434c;min-height:46px;font-size:14.5px;margin-top:12px}
+  .btn.ghost:hover{background:#e4e7ec}
+
+  .err-msg{color:var(--red);font-size:13.5px;font-weight:600;margin:10px 2px 0}
+
+  /* dropdown (left inline) */
+  .fld{margin-bottom:14px;max-width:620px}
+  .fld .dd-head{width:100%;text-align:left;background:var(--field);border-radius:11px;padding:9px 40px 9px 15px;position:relative;min-height:52px;display:flex;flex-direction:column;justify-content:center;border:2px solid transparent;transition:.12s}
+  .fld .dd-head:hover{background:#e4e7ee}
+  .dd.open .dd-head{border-color:var(--purple);background:#fff}
+  .dd-label{font-size:12px;color:#8a9099}
+  .dd-value{font-size:14.5px;color:#161a1f;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .dd-value.placeholder{color:#a9aeb8;font-size:15px;margin-top:0}
+  .dd .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#9aa0aa;font-size:11px;transition:.2s}
+  .dd.open .chev{transform:translateY(-50%) rotate(180deg)}
+  .dd{position:relative}
+  .dd-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:40;background:#fff;border-radius:12px;box-shadow:var(--shadow);border:1px solid var(--line);max-height:240px;overflow-y:auto;padding:6px;display:none}
+  .dd.open .dd-menu{display:block}
+  .dd-opt{width:100%;text-align:left;padding:10px 12px;border-radius:8px;font-size:14px;line-height:1.35;transition:.1s}
+  .dd-opt:hover{background:#f2f3f7}
+  .dd-opt.sel{background:var(--purple-soft);color:var(--purple);font-weight:600}
+
+  /* radio list */
+  .radio-card{max-width:620px;border:1.5px solid var(--line);border-radius:14px;overflow:hidden}
+  .radio-card.err{border-color:var(--red)}
+  .radio-row{display:flex;align-items:center;gap:13px;padding:14px 16px;cursor:pointer;transition:.12s;border-bottom:1px solid var(--line)}
+  .radio-row:last-child{border-bottom:0}
+  .radio-row .rtitle{flex:1;font-size:14.5px;line-height:1.3}
+  .radio-row:hover{background:#f6f7fa}
+  .radio-row.on{background:var(--purple-soft)}
+  .radio-row.on.err-row{background:var(--red-soft)}
+  .radio{width:20px;height:20px;border-radius:50%;border:2px solid #b7bcc6;flex:0 0 auto;display:grid;place-items:center;transition:.12s}
+  .radio.on{border-color:var(--purple)}
+  .radio.on::after{content:"";width:10px;height:10px;border-radius:50%;background:var(--purple)}
+
+  /* map (street style, like real CRM) */
+  .mapwrap{max-width:620px;border-radius:14px;overflow:hidden;border:1px solid var(--line);position:relative;margin-bottom:6px}
+  .mapwrap svg{display:block;width:100%;height:auto}
+  .map-poi{cursor:pointer}
+  .maplabel{font:600 9px Inter,sans-serif;fill:#9098a3;pointer-events:none}
+  .search{max-width:620px;background:var(--field);border-radius:11px;padding:9px 15px;margin:12px 0;display:flex;flex-direction:column;border:2px solid transparent}
+  .search:focus-within{border-color:var(--purple);background:#fff}
+  .search label{font-size:12px;color:#8a9099}
+  .search input{border:0;background:none;outline:0;font-size:14.5px;padding:2px 0}
+  .suggest{max-width:620px;margin:-6px 0 6px}
+  .suggest-row{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-top:0;padding:11px 15px;font-size:14px;line-height:1.3}
+  .suggest-row:first-child{border-top:1px solid var(--line);border-radius:10px 10px 0 0}
+  .suggest-row:last-child{border-radius:0 0 10px 10px}
+  .suggest-row:hover{background:#f4f5f9}
+  .suggest-empty{max-width:620px;color:#9299a5;font-size:13px;padding:8px 2px}
+  .addr-readout{max-width:620px;background:var(--field);border-radius:11px;padding:12px 15px;margin:8px 0 4px;font-size:14px;min-height:46px;display:flex;align-items:center;gap:9px}
+  .addr-readout::before{content:"📍";font-size:15px}
+  .ro-hint{color:#9299a5}
+  .ro-addr{color:#161a1f;font-weight:600}
+  #bigPin{cursor:grab}
+  #bigPin:active{cursor:grabbing}
+
+  /* confirm fields */
+  .txt-field{background:var(--field);border-radius:12px;padding:8px 15px;margin-bottom:12px;display:flex;flex-direction:column;transition:.15s;border:2px solid transparent;max-width:620px;position:relative}
+  .txt-field:focus-within{border-color:var(--purple);background:#fff}
+  .txt-field.req-empty{border-color:#f3b6b1}
+  .txt-field label{font-size:12px;color:#8a9099}
+  .txt-field .opt{position:absolute;right:15px;top:9px;font-size:12px;color:#a9aeb8}
+  .txt-field input{border:0;background:none;outline:0;font-size:15px;width:100%;padding:2px 0}
+
+  /* schedule grid */
+  .sched{max-width:620px;overflow-x:auto}
+  .sched-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;min-width:440px}
+  .sched-col .day{font-size:13.5px;font-weight:700;text-align:center;margin-bottom:10px}
+  .slot{width:100%;border-radius:20px;background:var(--field);color:#2b3038;font-size:13px;font-weight:600;padding:11px 4px;margin-bottom:10px;transition:.12s;border:1.5px solid transparent}
+  .slot:hover{background:#e2e5ec}
+  .slot.on{background:var(--purple-soft);border-color:var(--purple);color:var(--purple)}
+  .slot.off{background:#fff;border:1.5px solid var(--line);color:#c7ccd5;cursor:not-allowed}
+  .otro{width:100%;border-radius:12px;background:var(--field);color:#3d434c;font-weight:700;font-size:14px;padding:12px;margin-top:2px;max-width:620px}
+  .otro:hover{background:#e2e5ec}
+
+  /* confirmation card */
+  .conf-illu{width:96px;height:96px;margin:6px auto 18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd9c8,#f3b79a);display:grid;place-items:center;box-shadow:0 0 0 8px #fbe6dd}
+  .conf-illu .card{width:44px;height:52px;border-radius:9px;background:#fff;border:3px solid #e9dcd2;position:relative}
+  .conf-illu .card::before{content:"";position:absolute;inset:9px 8px;border-radius:3px;background:repeating-linear-gradient(#e6c9b9 0 3px,transparent 3px 8px)}
+  .deliv-card{max-width:620px;border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:8px}
+  .deliv-head{display:flex;align-items:center;gap:9px;font-weight:700;font-size:14.5px;color:#c15a1e;padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+  .deliv-row{margin-bottom:12px}
+  .deliv-row .k{font-size:12px;color:#8a9099;margin-bottom:2px}
+  .deliv-row .v{font-size:14px;color:#2b3038;line-height:1.4}
+
+  /* right panel */
+  .right h3{font-size:18px;font-weight:800;margin:2px 0 16px;color:#161a1f}
+  .r-field{background:var(--field2);border-radius:11px;padding:9px 15px;margin-bottom:12px;min-height:50px;display:flex;flex-direction:column;justify-content:center}
+  .r-field.dd-head{cursor:pointer;position:relative;padding-right:36px}
+  .r-field .chev{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:#9aa0aa;font-size:11px;transition:.2s}
+  .dd.open .r-field .chev{transform:translateY(-50%) rotate(180deg)}
+  .rcomment{background:var(--field2);border-radius:11px;padding:9px 15px;margin-bottom:12px;min-height:50px;display:flex;flex-direction:column;justify-content:center}
+  .rcomment textarea{border:0;outline:0;resize:none;width:100%;font-size:14.5px;background:none;min-height:20px;line-height:1.4}
+  .rcomment textarea::placeholder{color:#9299a5}
+  .close-task{width:100%;min-height:50px;border-radius:11px;background:var(--field2);color:#3d434c;font-weight:700;font-size:15px;transition:.15s}
+  .close-task:hover{background:#dfe2ea}
+  .close-task.ready{background:var(--orange);color:#fff}
+  .close-task.ready:hover{background:var(--orange-dark)}
+
+  /* spinner */
+  .spinner-wrap{display:grid;place-items:center;min-height:340px;gap:26px}
+  .spinner{width:44px;height:44px;border-radius:50%;border:4px solid #e3e6f5;border-top-color:var(--purple);animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* step dots */
+  .stepdots{display:flex;gap:7px;margin:0 0 20px}
+  .stepdots i{width:34px;height:5px;border-radius:3px;background:#e2e5ec;transition:.2s}
+  .stepdots i.on{background:var(--orange)}
+  .stepdots i.done{background:#f9a385}
+
+  /* toast + modal */
+  .toast{position:absolute;top:74px;left:50%;transform:translateX(-50%);z-index:80;background:#161a1f;color:#fff;padding:12px 22px;border-radius:12px;font-size:14px;box-shadow:var(--shadow);animation:pop .18s ease;max-width:80%;text-align:center}
+  @keyframes pop{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+  .overlay{position:absolute;inset:0;z-index:60;background:rgba(10,16,28,.42);display:grid;place-items:center;animation:fade .15s}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal{background:#fff;border-radius:18px;padding:32px 28px;width:min(430px,90%);text-align:center;box-shadow:var(--shadow)}
+  .modal .ic{width:74px;height:74px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:40px;margin:0 auto 16px}
+  .modal h2{margin:0 0 10px;font-size:21px}
+  .modal p{margin:0 0 22px;color:#5b616b;font-size:14.5px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="callbar">
+    <button class="cc-btn muted" id="muteBtn" title="Silenciar" data-action="mute">🎙</button>
+    <div class="calltitle">Santa María de Santa Cruz de la Seros</div>
+    <button class="hang" id="hangBtn" data-action="hangup"><span>📞</span><span class="t" id="timer">0:00</span></button>
+  </div>
+  <div class="split">
+    <div class="left" id="left"></div>
+    <div class="right" id="right"></div>
+  </div>
+  <div id="overlayRoot"></div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  function esc(v){ return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  const CLIENT = { name:'Santiago García', phone:'+52 42 1317 9421' };
+
+  // ---------- Data ----------
+  // zone is used only for internal routing (embajador / paquetería / sin cobertura),
+  // it is NOT shown on the map — the map is a plain street map like the real CRM.
+  const savedAddresses = [
+    {line:'Calzada del Hueso 519, 14300, Coyoacán, Ciudad de México', cp:'14300', ciudad:'Ciudad de México', calle:'Calzada del Hueso', num:'519', zone:'verde', x:300, y:155},
+    {line:'Av. Álvaro Obregón 84, 06700, Cuauhtémoc, Ciudad de México', cp:'06700', ciudad:'Ciudad de México', calle:'Av. Álvaro Obregón', num:'84', zone:'verde', x:358, y:120},
+    {line:'Blvd. Manuel Ávila Camacho 120, 53390, Naucalpan, Estado de México', cp:'53390', ciudad:'Estado de México', calle:'Blvd. Manuel Ávila Camacho', num:'120', zone:'amarilla', x:150, y:105},
+    {line:'Av. Central 45, 55130, Ecatepec de Morelos, Estado de México', cp:'55130', ciudad:'Estado de México', calle:'Av. Central', num:'45', zone:'amarilla', x:475, y:88},
+    {line:'Carr. Federal 8, 56600, Chalco, Estado de México', cp:'56600', ciudad:'Estado de México', calle:'Carretera Federal', num:'8', zone:'roja', x:525, y:232},
+    {line:'Avenida de Los Pinos 113, 42184, Mineral de la Reforma, Hidalgo', cp:'42184', ciudad:'Hidalgo', calle:'Avenida de Los Pinos', num:'113', zone:'roja', x:315, y:44},
+  ];
+
+  const actividades = ['Comercio al por menor','Servicios profesionales','Alimentos y bebidas','Construcción','Manufactura','Transporte y logística','Tecnología / TI','Salud','Educación','Belleza y cuidado personal','Otro'];
+  const regimenes = ['Persona Física con Actividad Empresarial y Profesional (PFAE)','Régimen Simplificado de Confianza (RESICO)','Servicios Profesionales (Honorarios)','Actividades Empresariales','Arrendamiento','Otro'];
+  const results = ['Entrega agendada con embajador','Entrega por paquetería confirmada','Sin cobertura de entrega en la zona','Cliente sin INE ni permiso de residencia','Cliente no acepta la entrega','Reagendar — el cliente solicita otra fecha','Sin respuesta — Buzón de voz','Cierre automático'];
+
+  const MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  const MESLARGO = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  const DIA = ['do','lu','ma','mi','ju','vi','sá'];
+  function buildDays(){
+    const base = new Date(2026,7,4);
+    const cols=[];
+    for(let i=0;i<4;i++){ const d=new Date(base); d.setDate(base.getDate()+i);
+      cols.push({date:d, label:`${d.getDate()} de ${MES[d.getMonth()]}, ${DIA[d.getDay()]}`}); }
+    return cols;
+  }
+  const days = buildDays();
+  const slots = [['09:00','12:00','9 – 12'],['12:00','15:00','12 – 3'],['15:00','18:00','3 – 6']];
+  const slotOff = new Set(['2-0','1-1','1-2']);
+
+  // ---------- State ----------
+  const state = {
+    screen:'doc', muted:false, callEnded:false, seconds:0,
+    openDD:null, toast:null, modal:null,
+    actividad:'', regimen:'', doc:'',            // 'INE' | 'Permiso' | 'Ninguna'
+    addrIdx:null, pinPos:null, searchText:'',
+    method:null,                                  // 'embajador' | 'paqueteria' (decided by rules, for back-nav)
+    slot:null,
+    postal:{cp:'', ciudad:'', calle:'', num:'', detalles:'', instrucciones:''},
+    amb:{detalles:'', instrucciones:''},
+    result:'', comment:''
+  };
+
+  const progressOf = { doc:0, spinner:0, address:1, postal:2, schedule:2, noCoverage:2, confPostal:3, confAmb:3 };
+
+  function currentAddr(){ return state.addrIdx!=null ? savedAddresses[state.addrIdx] : null; }
+  function currentZone(){ const a=currentAddr(); return a?a.zone:null; }
+
+  // Rule engine (non-golden PFAE). Returns 'embajador' | 'paqueteria' | 'none'.
+  function resolveDelivery(){
+    const z=currentZone(), d=state.doc;
+    if(!z || (d!=='INE' && d!=='Permiso')) return 'none';
+    if(z==='verde') return 'embajador';                 // en zona de embajador la entrega es presencial
+    if(z==='amarilla') return d==='INE' ? 'paqueteria' : 'none'; // fuera de zona: solo paquetería, y solo con INE
+    return 'none';                                       // roja: sin cobertura
+  }
+  function noCoverageReason(){
+    const z=currentZone(), d=state.doc;
+    if(z==='roja') return 'No contamos con cobertura de entrega para este domicilio.';
+    if(z==='amarilla' && d==='Permiso') return 'Con permiso de residencia la entrega debe realizarse en persona con un embajador, y este domicilio está fuera de la zona de embajador.';
+    return 'No hay una opción de entrega disponible para este domicilio.';
+  }
+
+  // ---------- Shared blocks ----------
+  function dots(){
+    const s=progressOf[state.screen]??0;
+    return `<div class="stepdots">${[0,1,2,3].map(i=>`<i class="${i<s?'done':''}${i===s?'on':''}"></i>`).join('')}</div>`;
+  }
+  function todo(){ return `<div class="todo"><b>Asignación de entrega de tarjeta</b><span>Tarea: agenda la entrega de la tarjeta PyME del cliente (PFAE, cliente nuevo).</span></div>`; }
+  function clientRow(){ return `<div class="clientrow"><div class="cn">${esc(CLIENT.name)}</div><div class="cancel" data-action="cancel">Cancelar solicitud</div></div>`; }
+  function ddInline(key,label,options,value){
+    const open=state.openDD===key;
+    return `<div class="fld"><div class="dd ${open?'open':''}" data-dd="${key}">
+      <button class="dd-head" data-action="toggle-dd" data-key="${key}">
+        <span class="dd-label">${esc(label)}</span>
+        <span class="dd-value ${value?'':'placeholder'}">${value?esc(value):esc(label)}</span>
+        <span class="chev">▼</span>
+      </button>
+      <div class="dd-menu">${options.map(o=>`<button class="dd-opt ${value===o?'sel':''}" data-action="pick-dd" data-key="${key}" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
+    </div></div>`;
+  }
+
+  // ---------- Doc screen ----------
+  function screenDoc(){
+    const blocked = state.doc==='Ninguna';
+    const ready = state.doc==='INE' || state.doc==='Permiso';
+    const opt=(v,l)=>`<div class="radio-row ${state.doc===v?'on':''} ${blocked&&state.doc===v?'err-row':''}" data-action="pick-doc" data-v="${v}"><span class="radio ${state.doc===v?'on':''}"></span><span class="rtitle">${l}</span></div>`;
+    return `${todo()}${clientRow()}${dots()}
+      <h2>Actividad del negocio</h2>
+      <p class="lead">Selecciona la actividad que mejor describa el negocio del cliente</p>
+      ${ddInline('actividad','Actividad del negocio',actividades,state.actividad)}
+      <h2>Régimen fiscal</h2>
+      <p class="lead">Selecciona el régimen fiscal de la Constancia de Situación Fiscal del cliente</p>
+      ${ddInline('regimen','Régimen fiscal',regimenes,state.regimen)}
+      <h2>Documento para verificación de identidad</h2>
+      <div class="infobox"><b>Pregúntale al cliente</b><p>¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y que esté vigente el día de la visita.</p></div>
+      <div class="radio-card ${blocked?'err':''}">
+        ${opt('INE','INE')}
+        ${opt('Permiso','Permiso de residencia')}
+        ${opt('Ninguna','Ninguna de las anteriores')}
+      </div>
+      ${blocked?`<div class="infobox warn" style="margin-top:16px"><b>Menciónalo al cliente</b><p>Lo sentimos, no podemos abrir una Cuenta Empresa sin una INE o un permiso de residencia. Puedes volver a solicitarla cuando cuentes con alguno de estos documentos.</p></div><div class="err-msg">Selecciona una opción para continuar</div>`:''}
+      <button class="btn ${ready?'primary':'disabled'}" data-action="doc-continue">Continuar</button>`;
+  }
+
+  function screenSpinner(){
+    return `${todo()}${clientRow()}
+      <div class="spinner-wrap">
+        <div class="spinner"></div>
+        <div class="infobox" style="max-width:520px;margin:0"><b>Menciónalo al cliente</b><p>Estamos revisando tu información para continuar con tu solicitud. Esto puede tomar unos momentos. ¡Gracias por tu paciencia!</p></div>
+      </div>`;
+  }
+
+  // ---------- Street map (draggable pin, no prefilled selection) ----------
+  const PIN_DEF={x:322,y:150};
+  function pinPos(){
+    if(state.addrIdx!=null) return {x:savedAddresses[state.addrIdx].x, y:savedAddresses[state.addrIdx].y};
+    if(state.pinPos) return state.pinPos;
+    return PIN_DEF;
+  }
+  function mapSVG(){
+    const p=pinPos();
+    const markers = savedAddresses.map((ad,i)=>{
+      if(state.addrIdx===i) return '';
+      return `<g class="map-poi" data-action="pin" data-i="${i}" transform="translate(${ad.x},${ad.y})">
+        <circle r="5" fill="#b7bdc7" stroke="#fff" stroke-width="1.6"/></g>`;
+    }).join('');
+    const bigPin = `<g id="bigPin" data-drag="pin" transform="translate(${p.x},${p.y})">
+      <ellipse cx="0" cy="22" rx="9" ry="3" fill="rgba(0,0,0,.14)"/>
+      <path d="M0,-19 C10,-19 16,-11 16,-3 C16,7 0,22 0,22 C0,22 -16,7 -16,-3 C-16,-11 -10,-19 0,-19 Z" fill="#f9531e" stroke="#fff" stroke-width="2.5"/>
+      <circle cy="-4" r="5.3" fill="#fff"/></g>`;
+    return `<div class="mapwrap"><svg viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="640" height="300" fill="#e9ece4"/>
+      <!-- blocks -->
+      <g fill="#eff1ea">
+        <rect x="30" y="24" width="150" height="90" rx="4"/><rect x="210" y="20" width="150" height="70" rx="4"/>
+        <rect x="400" y="30" width="120" height="80" rx="4"/><rect x="540" y="26" width="80" height="120" rx="4"/>
+        <rect x="40" y="150" width="130" height="110" rx="4"/><rect x="210" y="120" width="120" height="90" rx="4"/>
+        <rect x="360" y="140" width="150" height="120" rx="4"/>
+      </g>
+      <!-- park -->
+      <path d="M225,205 Q320,180 415,215 L415,275 L225,275 Z" fill="#cfe7c5"/>
+      <circle cx="260" cy="245" r="4" fill="#a9d29a"/><circle cx="300" cy="255" r="4" fill="#a9d29a"/><circle cx="345" cy="243" r="4" fill="#a9d29a"/>
+      <!-- main roads -->
+      <g stroke="#f6f1d6" stroke-width="12" fill="none" stroke-linecap="round">
+        <path d="M-10,118 L650,96"/><path d="M188,-10 L206,310"/><path d="M-10,268 Q320,235 650,262"/>
+      </g>
+      <!-- minor streets -->
+      <g stroke="#ffffff" stroke-width="5" fill="none">
+        <line x1="0" y1="60" x2="640" y2="46"/><line x1="0" y1="182" x2="640" y2="170"/>
+        <line x1="90" y1="0" x2="104" y2="300"/><line x1="360" y1="0" x2="372" y2="300"/>
+        <line x1="500" y1="0" x2="512" y2="300"/>
+      </g>
+      <!-- decorative POIs -->
+      <g fill="#c4c9d1">
+        <circle cx="120" cy="70" r="3.2"/><circle cx="420" cy="60" r="3.2"/><circle cx="470" cy="190" r="3.2"/><circle cx="150" cy="200" r="3.2"/>
+      </g>
+      <text class="maplabel" x="60" y="140" transform="rotate(-4 60 140)">Av. Principal</text>
+      <text class="maplabel" x="215" y="150">Calz. Norte</text>
+      <text class="maplabel" x="300" y="268">Parque</text>
+      ${markers}${bigPin}
+      <!-- zoom controls -->
+      <g transform="translate(596,96)">
+        <rect x="0" y="0" width="30" height="58" rx="8" fill="#fff" stroke="#e2e5ea"/>
+        <line x1="6" y1="29" x2="24" y2="29" stroke="#e2e5ea"/>
+        <text x="15" y="20" text-anchor="middle" font-size="18" fill="#5b616b">+</text>
+        <text x="15" y="48" text-anchor="middle" font-size="20" fill="#5b616b">−</text>
+        <rect x="0" y="68" width="30" height="30" rx="8" fill="#fff" stroke="#e2e5ea"/>
+        <path d="M15,76 l6,14 -6,-4 -6,4 z" fill="#5b616b"/>
+      </g>
+    </svg></div>`;
+  }
+
+  function addrReadoutHTML(i){
+    if(i==null) return `<span class="ro-hint">Arrastra el pin del mapa sobre un domicilio o búscalo en la barra</span>`;
+    return `<span class="ro-addr">${esc(savedAddresses[i].line)}</span>`;
+  }
+  function screenAddress(){
+    const ready = state.addrIdx!=null;
+    return `${todo()}${clientRow()}${dots()}
+      <h2>Domicilio de entrega</h2>
+      <p class="lead">Arrastra el pin en el mapa o busca la dirección del cliente en la barra</p>
+      ${mapSVG()}
+      <div class="search"><label>Buscar domicilio</label><input id="addrSearch" autocomplete="off" placeholder="Escribe una dirección…" value="${esc(state.searchText)}"></div>
+      <div id="searchSuggest" class="suggest"></div>
+      <div class="addr-readout" id="addrReadout">${addrReadoutHTML(state.addrIdx)}</div>
+      <button class="btn ${ready?'primary':'disabled'}" data-action="addr-continue">Continuar</button>`;
+  }
+  function renderSuggest(){
+    const box=document.getElementById('searchSuggest'); if(!box) return;
+    const t=(state.searchText||'').trim().toLowerCase();
+    if(!t){ box.innerHTML=''; return; }
+    const m=savedAddresses.map((a,i)=>({a,i})).filter(o=>o.a.line.toLowerCase().includes(t)).slice(0,5);
+    box.innerHTML = m.length ? m.map(o=>`<button class="suggest-row" data-action="search-pick" data-i="${o.i}">${esc(o.a.line)}</button>`).join('') : '<div class="suggest-empty">Sin resultados. Arrastra el pin en el mapa.</div>';
+  }
+
+  // ---------- No coverage ----------
+  function screenNoCoverage(){
+    const a=currentAddr();
+    return `${todo()}${clientRow()}${dots()}
+      <h2>Domicilio de entrega</h2>
+      <p class="lead">${esc(a?a.line:'')}</p>
+      <div class="infobox warn"><b>Menciónalo al cliente</b><p>${esc(noCoverageReason())} Registra el resultado en el panel derecho y cierra la tarea.</p></div>
+      <button class="btn ghost" data-action="back-address">← Cambiar domicilio</button>`;
+  }
+
+  // ---------- Postal ----------
+  function screenPostal(){
+    const p=state.postal;
+    const need=(v)=>!String(v||'').trim();
+    const ready = !need(p.cp) && !need(p.ciudad) && !need(p.calle) && !need(p.num);
+    const f=(field,label,val,extra='')=>`<div class="txt-field ${need(val)?'req-empty':''}"><label>${label}</label><input data-field="p_${field}" value="${esc(val)}" placeholder="${label}" ${extra}></div>`;
+    return `${todo()}${clientRow()}${dots()}
+      <h2>Confirma el domicilio</h2>
+      <div class="infobox"><b>Menciónalo al cliente</b><p>La tarjeta será entregada en este domicilio por paquetería.</p></div>
+      ${f('cp','Código postal',p.cp,'inputmode="numeric"')}
+      ${f('ciudad','Ciudad / Estado / Provincia',p.ciudad)}
+      ${f('calle','Calle',p.calle)}
+      ${f('num','Número exterior',p.num)}
+      <div class="txt-field"><label>Detalles adicionales</label><input data-field="p_detalles" value="${esc(p.detalles)}" placeholder="Detalles adicionales (depto., casa, entrada)"></div>
+      <div class="txt-field"><span class="opt">Opcional</span><label>Instrucciones</label><input data-field="p_instrucciones" value="${esc(p.instrucciones)}" placeholder="Instrucciones (referencia, nombre del conjunto)"></div>
+      ${ready?'':'<div class="err-msg">Completa código postal, ciudad, calle y número exterior para continuar</div>'}
+      <button class="btn ghost" data-action="back-address">← Cambiar domicilio</button>
+      <button class="btn ${ready?'primary':'disabled'}" data-action="finish-postal">Continuar</button>`;
+  }
+
+  // ---------- Ambassador schedule ----------
+  function screenSchedule(){
+    const cols = days.map((c,ci)=>{
+      const cells = slots.map((s,ri)=>{
+        const off = slotOff.has(`${ci}-${ri}`), id=`${ci}-${ri}`, on=state.slot===id;
+        return off ? `<div class="slot off">${s[2]} p.m.</div>` : `<button class="slot ${on?'on':''}" data-action="pick-slot" data-v="${id}">${s[2]} p.m.</button>`;
+      }).join('');
+      return `<div class="sched-col"><div class="day">${esc(c.label)}</div>${cells}</div>`;
+    }).join('');
+    return `${todo()}${clientRow()}${dots()}
+      <h2>Confirma el domicilio</h2>
+      <div class="infobox"><b>Menciónalo al cliente</b><p>La tarjeta será entregada por un embajador de Plata en este domicilio.</p></div>
+      <div class="txt-field"><label>Detalles adicionales</label><input data-field="a_detalles" value="${esc(state.amb.detalles)}" placeholder="Detalles adicionales (depto., casa, entrada)"></div>
+      <div class="txt-field"><span class="opt">Opcional</span><label>Instrucciones</label><input data-field="a_instrucciones" value="${esc(state.amb.instrucciones)}" placeholder="Instrucciones (referencia, nombre del conjunto)"></div>
+      <h2 style="margin-top:22px">Fecha y hora de la entrega</h2>
+      <p class="lead">La reunión tomará alrededor de 20 minutos</p>
+      <div class="sched"><div class="sched-grid">${cols}</div></div>
+      <button class="otro" data-action="otro-dia">Otro día</button>
+      <button class="btn ghost" data-action="back-address">← Cambiar domicilio</button>
+      <button class="btn ${state.slot?'primary':'disabled'}" data-action="finish-amb">Continuar</button>`;
+  }
+
+  function selectedSlotText(){
+    if(!state.slot) return {fecha:'',rango:'',corto:''};
+    const [ci,ri]=state.slot.split('-').map(Number);
+    const c=days[ci], s=slots[ri];
+    return { fecha:`${c.date.getDate()} de ${MESLARGO[c.date.getMonth()]}`, rango:`${s[0]} y las ${s[1]}`, corto:`${s[2]} p.m.` };
+  }
+
+  function screenConfAmb(){
+    const a=currentAddr(); const t=selectedSlotText();
+    const instr = state.amb.instrucciones.trim() || '—';
+    return `${todo()}${clientRow()}${dots()}
+      <div class="conf-illu"><div class="card"></div></div>
+      <div class="infobox"><b>Menciónalo al cliente</b><p>La visita será el ${esc(t.fecha)} entre las ${esc(t.rango)} hrs. La dirección confirmada para la entrega es ${esc(a.line)}. El embajador se pondrá en contacto contigo ese mismo día para coordinar la hora exacta de la entrega. Te recomendamos descargar la app de Banco Plata en tu celular. No olvides tener ese día tu INE física y vigente.</p></div>
+      <div class="deliv-card">
+        <div class="deliv-head">📅 Entrega el ${esc(t.fecha)}, ${esc(t.corto)}</div>
+        <div class="deliv-row"><div class="k">Domicilio</div><div class="v">${esc(a.line)}</div></div>
+        <div class="deliv-row"><div class="k">Cliente</div><div class="v">${esc(CLIENT.name)}<br>${esc(CLIENT.phone)}</div></div>
+        <div class="deliv-row"><div class="k">Instrucciones (opcional)</div><div class="v">${esc(instr)}</div></div>
+        <button class="btn ghost" style="margin-top:4px" data-action="back-schedule">Editar entrega</button>
+      </div>
+      <div class="infobox ok" style="margin-top:18px"><b>Entrega agendada</b><p>Selecciona el resultado en el panel derecho y cierra la tarea.</p></div>`;
+  }
+
+  function screenConfPostal(){
+    const p=state.postal;
+    const line = `${p.calle} ${p.num}, ${p.cp}, ${p.ciudad}`;
+    const instr = p.instrucciones.trim() || '—';
+    return `${todo()}${clientRow()}${dots()}
+      <div class="conf-illu"><div class="card"></div></div>
+      <div class="infobox"><b>Menciónalo al cliente</b><p>El día de entrega de tu tarjeta será en los próximos días hábiles. La dirección confirmada para la entrega es ${esc(line)} y la recibirás por paquetería. Te recomendamos descargar la app de Banco Plata en tu celular. Ahí podrás consultar el estatus de la entrega mediante el rastreador. Cuando recibas tu tarjeta, sigue los pasos que aparecen en la app para vincularla a tu cuenta y completar el registro. Ten a la mano tu INE física y vigente.</p></div>
+      <div class="deliv-card">
+        <div class="deliv-head">📦 Entrega por paquetería</div>
+        <div class="deliv-row"><div class="k">Domicilio</div><div class="v">${esc(line)}</div></div>
+        <div class="deliv-row"><div class="k">Cliente</div><div class="v">${esc(CLIENT.name)}<br>${esc(CLIENT.phone)}</div></div>
+        <div class="deliv-row"><div class="k">Instrucciones (opcional)</div><div class="v">${esc(instr)}</div></div>
+        <button class="btn ghost" style="margin-top:4px" data-action="back-postal">Editar entrega</button>
+      </div>
+      <div class="infobox ok" style="margin-top:18px"><b>Entrega confirmada</b><p>Selecciona el resultado en el panel derecho y cierra la tarea.</p></div>`;
+  }
+
+  const renderers = { doc:screenDoc, spinner:screenSpinner, address:screenAddress, noCoverage:screenNoCoverage, postal:screenPostal, schedule:screenSchedule, confAmb:screenConfAmb, confPostal:screenConfPostal };
+
+  // ---------- Right panel ----------
+  function rightPanel(){
+    const open=state.openDD==='result';
+    const ready=state.result!=='';
+    return `<h3>¿Qué pasó?</h3>
+      <div class="dd ${open?'open':''}" data-dd="result" style="position:relative">
+        <button class="r-field dd-head" data-action="toggle-dd" data-key="result">
+          <span class="dd-value ${state.result?'':'placeholder'}">${state.result?esc(state.result):'Selecciona el resultado'}</span>
+          <span class="chev">▼</span>
+        </button>
+        <div class="dd-menu">${results.map(o=>`<button class="dd-opt ${state.result===o?'sel':''}" data-action="pick-dd" data-key="result" data-v="${esc(o)}">${esc(o)}</button>`).join('')}</div>
+      </div>
+      <div class="rcomment"><textarea data-field="comment" rows="1" placeholder="Comentario del resultado">${esc(state.comment)}</textarea></div>
+      <button class="close-task ${ready?'ready':''}" data-action="close-task">Cerrar tarea</button>`;
+  }
+
+  // ---------- Top bar / timer ----------
+  function fmtTime(s){ const m=Math.floor(s/60), r=s%60; return `${m}:${String(r).padStart(2,'0')}`; }
+  function renderTopbar(){
+    const mute=$('muteBtn'); mute.classList.toggle('muted',state.muted); mute.textContent=state.muted?'🔇':'🎙';
+    $('hangBtn').classList.toggle('ended',state.callEnded);
+  }
+
+  // ---------- Overlays ----------
+  function renderOverlay(){
+    let html='';
+    if(state.toast) html+=`<div class="toast">${esc(state.toast)}</div>`;
+    if(state.modal==='done') html+=`<div class="overlay"><div class="modal"><div class="ic" style="background:radial-gradient(circle at 35% 30%,#17e276,#08bd58)">✓</div><h2>Tarea cerrada</h2><p>El resultado se guardó correctamente:<br><b>${esc(state.result)}</b></p><button class="btn primary" data-action="restart">Nueva tarea</button></div></div>`;
+    if(state.modal==='ended') html+=`<div class="overlay"><div class="modal"><div class="ic" style="background:radial-gradient(circle at 35% 30%,#ff6b60,#e53228)">✕</div><h2>Llamada finalizada</h2><p>Selecciona un resultado en el panel derecho y cierra la tarea.</p><button class="btn primary" data-action="close-modal">Entendido</button></div></div>`;
+    $('overlayRoot').innerHTML=html;
+  }
+  function toast(msg){ state.toast=msg; renderOverlay(); clearTimeout(toast._t); toast._t=setTimeout(()=>{state.toast=null;renderOverlay();},1900); }
+
+  // ---------- Render ----------
+  function render(){
+    $('left').innerHTML=(renderers[state.screen]||screenDoc)();
+    $('right').innerHTML=rightPanel();
+    renderTopbar(); renderOverlay();
+  }
+  function go(screen){ state.screen=screen; state.openDD=null; render(); }
+
+  // ---------- Actions ----------
+  function handle(action, el){
+    switch(action){
+      case 'mute': state.muted=!state.muted; return renderTopbar();
+      case 'hangup': if(state.callEnded)return; state.callEnded=true; stopTimer(); state.modal='ended'; return renderOverlay();
+      case 'cancel': return toast('Solicitud marcada para cancelación');
+      case 'toggle-dd': state.openDD = state.openDD===el.dataset.key?null:el.dataset.key; return render();
+      case 'pick-dd': {
+        const k=el.dataset.key, v=el.dataset.v; state.openDD=null;
+        if(k==='actividad') state.actividad=v;
+        else if(k==='regimen') state.regimen=v;
+        else if(k==='result') state.result=v;
+        return render();
+      }
+      case 'pick-doc': state.doc=el.dataset.v; return render();
+      case 'doc-continue':
+        if(state.doc!=='INE' && state.doc!=='Permiso'){ toast('Selecciona un documento válido para continuar'); return; }
+        state.screen='spinner'; render();
+        clearTimeout(handle._sp); handle._sp=setTimeout(()=>{ if(state.screen==='spinner'){ state.screen='address'; render(); } },1900);
+        return;
+      case 'pick-addr': case 'pin': state.addrIdx=Number(el.dataset.i); state.pinPos=null; state.searchText=savedAddresses[state.addrIdx].line; return render();
+      case 'search-pick': state.addrIdx=Number(el.dataset.i); state.pinPos=null; state.searchText=savedAddresses[state.addrIdx].line; return render();
+      case 'addr-continue': {
+        if(state.addrIdx==null){ toast('Ubica el domicilio del cliente en el mapa o en la barra de búsqueda'); return; }
+        const d=resolveDelivery();
+        if(d==='paqueteria'){
+          state.method='paqueteria';
+          state.postal={cp:'', ciudad:'', calle:'', num:'', detalles:'', instrucciones:''};
+          return go('postal');
+        }
+        if(d==='embajador'){ state.method='embajador'; return go('schedule'); }
+        state.method=null; return go('noCoverage');
+      }
+      case 'back-address': return go('address');
+      case 'back-postal': return go('postal');
+      case 'back-schedule': return go('schedule');
+      case 'pick-slot': state.slot=el.dataset.v; return render();
+      case 'otro-dia': return toast('Se mostrarían más fechas disponibles');
+      case 'finish-postal': {
+        const p=state.postal, need=v=>!String(v||'').trim();
+        if(need(p.cp)||need(p.ciudad)||need(p.calle)||need(p.num)){ toast('Completa los campos obligatorios del domicilio'); return; }
+        return go('confPostal');
+      }
+      case 'finish-amb':
+        if(!state.slot){ toast('Selecciona una fecha y hora'); return; }
+        return go('confAmb');
+      case 'close-task':
+        if(!state.result){ toast('Selecciona un resultado antes de cerrar'); return; }
+        state.modal='done'; return renderOverlay();
+      case 'close-modal': state.modal=null; return renderOverlay();
+      case 'restart': return restart();
+      case 'noop-input': return;
+      default: return;
+    }
+  }
+
+  function restart(){
+    drag=null;
+    Object.assign(state,{screen:'doc',muted:false,callEnded:false,seconds:0,openDD:null,toast:null,modal:null,
+      actividad:'',regimen:'',doc:'',addrIdx:null,pinPos:null,searchText:'',method:null,slot:null,
+      postal:{cp:'',ciudad:'',calle:'',num:'',detalles:'',instrucciones:''},amb:{detalles:'',instrucciones:''},result:'',comment:''});
+    startTimer(); $('timer').textContent='0:00'; render();
+  }
+
+  // ---------- Timer ----------
+  let timerId=null;
+  function startTimer(){ stopTimer(); timerId=setInterval(()=>{ if(!state.callEnded){ state.seconds++; $('timer').textContent=fmtTime(state.seconds);} },1000); }
+  function stopTimer(){ if(timerId) clearInterval(timerId); timerId=null; }
+
+  // ---------- Events ----------
+  document.addEventListener('click', e=>{
+    const el=e.target.closest('[data-action]');
+    if(!el){
+      if(state.openDD && !e.target.closest('.dd-menu') && !e.target.closest('.dd-head')){ state.openDD=null; render(); }
+      return;
+    }
+    if(el.tagName!=='INPUT' && el.tagName!=='TEXTAREA') e.preventDefault();
+    e.stopPropagation();
+    handle(el.dataset.action, el);
+  });
+  function updatePostalValidity(changedInput){
+    const p=state.postal, need=v=>!String(v||'').trim();
+    if(changedInput){ const wrap=changedInput.closest('.txt-field'); if(wrap) wrap.classList.toggle('req-empty', need(changedInput.value)); }
+    const ready = !need(p.cp)&&!need(p.ciudad)&&!need(p.calle)&&!need(p.num);
+    const btn=document.querySelector('[data-action=finish-postal]');
+    if(btn){ btn.classList.toggle('primary',ready); btn.classList.toggle('disabled',!ready); }
+    const err=document.querySelector('#left .err-msg'); if(err) err.style.display = ready?'none':'';
+  }
+  // ---------- Draggable map pin ----------
+  const SNAP=52;
+  let drag=null;
+  function svgPoint(svg,cx,cy){ const r=svg.getBoundingClientRect(); return {x:(cx-r.left)/r.width*640, y:(cy-r.top)/r.height*300}; }
+  function nearestAddr(x,y){ let bi=-1,bd=1e9; savedAddresses.forEach((a,i)=>{const d=Math.hypot(a.x-x,a.y-y); if(d<bd){bd=d;bi=i;}}); return {i:bi,d:bd}; }
+  document.addEventListener('pointerdown', e=>{
+    const pin=e.target.closest('[data-drag=pin]'); if(!pin) return;
+    const svg=pin.closest('svg'); if(!svg) return;
+    drag={svg, g:pin, moved:false, idx:state.addrIdx, pos:pinPos()};
+    if(pin.setPointerCapture) try{ pin.setPointerCapture(e.pointerId); }catch(_){}
+    e.preventDefault();
+  });
+  document.addEventListener('pointermove', e=>{
+    if(!drag) return;
+    drag.moved=true;
+    const p=svgPoint(drag.svg,e.clientX,e.clientY);
+    const x=Math.max(10,Math.min(630,p.x)), y=Math.max(14,Math.min(286,p.y));
+    drag.g.setAttribute('transform',`translate(${x},${y})`);
+    drag.pos={x,y};
+    const n=nearestAddr(x,y);
+    drag.idx = n.d<=SNAP ? n.i : null;
+    const ro=document.getElementById('addrReadout'); if(ro) ro.innerHTML=addrReadoutHTML(drag.idx);
+  });
+  document.addEventListener('pointerup', ()=>{
+    if(!drag) return;
+    if(drag.moved){
+      if(drag.idx!=null){ state.addrIdx=drag.idx; state.pinPos=null; state.searchText=savedAddresses[drag.idx].line; }
+      else { state.addrIdx=null; state.pinPos=drag.pos; }
+      const d=drag; drag=null; render();
+      return;
+    }
+    drag=null;
+  });
+
+  document.addEventListener('input', e=>{
+    if(e.target.id==='addrSearch'){ state.searchText=e.target.value; renderSuggest(); return; }
+    const f=e.target.dataset.field; if(!f) return;
+    if(f==='comment'){ state.comment=e.target.value; e.target.style.height='auto'; e.target.style.height=e.target.scrollHeight+'px'; return; }
+    if(f.startsWith('p_')){ const k=f.slice(2); if(k in state.postal){ state.postal[k]=e.target.value; if(['cp','ciudad','calle','num'].includes(k)) updatePostalValidity(e.target); } return; }
+    if(f.startsWith('a_')){ const k=f.slice(2); if(k in state.amb) state.amb[k]=e.target.value; return; }
+  });
+
+  startTimer();
+  render();
+})();
+</script>
+</body>
+</html>
