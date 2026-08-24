@@ -111,6 +111,31 @@ button{font-family:inherit}
 .opt input{accent-color:var(--nar);width:18px;height:18px;cursor:pointer}
 .opt.on{border-color:var(--nar);background:rgba(255,93,21,.07)}
 
+/* autocompletado de Actividad del negocio */
+.ac{position:relative}
+.sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--bla);
+  border:1px solid rgba(29,32,38,.14);border-radius:10px;box-shadow:0 8px 24px rgba(29,32,38,.16);
+  max-height:230px;overflow-y:auto;padding:4px}
+.sug button{display:block;width:100%;text-align:left;background:none;border:0;font-family:inherit;
+  font-size:14.5px;color:var(--neg);padding:9px 10px;border-radius:8px;cursor:pointer;line-height:1.35}
+.sug button:hover{background:var(--gri)}
+.sug button b{color:var(--nar)}
+.sug button small{display:block;font-size:12.5px;color:rgba(29,32,38,.55);margin-top:2px;font-weight:400}
+.sug .grupo{padding:9px 10px 4px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(29,32,38,.45)}
+.sug .vacio{padding:9px 10px;font-size:14px;color:rgba(29,32,38,.55)}
+.sug .pista{padding:7px 10px;font-size:12px;color:rgba(29,32,38,.45);border-top:1px solid rgba(29,32,38,.08);margin-top:2px}
+
+/* cabecera CRM de las pantallas de entrega */
+.crmhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 14px;font-size:14px;font-weight:700}
+.crmhead .who{color:var(--neg)}
+/* bloque ToDo: marcador de la propia CRM (texto en inglés, sin traducir) */
+.todo{background:rgba(201,138,0,.10);border-left:3px solid var(--wa);border-radius:0 10px 10px 0;padding:12px 14px;margin:0 0 14px}
+.todo .t{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--wa);margin-bottom:6px}
+.todo p{margin:0;font-size:14px;line-height:1.45;color:rgba(29,32,38,.78)}
+.mapzoom{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:4px}
+.mapzoom button{width:26px;height:26px;border-radius:7px;border:1px solid rgba(29,32,38,.14);background:var(--bla);font-size:15px;font-weight:700;line-height:1;cursor:pointer;color:var(--neg);font-family:inherit}
+.mapbtn{position:absolute;left:50%;bottom:10px;transform:translateX(-50%)}
+
 /* map / address */
 .map{height:150px;border-radius:12px;background:
   repeating-linear-gradient(0deg,#e4e4ef 0 1px,transparent 1px 26px),
@@ -176,7 +201,7 @@ details.fold>summary{
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary::before{content:"›";font-size:20px;line-height:1;transform:rotate(0);transition:transform .15s;color:var(--nar)}
 details.fold[open]>summary::before{transform:rotate(90deg)}
-details.fold .in{padding:0 15px 15px}
+details.fold .in{padding:0 15px 15px;color:var(--bla)}
 .pbtn{
   border:0;background:var(--nar);color:var(--bla);border-radius:10px;padding:11px 16px;
   font-size:14.5px;font-weight:700;cursor:pointer;margin-top:11px;
@@ -185,11 +210,11 @@ details.fold .in{padding:0 15px 15px}
 .pbtn.gh{background:transparent;color:var(--bla);border:1px solid rgba(255,255,255,.35)}
 .note{font-size:14px;line-height:1.45;color:rgba(255,255,255,.62);border-top:1px solid rgba(255,255,255,.14);padding-top:12px;margin-top:4px}
 .cmp{width:100%;border-collapse:collapse;font-size:13.5px}
-.cmp th,.cmp td{border-bottom:1px solid rgba(255,255,255,.13);padding:7px 6px;text-align:left;vertical-align:top}
+.cmp th,.cmp td{border-bottom:1px solid rgba(255,255,255,.13);padding:7px 6px;text-align:left;vertical-align:top;color:var(--bla)}
 .cmp th{font-weight:700;color:var(--bla)}
-.cmp td:first-child{color:rgba(255,255,255,.60);font-weight:600}
+.cmp td:first-child{color:rgba(255,255,255,.78);font-weight:600}
 .cmp b{color:var(--nar)}
-.alert{background:rgba(255,93,21,.16);border-radius:10px;padding:11px 13px;font-size:14.5px;font-weight:600;margin-top:10px}
+.alert{background:rgba(255,93,21,.16);border-radius:10px;padding:11px 13px;font-size:14.5px;font-weight:600;margin-top:10px;color:var(--bla)}
 .qz{display:block;width:100%;text-align:left;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);
   border-radius:10px;padding:13px 15px;font-size:15.5px;line-height:1.45;color:var(--bla);font-family:inherit;cursor:pointer;margin-bottom:9px}
 .qz:hover{border-color:var(--nar)}
@@ -263,12 +288,9 @@ ui:{
   bloques:["Qué le dices","Qué te contesta","Qué haces en la pantalla","Si algo se sale del guion"],
   badgeLit:"🔒 Lee tal cual",
   badgeWor:"💬 Con tus palabras",
-  yaMencione:"Ya lo mencioné al cliente",
-  yaMencionado:"Mencionado al cliente",
   menciona:"Menciónalo al cliente",
   pregunta:"Pregúntale al cliente",
   continuar:"Continuar",
-  faltaMencion:"Primero menciónale el texto al cliente y confírmalo.",
   inicioTitulo:"Simulador de solicitud · Cuenta Empresa",
   inicioTexto:"Practica la solicitud completa antes de hacerla con un cliente real. A la izquierda, el CRM. A la derecha, qué decir, qué te van a contestar y qué presionar.",
   inicioElige:"Elige un escenario"
@@ -289,15 +311,15 @@ escenarios:{
     nombres:"Ana Lucía", ap1:"Ramírez", ap2:"Beltrán",
     fnac:{d:"12",m:"03",a:"1985"}, homoclave:"H4A",
     ingreso:"48,000",
-    actividad:"Comercio al por menor",
-    regimen:"Régimen de Actividades Empresariales y Profesionales",
+    actividad:"Tienda de abarrotes o miscelánea",
+    regimen:"PFAE",
     documento:"INE",
     guardados:[],
     domicilio:{cp:"03100",ciudad:"Ciudad de México, CDMX",colonia:"Del Valle Centro",calle:"Av. Coyoacán",num:"1435"},
     domicilioTexto:"Av. Coyoacán 1435, Col. Del Valle Centro, CDMX, C.P. 03100",
     entrega:"embajador",
     detalles:"Es el portón verde junto a la papelería. El timbre no funciona, mejor que me marquen.",
-    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    dias:[{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"},{d:"14 de jun, sá"}],
     slot:{dia:"12 de jun, ju",vent:"12 – 3 p.m.",fechaLarga:"12 de junio"},
     empleados:"Somos cuatro contando conmigo.",
     plan:"Emprendedor", promoCompaneros:true,
@@ -310,12 +332,12 @@ escenarios:{
     nombres:"Jorge", ap1:"Méndez", ap2:"Trujillo",
     fnac:{d:"27",m:"09",a:"1979"}, homoclave:"R31",
     ingreso:"22,000",
-    actividad:"Servicios profesionales",
+    actividad:"Servicios de contabilidad",
     regimen:"RESICO",
     documento:"INE",
     guardados:[
-      {t:"Calle Loma Bonita 214, Col. San Agustín, Tlajomulco de Zúñiga, Jal., C.P. 45645",zona:false},
-      {t:"Calle Pedro Moreno 855, Col. Americana, Guadalajara, Jal., C.P. 44160",zona:true,
+      {t:"Calle Loma Bonita 214, 45645 México, Jalisco, Tlajomulco de Zúñiga, San Agustín",zona:false},
+      {t:"Calle Pedro Moreno 855, 44160 México, Jalisco, Guadalajara, Americana",zona:true,
        campos:{cp:"44160",ciudad:"Guadalajara, Jalisco",colonia:"Americana",calle:"Calle Pedro Moreno",num:"855"}}
     ],
     domicilio:{cp:"44160",ciudad:"Guadalajara, Jalisco",colonia:"Americana",calle:"Calle Pedro Moreno",num:"855"},
@@ -334,7 +356,7 @@ escenarios:{
     nombres:"Verónica", ap1:"Salas", ap2:"Ibarra",
     fnac:{d:"04",m:"07",a:"1988"}, homoclave:"K92",
     ingreso:"31,000",
-    actividad:"Alimentos y bebidas",
+    actividad:"Restaurante, cafetería o servicio de alimentos",
     regimen:"RESICO",
     documento:"INE",
     guardados:[],
@@ -342,7 +364,7 @@ escenarios:{
     domicilioTexto:"Calle Orizaba 92, Col. Roma Norte, CDMX, C.P. 06700",
     entrega:"embajador",
     detalles:"Portón negro, timbre del 3.",
-    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    dias:[{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"},{d:"14 de jun, sá"}],
     slot:{dia:"11 de jun, mi",vent:"9 – 12 p.m.",fechaLarga:"11 de junio"},
     empleados:"Somos tres.",
     plan:"Emprendedor", promoCompaneros:false,
@@ -361,7 +383,7 @@ escenarios:{
     domicilioTexto:"",
     entrega:"embajador",
     detalles:"",
-    dias:[{d:"10 de jun, ma"},{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"}],
+    dias:[{d:"11 de jun, mi"},{d:"12 de jun, ju"},{d:"13 de jun, vi"},{d:"14 de jun, sá"}],
     slot:null,
     fechaPostal:{dia:"19",mes:"mayo",anio:"2026",larga:"19 de mayo"},
     empleados:"—",
@@ -387,19 +409,18 @@ form:{
     reenviar:"Reenviar código",
     ok:"El código es correcto",
     agotado:"All attempts to validate the code have been exhausted",
-    malo:"El código no coincide. Intento {i} de 3.",
-    boton:"Validar código"
+    malo:"El código no coincide. Intento {i} de 3."
   },
   p3:{
     titulo:"Obtener consentimiento del cliente",
     aviso:"Al continuar con este proceso autorizas a Banco Plata, S.A., Institución de Banca Múltiple para tratar tus datos personales de conformidad con el Aviso de Privacidad disponible en bancoplata.mx",
     check:"Recibí autorización del cliente",
     error:"Confirma tener el consentimiento del cliente",
-    noAutoriza:"El cliente no autoriza",
-    cierreNoAutoriza:"No podemos continuar con el proceso de solicitud en este momento. Si es necesario, nos pondremos en contacto contigo."
+    noAutoriza:"El cliente no autoriza"
   },
   p4:{
     titulo:"Datos personales",
+    seccion:"Nombre completo",
     instruccion:"Pide al cliente que confirme su nombre completo tal como aparece en su identificación oficial",
     nombres:"Nombre(s)", ap1:"Primer apellido", ap2:"Segundo apellido",
     fnac:"Fecha de nacimiento", fnacHint:"DD / MM / AAAA",
@@ -412,20 +433,89 @@ form:{
     titulo:"Datos del negocio",
     actividad:"Actividad del negocio",
     actividadHint:"Selecciona la actividad que mejor describa el negocio del cliente",
-    actividadOpc:["Comercio al por menor","Comercio al por mayor","Servicios profesionales","Alimentos y bebidas","Transporte","Construcción","Otro"],
+    actividadPlaceholder:"Escribe o elige la actividad del negocio",
+    regimenPlaceholder:"Escribe o elige el régimen fiscal",
+    pistaLista:"Elige una opción de la lista o escribe la tuya",
+    sinResultados:"Sin coincidencias. Puedes capturarlo con tus palabras.",
+    actividadGrupos:[
+      {t:"Más populares",items:[
+        "Tienda de abarrotes o miscelánea",
+        "Restaurante, cafetería o servicio de alimentos",
+        "Tienda de ropa y accesorios",
+        "Muebles y decoración para el hogar",
+        "Servicios de contabilidad"
+      ]},
+      {t:"Otras",items:[
+        "Agricultura o ganadería",
+        "Antigüedades",
+        "Arte",
+        "Panadería",
+        "Salón de belleza o barbería",
+        "Herrería",
+        "Venta de autos (nuevos o usados)",
+        "Carpintería",
+        "Limpieza y sanitización",
+        "Construcción y remodelación",
+        "Consultorio dental",
+        "Comercio electrónico o tienda en línea",
+        "Organización de eventos",
+        "Florería",
+        "Tienda de abarrotes o miscelánea",
+        "Gimnasio o centro deportivo",
+        "Artesanías",
+        "Ferretería",
+        "Joyería y relojería",
+        "Lavandería o tintorería",
+        "Servicios legales",
+        "Ganadería",
+        "Préstamos o servicios financieros",
+        "Taller mecánico o autopartes",
+        "Consultorio o clínica médica",
+        "Mudanzas",
+        "Tienda de mascotas",
+        "Farmacia",
+        "Seguridad privada",
+        "Servicios profesionales o freelance",
+        "Psicología o nutrición",
+        "Agente o agencia inmobiliaria",
+        "Escuela, clases o educación",
+        "Desarrollo de software o TI",
+        "Papelería y regalos",
+        "Sastrería o costura",
+        "Tecnología y telefonía móvil",
+        "Tortillería",
+        "Turismo o agencia de viajes",
+        "Transporte o fletes",
+        "Veterinaria",
+        "Otro"
+      ]}
+    ],
+    regimenOpc:[
+      {n:"RESICO",d:"Régimen Simplificado de Confianza"},
+      {n:"PFAE",d:"Personas Físicas con Actividades Empresariales y Profesionales"},
+      {n:"Plataformas Tecnológicas",d:"Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas"},
+      {n:"Arrendamiento",d:"Régimen de Arrendamiento"},
+      {n:"Sueldos y Salarios",d:"Sueldos y Salarios e Ingresos Asimilados a Salarios"},
+      {n:"RIF",d:"Régimen de Incorporación Fiscal"},
+      {n:"Sin obligaciones",d:"Sin obligaciones fiscales"},
+      {n:"Dividendos",d:"Ingresos por Dividendos (socios y accionistas)"},
+      {n:"Intereses",d:"Ingresos por intereses"},
+      {n:"Enajenación o Adquisición",d:"Régimen de Enajenación o Adquisición de Bienes"},
+      {n:"Premios",d:"Régimen de los ingresos por obtención de premios"},
+      {n:"Residentes en el Extranjero",d:"Residentes en el Extranjero sin Establecimiento Permanente en México"},
+      {n:"Demás ingresos",d:""}
+    ],
     regimen:"Régimen fiscal",
     regimenHint:"Selecciona el régimen fiscal de la Constancia de Situación Fiscal del cliente",
-    regimenOpc:["Régimen de Actividades Empresariales y Profesionales","RESICO","Régimen de Incorporación Fiscal","Arrendamiento"],
+    docTitulo:"Documento para verificación de identidad",
     preguntaINE:"¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y con tus datos actualizados.",
     docOpc:["INE","Permiso de residencia","Ninguna de las anteriores"],
-    error:"Selecciona una opción para continuar",
-    elige:"Selecciona una opción"
+    error:"Selecciona una opción para continuar"
   },
   p6:{
     titulo:"Revisión",
     espera:"Revisando la información…",
-    texto:"Estamos revisando tu información para continuar con tu solicitud. Esto puede tomar unos momentos. ¡Gracias por tu paciencia!",
-    listo:"Revisión terminada. Confirma que le mencionaste el texto para continuar."
+    texto:"Estamos revisando tu información para continuar con tu solicitud. Esto puede tomar unos momentos. ¡Gracias por tu paciencia!"
   },
   p7:{
     titulo:"Domicilio de entrega",
@@ -433,8 +523,7 @@ form:{
     subGuardados:"Selecciona el domicilio predeterminado o ingresa uno nuevo",
     elegir:"Elegir ubicación",
     buscar:"Buscar domicilio",
-    zonaNo:"Por el momento no tenemos entregas habilitadas en la zona, selecciona otra ubicación",
-    nuevo:"Ingresar un domicilio nuevo"
+    zonaNo:"Por el momento no tenemos entregas habilitadas en la zona, selecciona otra ubicación"
   },
   p7a:{
     titulo:"Entrega por paquetería",
@@ -444,7 +533,7 @@ form:{
     calle:"Calle", num:"Número exterior",
     detalles:"Detalles adicionales (depto., casa, entrada)",
     instrucciones:"Instrucciones (sign, name of the housing complex) Opcional",
-    avisoDetalles:"Este campo sube la tasa de entrega exitosa. Llénalo con las palabras del cliente."
+    todoDetalles:"To increase the chances of successful delivery, fill in the Detalles adicionales field with the customer's words."
   },
   p7b:{
     titulo:"Entrega por embajador",
@@ -456,11 +545,11 @@ form:{
     ventanas:["9 – 12 p.m.","12 – 3 p.m.","3 – 6 p.m."],
     otroDia:"Otro día",
     otroDiaAviso:"Se solicitarán nuevas fechas al servicio de entrega.",
-    faltaSlot:"Selecciona el día y la ventana de horario.",
-    avisoDetalles:"Este campo sube la tasa de entrega exitosa. Llénalo con las palabras del cliente."
+    faltaSlot:"Selecciona el día y la ventana de horario."
   },
   p8:{
     titulo:"Elige tu plan",
+    todo:"Description Text",
     planes:[
       {n:"Empresario",p:"$599/mes"},
       {n:"Emprendedor",p:"$299/mes"},
@@ -473,7 +562,7 @@ form:{
     titulo:"Entrega programada",
     tarjetaEmb:"Entrega el {fecha}, {ventana}",
     tarjetaPost:"Entrega el {fecha}",
-    dir:"Dirección", cliente:"Cliente", instr:"Instrucciones (opcional)",
+    dir:"Domicilio", cliente:"Cliente", instr:"Instrucciones (opcional)",
     editar:"Editar entrega", cancelarEntrega:"Cancelar entrega", cancelarSolicitud:"Cancelar solicitud",
     confEditar:"¿Regresar a la pantalla de domicilio para editar la entrega?",
     confCancelarEntrega:"¿Cancelar la entrega programada? Tendrás que agendarla de nuevo.",
@@ -604,10 +693,12 @@ panel:{
       C:["«Tengo una cocina económica.»","«RESICO.»","«Sí, tengo mi INE.»"],
       L:["Lo que quieras seleccionar."]
     },
-    haces:"Seleccionas actividad, régimen y la opción de documento que el cliente confirmó.",
+    haces:"En <code>Actividad del negocio</code> y en <code>Régimen fiscal</code> puedes abrir la lista completa o escribir: a partir de la tercera letra se filtran las opciones, y si ninguna encaja capturas el texto tal como te lo dio el cliente. Luego marcas la opción de documento que el cliente confirmó.",
     fuera:[
       "<b>El régimen fiscal viene de su Constancia de Situación Fiscal — pero eso no significa que haya que subir el documento.</b> El cliente lo consulta ahí o simplemente lo sabe. Son dos cosas distintas y se confunden seguido.",
       "<b>Si el cliente no sabe su régimen</b> — que lo consulte en su Constancia. Tú no lo adivinas ni lo eliges «el más parecido».",
+      "<b>El cliente dice el nombre largo, la lista usa siglas.</b> «Régimen de Actividades Empresariales y Profesionales» es <code>PFAE</code>; «Régimen Simplificado de Confianza» es <code>RESICO</code>; «Régimen de Incorporación Fiscal» es <code>RIF</code>. La búsqueda también funciona escribiendo el nombre largo: cada opción trae su descripción.",
+      "<b>Los dos campos se pueden abrir o escribir.</b> Al hacer clic ves la lista completa; con tres letras se filtra. Usa las palabras del cliente («vendo ropa», «taller») y elige la más cercana; si ninguna encaja, captúralo con tus palabras.",
       "<b>Si contesta <code>Ninguna de las anteriores</code>, el proceso se detiene ahí.</b> Cierras con cortesía. <b>Continuar sin el documento requerido es una falta grave.</b>",
       "Fíjate en que el guion ya menciona al <b>embajador</b>, aunque el tipo de entrega todavía no está definido. No le prometas al cliente que irá un embajador: eso lo decide el sistema más adelante."
     ]
@@ -686,7 +777,8 @@ panel:{
       "<b>Regla de partida — por número de empleados:</b> trabaja solo → <code>Independiente</code>; 2 a 5 → <code>Emprendedor</code>; más de 5 → <code>Empresario</code>.",
       "<b>Pero es punto de partida, no la última palabra.</b> <code>Independiente</code> no incluye acceso web, emisión de CFDI ni modelo de roles. Si el cliente necesita algo de eso, va a <code>Emprendedor</code> aunque trabaje solo.",
       "<b>Si el cliente prefiere un plan más bajo, lo respetas.</b> Insistir después de su decisión es una <b>falta grave</b>.",
-      "<b>Dos condiciones que puedes mencionar:</b> 2 meses de cortesía en cualquier plan de pago, y la promo Compañeros — 12 meses de <code>Emprendedor</code> sin costo. La promo <b>la muestra la pantalla cuando aplica</b>; tú no tienes que averiguar nada.",
+      "<b>Beneficio que sí puedes mencionar:</b> 2 meses de cortesía en cualquier plan de pago.",
+      "<b>Plata Compañeros.</b> Si en la pantalla el plan <code>Emprendedor</code> aparece como gratis por el programa Plata Compañeros, ofrécele al cliente activarlo. Plata Compañeros es el programa en el que un negocio invita a otros negocios a trabajar con nosotros y por eso recibe bonos y recompensas de Banco Plata.",
       "<b>Ojo con el orden.</b> En pantalla el plan más caro está arriba. En el curso los viste al revés. Lee el nombre, no la posición."
     ]
   },
@@ -710,11 +802,9 @@ panel:{
     modo:"lit",
     dice:"El texto de la pantalla, tal cual. Nada más.",
     haces:"Lo lees, cierras con cortesía y terminas la llamada. El resultado lo registras en el sistema de tu centro de contacto.",
-    ojo:"<b>Fíjate:</b> el texto de <code>Corner case</code> y el de <code>Rechazo por scoring</code> son <b>idénticos</b>. No es un error del sistema, es a propósito: así <b>no puedes revelar, ni sin querer, si fue un rechazo o una cancelación</b>. La regla «no explicas la causa» no depende de tu memoria — la pantalla ya la cumple por ti.",
     fuera:[
       "<b>Nunca inventes una razón.</b> Ni «tal vez por tu historial», ni «puedes intentar de otra forma», ni «vuelve a llamar en un mes». Tú tampoco sabes la causa. Prometer una solución que no puedes garantizar es una <b>falta grave</b>.",
-      "<b>Si el cliente insiste</b> — le repites que no tienes el detalle y que no quieres especular. Es la respuesta correcta, aunque se sienta incómoda.",
-      "<b>Si se agotaron los intentos de código o hay un error técnico</b> — <b>escalas</b> por el canal de tu centro de contacto. No lo intentas por otra vía."
+      "<b>Si el cliente insiste</b> — le repites que no tienes el detalle y que no quieres especular. Es la respuesta correcta, aunque se sienta incómoda."
     ]
   },
   zona:{
@@ -784,21 +874,18 @@ resumen:{
   titulo:"Cómo te fue",
   intro:"No es una calificación: es una lista de hábitos. Mira lo que quedó en rojo y repite el escenario.",
   items:{
-    aviso:{t:"Leíste el aviso de privacidad antes de capturar datos",
-      ok:"Lo confirmaste en la pantalla de consentimiento, antes de pedir datos personales.",
-      no:"No quedó confirmado. El aviso se lee de la pantalla antes de capturar cualquier dato."},
+    consent:{t:"Marcaste la autorización del cliente antes de capturar datos",
+      ok:"Leíste el aviso y marcaste <code>Recibí autorización del cliente</code> antes de pedir cualquier dato.",
+      no:"No quedó marcada la autorización. El aviso se lee de la pantalla y se confirma antes de capturar datos."},
     rfc:{t:"Generaste el RFC con el botón",
       ok:"Usaste <code>Generar</code>. Así es: el sistema lo arma.",
       no:"Intentaste escribir el RFC a mano {n} vez(veces). El campo no es editable: el RFC lo genera el sistema y no se le pide al cliente."},
-    menciones:{t:"Le mencionaste al cliente cada texto obligatorio",
-      ok:"Confirmaste {a} de {b} textos obligatorios.",
-      no:"Confirmaste {a} de {b} textos obligatorios. Los textos marcados 🔒 se leen tal cual, siempre."},
     detalles:{t:"Llenaste <code>Detalles adicionales</code>",
       ok:"Con las palabras del cliente. Es el campo que más sube la tasa de entrega exitosa.",
       no:"Quedó vacío o demasiado corto. Escribe lo que el cliente dice: es lo que el repartidor va a buscar."},
-    guion:{t:"Leíste el guion final completo",
-      ok:"Cerraste con la entrega agendada — el objetivo de la llamada.",
-      no:"No llegaste a confirmar el guion final. La entrega agendada es el objetivo de la llamada."},
+    entrega:{t:"Llegaste a la entrega agendada",
+      ok:"La solicitud quedó cerrada con fecha de entrega — el objetivo de la llamada.",
+      no:"La llamada terminó antes de agendar la entrega. Revisa en qué pantalla se detuvo y por qué."},
     tiempo:{t:"Tiempo total",ok:"{t} · solo información, no se evalúa.",no:"{t} · solo información, no se evalúa."}
   },
   repetir:"Repetir este escenario",
@@ -822,14 +909,14 @@ function nuevoEstado(id){
     campos:{tel:"",codigo:"",nombres:"",ap1:"",ap2:"",fd:"",fm:"",fa:"",rfc:"",ingreso:"",
             actividad:"",regimen:"",doc:"",cp:"",ciudad:"",colonia:"",calle:"",num:"",
             detalles:"",instr:"",dia:"",vent:"",plan:"",buscar:""},
-    conf:{}, vistos:{}, consent:false,
+    consent:false,
     otpIntentos:0, otpOk:false, otpAgotado:false, otpErr:"", reenvio:25,
-    err:"", rfcManual:0, entrega:"", addrSel:null, zonaErr:false, nuevoAddr:false,
-    revListo:false, quizEstado:null, verResumen:false,
+    err:"", rfcManual:0, entrega:"", addrSel:null, zonaErr:false,
+    revListo:false, quizEstado:null, llegoEntrega:false, sugCampo:null,
     t0:Date.now(), tFin:0, modal:null, toast:""
   };
 }
-S = {pant:"inicio", esc:null, campos:{}, conf:{}, vistos:{}, modal:null, toast:"", hist:[]};
+S = {pant:"inicio", esc:null, campos:{}, modal:null, toast:"", hist:[]};
 
 let tReenvio=null, tRevision=null, tToast=null;
 function limpiarTimers(){ clearInterval(tReenvio); clearTimeout(tRevision); tReenvio=null; tRevision=null; }
@@ -846,13 +933,11 @@ function go(p,sinHistoria){
   limpiarTimers();
   if(p==="2"){ S.reenvio=25; tReenvio=setInterval(tick,1000); }
   if(p==="6"){ S.revListo=false; tRevision=setTimeout(revisionLista,3500); }
+  if(p==="9"){ S.llegoEntrega=true; }
   render();
 }
 function tick(){ if(S.reenvio>0){ S.reenvio--; render(); } else { clearInterval(tReenvio); tReenvio=null; } }
-function revisionLista(){
-  S.revListo=true;
-  if(S.conf["6"]) salirRevision(); else render();
-}
+function revisionLista(){ S.revListo=true; salirRevision(); }
 function salirRevision(){
   if(esc().scoring==="rechazo") go("rechazo"); else go("7");
 }
@@ -882,14 +967,49 @@ function set(k,val){ S.campos[k]=val; }
 function digitos(s){ return (s||"").replace(/\D/g,""); }
 function ult4(){ const d=digitos(v("tel")); return d.slice(-4)||"0000"; }
 function esc_(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function marcar(k){ if(!S.vistos[k]) S.vistos[k]=true; }
+
+function sinAcentos(x){
+  return (x||"").normalize?(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase():(x||"").toLowerCase();
+}
+function catalogo(k){
+  if(k==="regimen") return F.p5.regimenOpc.map(function(o){ return {n:o.n,d:o.d,g:""}; });
+  const out=[];
+  F.p5.actividadGrupos.forEach(function(gr){
+    gr.items.forEach(function(x){ out.push({n:x,d:"",g:gr.t}); });
+  });
+  return out;
+}
+function sugerencias(k,q){
+  const t=sinAcentos(q).trim();
+  const lista=catalogo(k);
+  if(t.length<3) return lista.slice(0);            /* lista completa al abrir */
+  const pos=function(o){
+    const a=sinAcentos(o.n).indexOf(t), b=sinAcentos(o.d).indexOf(t);
+    if(a===0) return 0;                            /* empieza por el nombre */
+    if(a>0) return 1;                              /* dentro del nombre */
+    if(b>=0) return 2;                             /* en la descripción */
+    return -1;
+  };
+  return lista.filter(function(o){ return pos(o)>=0; })
+              .sort(function(x,y){ return pos(x)-pos(y); })
+              .slice(0,10);
+}
+function resaltar(opcion,q){
+  const t=sinAcentos(q).trim();
+  const i=sinAcentos(opcion).indexOf(t);
+  if(i<0||!t) return esc_(opcion);
+  return esc_(opcion.slice(0,i))+"<b>"+esc_(opcion.slice(i,i+t.length))+"</b>"+esc_(opcion.slice(i+t.length));
+}
 
 function generarRFC(){
   const n=v("nombres").trim(), a1=v("ap1").trim(), a2=v("ap2").trim();
   const sinAcento=function(s){return s.normalize?s.normalize("NFD").replace(/[\u0300-\u036f]/g,""):s;};
   const A1=sinAcento(a1).toUpperCase(), A2=sinAcento(a2).toUpperCase(), N=sinAcento(n).toUpperCase();
   const vocal=(A1.slice(1).match(/[AEIOU]/)||["X"])[0];
-  const letras=(A1[0]||"X")+vocal+(A2[0]||"X")+(N[0]||"X");
+  /* Sin segundo apellido el SAT usa las dos primeras letras del nombre */
+  const letras = A2
+    ? (A1[0]||"X")+vocal+A2[0]+(N[0]||"X")
+    : (A1[0]||"X")+vocal+(N[0]||"X")+(N[1]||"X");
   const fecha=digitos(v("fa")).slice(-2)+digitos(v("fm")).padStart(2,"0").slice(-2)+digitos(v("fd")).padStart(2,"0").slice(-2);
   let homo=esc().homoclave;
   if(!homo){
@@ -900,7 +1020,8 @@ function generarRFC(){
   }
   return letras+fecha+homo;
 }
-function datosPersonalesListos(){ return v("nombres")&&v("ap1")&&v("ap2")&&digitos(v("fd"))&&digitos(v("fm"))&&digitos(v("fa")).length>=4; }
+/* Segundo apellido NO es obligatorio */
+function datosPersonalesListos(){ return v("nombres")&&v("ap1")&&digitos(v("fd"))&&digitos(v("fm"))&&digitos(v("fa")).length>=4; }
 function direccionTexto(){
   const c=S.campos;
   if(c.calle||c.colonia||c.cp){
@@ -1017,17 +1138,22 @@ function inicioHTML(){
 /* =======================================================================
    FORMA (réplica del CRM)
    ======================================================================= */
-function menBloque(titulo,texto,key,parrafos){
-  marcar(key);
-  let cuerpo="";
-  if(parrafos) cuerpo=parrafos.map(function(p){return "<p>"+p+"</p>";}).join("");
-  else cuerpo="<p>"+texto+"</p>";
-  let h='<div class="men"><div class="t">'+titulo+"</div>"+cuerpo+"</div>";
-  h+='<div class="conf">';
-  if(S.conf[key]) h+='<span class="st">✓ '+C.ui.yaMencionado+"</span>";
-  else h+='<button class="btn gh sm" data-act="confirmar" data-v="'+key+'">'+C.ui.yaMencione+"</button>";
-  h+="</div>";
-  return h;
+function menBloque(titulo,texto,parrafos){
+  const cuerpo = parrafos ? parrafos.map(function(x){return "<p>"+x+"</p>";}).join("") : "<p>"+texto+"</p>";
+  return '<div class="men"><div class="t">'+titulo+"</div>"+cuerpo+"</div>";
+}
+function todoBloque(texto){
+  return '<div class="todo"><div class="t">ToDo</div><p>'+texto+"</p></div>";
+}
+function crmHead(){
+  const n=(v("nombres")+" "+v("ap1")).trim()||"—";
+  return '<div class="crmhead"><span class="who">'+esc_(n)+'</span>'+
+         '<button class="link" data-act="cancelarSolicitud">'+F.p9.cancelarSolicitud+"</button></div>";
+}
+function domSel(){
+  const e=esc();
+  const t=(S.addrSel!=null&&e.guardados[S.addrSel])?e.guardados[S.addrSel].t:direccionTexto();
+  return '<div class="addr on" style="cursor:default">'+esc_(t)+"</div>";
 }
 function campo(label,k,extra){
   return '<div class="f"><label>'+label+'</label><input class="inp" data-k="'+k+'" value="'+esc_(v(k))+'" '+(extra||"")+"></div>";
@@ -1041,60 +1167,44 @@ function formHTML(){
   const e=esc();
   switch(S.pant){
 
-  /* ---------- 1 ---------- */
-  case "1": {
-    marcar("1");
+  /* ---------- 1 · vinculación del teléfono ---------- */
+  case "1":
     return '<div class="crm"><div class="card">'+
-      '<div class="h1">'+F.p1.titulo+"</div>"+
-      '<div class="q">'+F.p1.pregunta+"</div>"+
-      campo(F.p1.labelTel,"tel",'inputmode="tel"')+
-      btnCont("verificar",S.conf["1"]&&digitos(v("tel")).length>=10,F.p1.boton)+
-      (S.conf["1"]?"":'<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>")+
-      errHTML()+"</div></div>";
-  }
+      '<div class="q" style="font-size:17px;margin-top:0">'+F.p1.pregunta+"</div>"+
+      '<div class="f"><input class="inp" data-k="tel" inputmode="tel" value="'+esc_(v("tel"))+'"></div>'+
+      btnCont("verificar",digitos(v("tel")).length>=10,F.p1.boton)+errHTML()+"</div></div>";
 
-  /* ---------- 2 ---------- */
+  /* ---------- 2 · código ---------- */
   case "2": {
     let h='<div class="crm"><div class="card"><div class="h1">'+F.p2.titulo+"</div>";
-    if(S.otpAgotado){
-      h+='<div class="men"><div class="t">'+C.ui.menciona+"</div><p>"+C.errores.otpAgotado.texto+"</p></div>";
-      h+='<div class="hint">'+F.p2.agotado+"</div>";
-      h+='<div class="conf">'+(S.conf.otpAgotado?'<span class="st">✓ '+C.ui.yaMencionado+"</span>":
-        '<button class="btn gh sm" data-act="confirmar" data-v="otpAgotado">'+C.ui.yaMencione+"</button>")+"</div>";
-      h+='<button class="btn gh" data-act="resumen">'+C.ui.verResumen+"</button>";
-      return h+"</div></div>";
-    }
     h+='<p class="hint">'+F.p2.sub.replace("{4}",ult4())+"</p>";
-    h+='<div class="f"><label>'+F.p2.label+'</label><input class="inp" data-k="codigo" inputmode="numeric" maxlength="4" style="letter-spacing:.5em;font-size:19px;font-weight:700;max-width:180px" value="'+esc_(v("codigo"))+'"></div>';
+    h+='<div class="f"><label>'+F.p2.label+'</label><input class="inp" data-k="codigo" inputmode="numeric" maxlength="4" style="letter-spacing:.5em;font-size:19px;font-weight:700;max-width:180px" value="'+esc_(v("codigo"))+'"'+(S.otpAgotado||S.otpOk?" readonly":"")+"></div>";
     if(S.otpErr) h+='<div class="err"><span>⚠</span><span>'+S.otpErr+"</span></div>";
     if(S.otpOk) h+='<div class="okmsg">✓ '+F.p2.ok+"</div>";
+    if(S.otpAgotado) h+='<div class="err"><span>⚠</span><span>'+F.p2.agotado+"</span></div>";
     h+='<div class="links"><button class="link" data-act="cambiarNumero">'+F.p2.cambiar+"</button>"+
        '<button class="link" data-act="reenviar"'+(S.reenvio>0?" disabled":"")+">"+
        (S.reenvio>0?F.p2.reenviarCuenta.replace("{s}",S.reenvio):F.p2.reenviar)+"</button></div>";
-    h+='<div style="margin-top:16px">'+
-       (S.otpOk?btnCont("aConsentimiento",true):btnCont("validarOTP",digitos(v("codigo")).length===4,F.p2.boton))+"</div>";
     return h+"</div></div>";
   }
 
-  /* ---------- 3 ---------- */
+  /* ---------- 3 · consentimiento ---------- */
   case "3": {
     let h='<div class="crm"><div class="card"><div class="h1">'+F.p3.titulo+"</div>";
-    h+=menBloque(C.ui.menciona,F.p3.aviso,"3");
+    h+=menBloque(C.ui.menciona,F.p3.aviso);
     h+='<label class="chk"><input type="checkbox" data-act="consent"'+(S.consent?" checked":"")+">"+
        "<span>"+F.p3.check+"</span></label>";
-    h+=errHTML();
-    h+=btnCont("contConsent",S.conf["3"]);
-    if(!S.conf["3"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    h+=errHTML()+btnCont("contConsent",true);
     h+='<div class="links"><button class="link" data-act="noAutoriza">'+F.p3.noAutoriza+"</button></div>";
     return h+"</div></div>";
   }
 
-  /* ---------- 4 ---------- */
+  /* ---------- 4 · nombre completo ---------- */
   case "4": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p4.titulo+"</div>";
+    let h='<div class="crm"><div class="card"><div class="h1">'+F.p4.seccion+"</div>";
     h+='<p class="hint">'+F.p4.instruccion+"</p>";
     h+=campo(F.p4.nombres,"nombres")+campo(F.p4.ap1,"ap1")+campo(F.p4.ap2,"ap2");
-    h+='<div class="f"><label>'+F.p4.fnac+" · "+F.p4.fnacHint+'</label><div class="row">'+
+    h+='<div class="f"><label>'+F.p4.fnac+'</label><p class="hint">'+F.p4.fnacHint+'</p><div class="row">'+
        '<input class="inp" data-k="fd" inputmode="numeric" maxlength="2" placeholder="DD" value="'+esc_(v("fd"))+'">'+
        '<input class="inp" data-k="fm" inputmode="numeric" maxlength="2" placeholder="MM" value="'+esc_(v("fm"))+'">'+
        '<input class="inp" data-k="fa" inputmode="numeric" maxlength="4" placeholder="AAAA" value="'+esc_(v("fa"))+'">'+
@@ -1110,73 +1220,65 @@ function formHTML(){
     return h+"</div>";
   }
 
-  /* ---------- 5 ---------- */
+  /* ---------- 5 · datos del negocio ---------- */
   case "5": {
-    const opc=function(k,lista){
-      let o='<option value="">'+F.p5.elige+"</option>";
-      lista.forEach(function(x){ o+='<option value="'+esc_(x)+'"'+(v(k)===x?" selected":"")+">"+esc_(x)+"</option>"; });
-      return o;
-    };
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p5.titulo+"</div>"+
-      '<div class="f"><label>'+F.p5.actividad+'</label><p class="hint">'+F.p5.actividadHint+"</p>"+
-      '<select class="inp" data-k="actividad">'+opc("actividad",F.p5.actividadOpc)+"</select></div>"+
-      '<div class="f"><label>'+F.p5.regimen+'</label><p class="hint">'+F.p5.regimenHint+"</p>"+
-      '<select class="inp" data-k="regimen">'+opc("regimen",F.p5.regimenOpc)+"</select></div></div>";
-    h+='<div class="card">'+menBloque(C.ui.pregunta,F.p5.preguntaINE,"5");
+    let h='<div class="crm"><div class="card">'+
+      '<div class="f ac"><label>'+F.p5.actividad+'</label><p class="hint">'+F.p5.actividadHint+"</p>"+
+      '<input class="inp" data-k="actividad" autocomplete="off" placeholder="'+F.p5.actividadPlaceholder+'" value="'+esc_(v("actividad"))+'">'+
+      sugHTML("actividad")+"</div>"+
+      '<div class="f ac"><label>'+F.p5.regimen+'</label><p class="hint">'+F.p5.regimenHint+"</p>"+
+      '<input class="inp" data-k="regimen" autocomplete="off" placeholder="'+F.p5.regimenPlaceholder+'" value="'+esc_(v("regimen"))+'">'+
+      sugHTML("regimen")+"</div></div>";
+    h+='<div class="card"><div class="h2">'+F.p5.docTitulo+"</div>"+menBloque(C.ui.pregunta,F.p5.preguntaINE);
     F.p5.docOpc.forEach(function(o){
       h+='<label class="opt'+(v("doc")===o?" on":"")+'"><input type="radio" name="doc" data-act="doc" data-v="'+esc_(o)+'"'+(v("doc")===o?" checked":"")+"><span>"+o+"</span></label>";
     });
-    h+=errHTML()+'<div style="margin-top:14px">'+btnCont("contNegocio",S.conf["5"]&&!!v("actividad")&&!!v("regimen"))+"</div>";
-    if(!S.conf["5"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    h+=errHTML()+'<div style="margin-top:14px">'+btnCont("contNegocio",!!v("actividad")&&!!v("regimen"))+"</div>";
     return h+"</div></div>";
   }
 
-  /* ---------- 6 ---------- */
-  case "6": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p6.titulo+"</div>";
-    if(!S.revListo) h+='<div class="spin"></div><p class="hint" style="text-align:center">'+F.p6.espera+"</p>";
-    h+=menBloque(C.ui.menciona,F.p6.texto,"6");
-    if(S.revListo&&!S.conf["6"]) h+='<div class="warn">'+F.p6.listo+"</div>";
-    return h+"</div></div>";
-  }
+  /* ---------- 6 · revisión ---------- */
+  case "6":
+    return '<div class="crm"><div class="card">'+
+      '<div class="spin"></div><p class="hint" style="text-align:center">'+F.p6.espera+"</p>"+
+      menBloque(C.ui.menciona,F.p6.texto)+"</div></div>";
 
-  /* ---------- 7 ---------- */
+  /* ---------- 7 · domicilio de entrega ---------- */
   case "7": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7.titulo+"</div>";
-    const guardados=e.guardados&&e.guardados.length&&!S.nuevoAddr;
-    h+='<p class="hint">'+(guardados?F.p7.subGuardados:F.p7.sub)+"</p>";
+    const guardados=e.guardados&&e.guardados.length;
+    let h='<div class="crm"><div class="card">'+crmHead()+
+      '<div class="h1">'+F.p7.titulo+'</div><p class="hint">'+F.p7.sub+"</p>";
+    h+='<div class="map"><div class="pin"></div><div class="mapzoom"><button data-act="zoom">+</button><button data-act="zoom">−</button></div>'+
+       '<div class="mapbtn"><button class="btn sm" data-act="elegirUbicacion">'+F.p7.elegir+"</button></div></div>";
+    if(guardados) h+='<p class="hint">'+F.p7.subGuardados+"</p>";
+    h+='<div class="f"><input class="inp" data-k="buscar" placeholder="'+F.p7.buscar+'" value="'+esc_(v("buscar"))+'"></div>';
     if(guardados){
       e.guardados.forEach(function(g,i){
         h+='<button class="addr'+(S.addrSel===i?" on":"")+'" data-act="elegirGuardado" data-v="'+i+'">'+esc_(g.t)+"</button>";
       });
-      h+='<button class="btn gh sm" data-act="nuevoAddr" style="margin-top:6px">'+F.p7.nuevo+"</button>";
-    }else{
-      h+='<div class="map"><div class="pin"></div></div>';
-      h+='<div class="f"><label>'+F.p7.buscar+'</label><input class="inp" data-k="buscar" value="'+esc_(v("buscar"))+'"></div>';
-      h+=btnCont("elegirUbicacion",true,F.p7.elegir);
     }
     if(S.zonaErr) h+='<div class="err"><span>⚠</span><span>'+F.p7.zonaNo+"</span></div>";
     return h+"</div></div>";
   }
 
-  /* ---------- 7a paquetería ---------- */
+  /* ---------- 7a · paquetería ---------- */
   case "7a": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7a.titulo+"</div>"+
-      menBloque(C.ui.menciona,F.p7a.mencion,"7")+"</div>";
-    h+='<div class="card"><div class="h2">'+F.p7a.confirma+"</div>"+
+    let h='<div class="crm"><div class="card">'+crmHead()+
+      '<div class="h1">'+F.p7.titulo+'</div><p class="hint">'+F.p7.sub+"</p>"+domSel()+"</div>";
+    h+='<div class="card">'+menBloque(C.ui.menciona,F.p7a.mencion)+
+      '<div class="h2">'+F.p7a.confirma+"</div>"+
       campo(F.p7a.cp,"cp",'inputmode="numeric"')+campo(F.p7a.ciudad,"ciudad")+campo(F.p7a.colonia,"colonia")+
       campo(F.p7a.calle,"calle")+campo(F.p7a.num,"num")+"</div>";
-    h+='<div class="card">'+detallesHTML(F.p7a)+errHTML()+
-      '<div style="margin-top:6px">'+btnCont("contEntrega",S.conf["7"])+"</div>"+
-      (S.conf["7"]?"":'<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>")+"</div>";
+    h+='<div class="card">'+todoBloque(F.p7a.todoDetalles)+detallesHTML(F.p7a)+errHTML()+
+      '<div style="margin-top:6px">'+btnCont("contEntrega",true)+"</div></div>";
     return h+"</div>";
   }
 
-  /* ---------- 7b embajador ---------- */
+  /* ---------- 7b · embajador ---------- */
   case "7b": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p7b.titulo+"</div>"+
-      menBloque(C.ui.menciona,F.p7b.mencion,"7")+"</div>";
-    h+='<div class="card">'+detallesHTML(F.p7b)+"</div>";
+    let h='<div class="crm"><div class="card">'+crmHead()+
+      '<div class="h1">'+F.p7.titulo+'</div><p class="hint">'+F.p7.sub+"</p>"+domSel()+"</div>";
+    h+='<div class="card">'+menBloque(C.ui.menciona,F.p7b.mencion)+detallesHTML(F.p7b)+"</div>";
     h+='<div class="card"><div class="h2">'+F.p7b.fechaTitulo+'</div><p class="hint">'+F.p7b.fechaHint+"</p>";
     h+='<div class="slots">';
     (e.dias||[]).forEach(function(d){ h+='<div class="d">'+esc_(d.d)+"</div>"; });
@@ -1188,14 +1290,13 @@ function formHTML(){
     });
     h+="</div>";
     h+='<button class="btn gh sm" data-act="otroDia">'+F.p7b.otroDia+"</button>";
-    h+=errHTML()+'<div style="margin-top:16px">'+btnCont("contEntrega",S.conf["7"])+"</div>";
-    if(!S.conf["7"]) h+='<div class="hint" style="margin:10px 0 0">'+C.ui.faltaMencion+"</div>";
+    h+=errHTML()+'<div style="margin-top:16px">'+btnCont("contEntrega",true)+"</div>";
     return h+"</div></div>";
   }
 
-  /* ---------- 8 ---------- */
+  /* ---------- 8 · plan ---------- */
   case "8": {
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p8.titulo+"</div>";
+    let h='<div class="crm"><div class="card">'+todoBloque(F.p8.todo)+'<div class="h1">'+F.p8.titulo+"</div>";
     F.p8.planes.forEach(function(pl){
       h+='<label class="plan'+(v("plan")===pl.n?" on":"")+'"><input type="radio" name="plan" data-act="plan" data-v="'+esc_(pl.n)+'"'+(v("plan")===pl.n?" checked":"")+">"+
          '<span class="n">'+pl.n+'</span><span class="p">'+pl.p+"</span></label>";
@@ -1205,18 +1306,17 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 9 ---------- */
+  /* ---------- 9 · entrega programada ---------- */
   case "9": {
-    const g=guionFinal();
     const titulo=S.entrega==="embajador"
       ? F.p9.tarjetaEmb.replace("{fecha}",fechaLarga()).replace("{ventana}",v("vent")||"—")
       : F.p9.tarjetaPost.replace("{fecha}",fechaLarga());
-    let h='<div class="crm"><div class="card"><div class="h1">'+F.p9.titulo+"</div>"+
+    let h='<div class="crm"><div class="card">'+crmHead()+
+      menBloque(C.ui.menciona,"",guionFinal())+
       '<div class="dcard"><div class="big">'+titulo+"</div>"+
       '<div class="dl"><b>'+F.p9.dir+"</b><span>"+esc_(direccionTexto())+"</span></div>"+
       '<div class="dl"><b>'+F.p9.cliente+"</b><span>"+esc_((v("nombres")+" "+v("ap1")+" "+v("ap2")).trim()||"—")+" · "+esc_(v("tel"))+"</span></div>"+
       '<div class="dl"><b>'+F.p9.instr+"</b><span>"+esc_(v("instr")||v("detalles")||"—")+"</span></div></div>";
-    h+=menBloque(C.ui.menciona,"","9",g);
     h+='<div class="btns"><button class="btn gh" data-act="editarEntrega">'+F.p9.editar+"</button>"+
        '<button class="btn gh" data-act="cancelarEntrega">'+F.p9.cancelarEntrega+"</button>"+
        '<button class="btn gh" data-act="cancelarSolicitud">'+F.p9.cancelarSolicitud+"</button></div>";
@@ -1226,21 +1326,30 @@ function formHTML(){
   /* ---------- pantallas de paro ---------- */
   case "corner": case "tecnico": case "rechazo": case "sindoc": case "noAutoriza": {
     const d=C.errores[S.pant];
-    let h='<div class="crm"><div class="card"><div class="h1">'+d.titulo+"</div>"+
-      menBloque(C.ui.menciona,d.texto,S.pant)+"</div>";
-    if(S.conf[S.pant]&&puedeResumen()) h+='<div class="card"><button class="btn gh" data-act="resumen">'+C.ui.verResumen+"</button></div>";
-    return h+"</div>";
+    return '<div class="crm"><div class="card"><div class="h1">'+d.titulo+"</div>"+
+      menBloque(C.ui.menciona,d.texto)+"</div></div>";
   }
   }
   return "";
 }
 
-function detallesHTML(t){
-  let h='<div class="f"><label>'+t.detalles+'</label><textarea class="inp" data-k="detalles" rows="3">'+esc_(v("detalles"))+"</textarea>";
-  if(v("detalles").trim().length<20) h+='<div class="warn">'+t.avisoDetalles+"</div>";
-  h+="</div>";
-  h+='<div class="f"><label>'+t.instrucciones+'</label><input class="inp" data-k="instr" value="'+esc_(v("instr"))+'"></div>';
+function sugHTML(k){
+  if(S.sugCampo!==k) return "";
+  const q=v(k), lista=sugerencias(k,q);
+  let h='<div class="sug">', grupo="";
+  if(!lista.length) h+='<div class="vacio">'+F.p5.sinResultados+"</div>";
+  else lista.forEach(function(o){
+    if(o.g&&o.g!==grupo){ grupo=o.g; h+='<div class="grupo">'+esc_(grupo)+"</div>"; }
+    h+='<button data-act="sug" data-c="'+k+'" data-v="'+esc_(o.n)+'">'+resaltar(o.n,q)+
+       (o.d?"<small>"+resaltar(o.d,q)+"</small>":"")+"</button>";
+  });
+  h+='<div class="pista">'+F.p5.pistaLista+"</div></div>";
   return h;
+}
+
+function detallesHTML(t){
+  return '<div class="f"><label>'+t.detalles+'</label><textarea class="inp" data-k="detalles" rows="3">'+esc_(v("detalles"))+"</textarea></div>"+
+         '<div class="f"><label>'+t.instrucciones+'</label><input class="inp" data-k="instr" value="'+esc_(v("instr"))+'"></div>';
 }
 function puedeResumen(){
   if(S.pant==="rechazo"&&S.esc==="C") return S.quizEstado==="ok";
@@ -1276,11 +1385,6 @@ function panelHTML(){
   if(d.diceWor) dice+='<div style="margin-top:12px">'+badge("wor")+'<div class="say words">'+d.diceWor+"</div></div>";
   if(k==="p9") dice+='<div class="say" style="margin-top:12px">'+guionFinal().map(function(p){return "<p style=\'margin:0 0 10px\'>"+p+"</p>";}).join("")+"</div>";
   if(k==="paro"&&S.pant!=="2") dice+='<div class="say" style="margin-top:12px">'+(C.errores[S.pant]?C.errores[S.pant].texto:"")+"</div>";
-  if(k==="p1"){
-    dice+= S.conf["1"]
-      ? '<button class="pbtn done">✓ '+C.ui.yaMencionado+"</button>"
-      : '<button class="pbtn" data-act="confirmar" data-v="1">'+C.ui.yaMencione+"</button>";
-  }
   h+=bloque(C.ui.bloques[0],dice);
 
   /* 2 · Qué te contesta */
@@ -1313,7 +1417,7 @@ function panelHTML(){
   h+=bloque(C.ui.bloques[2],haces);
 
   /* quiz del escenario C */
-  if(S.pant==="rechazo"&&S.esc==="C"&&S.conf.rechazo){
+  if(S.pant==="rechazo"&&S.esc==="C"){
     let q='<div class="cli">'+C.quiz.pregunta+'</div><p style="margin:10px 0">'+C.quiz.intro+"</p>";
     C.quiz.opciones.forEach(function(o,i){
       const cl=(S.quizEstado==="ok"&&o.ok)?" good":((S.quizEstado==="mal"&&!o.ok)?" bad":"");
@@ -1333,7 +1437,7 @@ function panelHTML(){
   }
 
   /* salida al resumen */
-  if((S.pant==="9"&&S.conf["9"])||(k==="paro"&&S.conf[S.pant]&&puedeResumen())){
+  if(S.pant==="9"||(k==="paro"&&puedeResumen())){
     h+='<button class="pbtn gh" data-act="resumen">'+C.ui.verResumen+"</button>";
   }
   return h;
@@ -1344,14 +1448,11 @@ function panelHTML(){
    ======================================================================= */
 function resumenHTML(){
   const R=C.resumen, it=R.items;
-  const vistos=Object.keys(S.vistos);
-  const b=vistos.length, a=vistos.filter(function(x){return !!S.conf[x];}).length;
   const filas=[
-    {ok:!!S.conf["3"], t:it.aviso.t, tx:S.conf["3"]?it.aviso.ok:it.aviso.no},
+    {ok:!!S.consent, t:it.consent.t, tx:S.consent?it.consent.ok:it.consent.no},
     {ok:S.rfcManual===0, t:it.rfc.t, tx:S.rfcManual===0?it.rfc.ok:it.rfc.no.replace("{n}",S.rfcManual)},
-    {ok:(b>0&&a===b), t:it.menciones.t, tx:(a===b?it.menciones.ok:it.menciones.no).replace("{a}",a).replace("{b}",b)},
     {ok:(v("detalles").trim().length>=20), t:it.detalles.t, tx:(v("detalles").trim().length>=20)?it.detalles.ok:it.detalles.no},
-    {ok:!!S.conf["9"], t:it.guion.t, tx:S.conf["9"]?it.guion.ok:it.guion.no},
+    {ok:!!S.llegoEntrega, t:it.entrega.t, tx:S.llegoEntrega?it.entrega.ok:it.entrega.no},
     {info:true, t:it.tiempo.t, tx:it.tiempo.ok.replace("{t}",tiempoTexto())}
   ];
   let h='<div class="center"><div class="card"><div class="h1">'+R.titulo+'</div><p class="hint" style="font-size:15px">'+R.intro+"</p></div>";
@@ -1378,6 +1479,8 @@ function llenarDomicilio(o){
 
 app.addEventListener("click",function(ev){
   const t=ev.target.closest("[data-act]");
+  /* clic fuera del autocompletado: se cierra */
+  if(S.sugCampo && !ev.target.closest(".ac")){ S.sugCampo=null; if(!t) return render(); }
   if(!t) return;
   const act=t.dataset.act, val=t.dataset.v, e=esc();
 
@@ -1391,28 +1494,17 @@ app.addEventListener("click",function(ev){
     if(!m) return render();
     if(m.accion==="reinicio") return iniciar(S.esc);
     if(m.accion==="editar"){ S.zonaErr=false; return go("7"); }
-    if(m.accion==="cancelarEntrega"){ set("dia","");set("vent",""); S.conf["7"]=false; S.zonaErr=false; return go("7"); }
+    if(m.accion==="cancelarEntrega"){ set("dia","");set("vent",""); S.zonaErr=false; return go("7"); }
     if(m.accion==="cancelarSolicitud") return go("corner");
     render(); return;
   }
-  case "confirmar":
-    S.conf[val]=true;
-    if(val==="6"&&S.revListo) return salirRevision();
-    render(); return;
+  case "zoom": return;   /* el mapa es decorativo, como en la maqueta */
+
+  case "sug": set(t.dataset.c,val); S.sugCampo=null; S.err=""; render(); return;
 
   case "verificar": S.otpIntentos=0; S.otpOk=false; S.otpAgotado=false; S.otpErr=""; set("codigo",""); return go("2");
-  case "validarOTP":
-    if(v("codigo")===e.codigo){ S.otpOk=true; S.otpErr=""; }
-    else{
-      S.otpIntentos++;
-      if(S.otpIntentos>=3){ S.otpAgotado=true; S.otpErr=""; }
-      else S.otpErr=F.p2.malo.replace("{i}",S.otpIntentos);
-      set("codigo","");
-    }
-    render(); return;
   case "cambiarNumero": return go("1");
   case "reenviar": S.reenvio=25; clearInterval(tReenvio); tReenvio=setInterval(tick,1000); toast("Código reenviado por SMS y WhatsApp."); return;
-  case "aConsentimiento": return go("3");
 
   case "consent": S.consent=!S.consent; S.err=""; render(); return;
   case "contConsent":
@@ -1438,7 +1530,6 @@ app.addEventListener("click",function(ev){
     S.zonaErr=false; llenarDomicilio(g.campos||e.domicilio);
     return fijarEntrega(e.entrega);
   }
-  case "nuevoAddr": S.nuevoAddr=true; S.zonaErr=false; render(); return;
   case "elegirUbicacion":
     S.zonaErr=false; llenarDomicilio(e.domicilio);
     return fijarEntrega(e.entrega);
@@ -1449,7 +1540,6 @@ app.addEventListener("click",function(ev){
   case "otroDia": set("dia",""); set("vent",""); toast(F.p7b.otroDiaAviso); return;
   case "contEntrega":
     if(S.entrega==="embajador"&&(!v("dia")||!v("vent"))){ S.err=F.p7b.faltaSlot; return render(); }
-    if(v("detalles").trim().length<20) toast(F.p7a.avisoDetalles);
     S.err=""; return go("8");
 
   case "plan": set("plan",val); S.err=""; render(); return;
@@ -1470,15 +1560,32 @@ app.addEventListener("click",function(ev){
   case "repetir": return iniciar(S.esc);
   case "otro":
     limpiarTimers();
-    S={pant:"inicio",esc:null,campos:{},conf:{},vistos:{},modal:null,toast:"",hist:[]};
+    S={pant:"inicio",esc:null,campos:{},modal:null,toast:"",hist:[]};
     render(); return;
   }
 });
+
+function validarOTP(){
+  const e=esc();
+  if(v("codigo")===e.codigo){
+    S.otpOk=true; S.otpErr="";
+    render();
+    tRevision=setTimeout(function(){ if(S.pant==="2"&&S.otpOk) go("3"); },1400);
+    return;
+  }
+  S.otpIntentos++;
+  if(S.otpIntentos>=3){ S.otpAgotado=true; S.otpErr=""; }
+  else S.otpErr=F.p2.malo.replace("{i}",S.otpIntentos);
+  set("codigo","");
+  render();
+}
 
 app.addEventListener("input",function(ev){
   const k=ev.target.dataset?ev.target.dataset.k:null;
   if(!k) return;
   set(k,ev.target.value);
+  if(k==="codigo"&&!S.otpAgotado&&!S.otpOk&&digitos(ev.target.value).length===4){ return validarOTP(); }
+  if(k==="actividad"||k==="regimen"){ S.sugCampo=k; }
   if(k==="detalles"||k==="codigo"||k==="tel"||k==="ingreso"||k==="nombres"||k==="ap1"||k==="ap2"||k==="fd"||k==="fm"||k==="fa"){
     if(k!=="codigo") S.err="";
   }
@@ -1497,8 +1604,15 @@ app.addEventListener("change",function(ev){
   if(el.dataset&&el.dataset.k){ set(el.dataset.k,el.value); S.err=""; render(); }
 });
 
+app.addEventListener("focusin",function(ev){
+  const el=ev.target;
+  const fk=el.dataset?el.dataset.k:null;
+  if((fk==="actividad"||fk==="regimen")&&S.sugCampo!==fk){ S.sugCampo=fk; render(); }
+});
+
 app.addEventListener("keydown",function(ev){
   const el=ev.target;
+  if(el.dataset&&(el.dataset.k==="actividad"||el.dataset.k==="regimen")&&ev.key==="Escape"&&S.sugCampo){ S.sugCampo=null; render(); return; }
   if(el.dataset&&el.dataset.k==="rfc"){
     const libres=["Tab","Shift","Control","Alt","Meta","Escape","Enter","ArrowLeft","ArrowRight","ArrowUp","ArrowDown","Home","End"];
     if(libres.indexOf(ev.key)>=0||ev.metaKey||ev.ctrlKey) return;
