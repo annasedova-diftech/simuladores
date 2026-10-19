@@ -4,9 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulador · Solicitud Cuenta Empresa (CRM)</title>
-<meta name="sim:category" content="CRM">
-<meta name="sim:title" content="Solicitud Cuenta Empresa (CRM)">
-<meta name="sim:description" content="Alta y seguimiento de la solicitud de Cuenta Empresa en CRM.">
 <style>
 :root{
   --nar:#ff5d15;
@@ -111,6 +108,18 @@ button{font-family:inherit}
 .opt input{accent-color:var(--nar);width:18px;height:18px;cursor:pointer}
 .opt.on{border-color:var(--nar);background:rgba(255,93,21,.07)}
 
+/* NUEVO · bloque «Acciones» del CRM (pantalla Tipo de empresa) */
+.acc{background:#fdf5e4;border-left:4px solid #ff9500;border-radius:0 10px 10px 0;padding:13px 16px;margin:0 0 14px}
+.acc .t{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--neg)}
+.acc p{margin:0;font-size:14.5px;line-height:1.5;color:var(--neg)}
+/* NUEVO · botones de elección PFAE / PM */
+.tipobtns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:4px}
+.tipobtn{border:1px solid transparent;background:#e1e5ef;color:var(--neg);border-radius:12px;padding:15px 10px;font-size:15.5px;font-weight:700;cursor:pointer}
+.tipobtn:hover{border-color:var(--nar)}
+.tipobtn.on{border-color:var(--nar);background:rgba(255,93,21,.10)}
+/* NUEVO · pantalla de cierre PM */
+.pmico{display:flex;justify-content:center;margin:18px 0 16px}
+
 /* autocompletado de Actividad del negocio */
 .ac{position:relative}
 .sug{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:20;background:var(--bla);
@@ -162,7 +171,7 @@ button{font-family:inherit}
 .plan .p{font-weight:700;font-size:16px;color:var(--nar);white-space:nowrap}
 .promo{font-size:13px;font-weight:600;color:var(--nar);background:rgba(255,93,21,.09);border-radius:8px;padding:8px 11px;margin:-4px 0 9px}
 
-/* summary card screen 9 */
+/* summary card (pantalla 10 · entrega programada) */
 .dcard{border:1px solid rgba(29,32,38,.14);border-radius:12px;padding:16px;margin-bottom:14px}
 .dcard .big{font-size:18px;font-weight:700;margin-bottom:12px}
 .dl{display:flex;gap:10px;font-size:14px;padding:7px 0;border-top:1px solid rgba(29,32,38,.08)}
@@ -277,7 +286,7 @@ const CONTENIDO = {
 
 ui:{
   marca:"Plata <span>CRM</span> · Cuenta Empresa",
-  progreso:"Pantalla {n} de 9",
+  progreso:"Pantalla {n} de 10",
   atras:"Atrás",
   reiniciar:"Reiniciar",
   reiniciarPreg:"¿Reiniciar el escenario desde el principio? Se pierde lo capturado.",
@@ -392,7 +401,9 @@ escenarios:{
   }
 },
 
-/* ---------------- textos de la forma (CRM) ---------------- */
+/* ---------------- textos de la forma (CRM) ----------------
+   Las claves internas (p1…p9) se conservan; el número que ve el agente
+   lo da la tabla NUM. Pantalla nueva: ptipo (3) y su cierre ppm.        */
 form:{
   p1:{
     titulo:"Vincular teléfono",
@@ -410,6 +421,18 @@ form:{
     ok:"El código es correcto",
     agotado:"All attempts to validate the code have been exhausted",
     malo:"El código no coincide. Intento {i} de 3."
+  },
+  /* NUEVO · pantalla 3 */
+  ptipo:{
+    titulo:"Tipo de empresa",
+    accionesT:"Acciones",
+    acciones:"Pregunta al cliente cómo está registrado su negocio y elige el tipo correcto. Con PFAE continúas con la solicitud. Con PM la solicitud se cierra y solo lees el mensaje de despedida",
+    opciones:["PFAE","PM"]
+  },
+  /* NUEVO · cierre cuando el cliente es persona moral */
+  ppm:{
+    titulo:"Persona moral",
+    texto:"Lo sentimos, por el momento no podemos abrir cuentas para personas morales. Te contactaremos cuando podamos ofrecer este servicio."
   },
   p3:{
     titulo:"Obtener consentimiento del cliente",
@@ -649,6 +672,39 @@ panel:{
       "<b>Si se agotan los intentos</b> — la pantalla te lo dice y el proceso no puede seguir. <b>Escalas</b>, no lo intentas por otra vía."
     ]
   },
+  /* NUEVO · pantalla 3 · Tipo de empresa (borrador de textos para revisión) */
+  ptipo:{
+    modo:"wor",
+    dice:"Pregúntale <b>cómo está registrado su negocio ante el SAT</b>: como persona física con actividad empresarial (<code>PFAE</code>) o como persona moral, es decir, una empresa constituida (<code>PM</code>).",
+    contesta:{
+      A:["«Como persona física con actividad empresarial.»"],
+      B:["«Soy persona física, estoy en RESICO.»"],
+      C:["«Como persona física.»"],
+      L:["Lo que quieras probar: PFAE o PM."]
+    },
+    haces:"Presiona el botón que corresponde. <code>PFAE</code> → sigues con el consentimiento. <code>PM</code> → la solicitud se cierra y solo lees el mensaje de despedida.",
+    fuera:[
+      "<b>Aquí solo distingues persona física o persona moral.</b> El régimen fiscal exacto (RESICO, PFAE, RIF…) se pregunta más adelante, en <code>Datos del negocio</code>.",
+      "<b>Si el cliente no sabe</b> — que lo revise en su Constancia de Situación Fiscal. Una pista: el RFC de una persona moral tiene 12 caracteres; el de una persona física, 13.",
+      "<b>Si el negocio es persona moral, elige <code>PM</code>.</b> No marques <code>PFAE</code> para no perder la venta: la solicitud sería de otro tipo de cliente."
+    ]
+  },
+  /* NUEVO · cierre PM */
+  ppm:{
+    modo:"lit",
+    dice:"«Lo sentimos, por el momento no podemos abrir cuentas para personas morales. Te contactaremos cuando podamos ofrecer este servicio.»",
+    contesta:{
+      A:["«Ah, entiendo. Gracias.»"],
+      B:["«Ah, entiendo. Gracias.»"],
+      C:["«Ah, entiendo. Gracias.»"],
+      L:["«¿Y para cuándo van a tenerlo?»"]
+    },
+    haces:"Lees el mensaje tal cual, cierras con cortesía y terminas la llamada. El resultado lo registras en el sistema de tu centro de contacto.",
+    fuera:[
+      "<b>No prometas fechas.</b> El mensaje dice que lo contactaremos, no cuándo. Si pregunta, le repites que lo contactaremos en cuanto el servicio esté disponible.",
+      "<b>No continúes la solicitud por otra vía</b> ni sugieras alternativas que la pantalla no ofrece."
+    ]
+  },
   p3:{
     modo:"lit",
     dice:"El texto del aviso, <b>palabra por palabra, directo de la pantalla.</b> No lo resumas, no lo digas «con tus palabras», no lo omitas porque el cliente ya dijo que sí.",
@@ -874,6 +930,11 @@ resumen:{
   titulo:"Cómo te fue",
   intro:"No es una calificación: es una lista de hábitos. Mira lo que quedó en rojo y repite el escenario.",
   items:{
+    tipo:{t:"Confirmaste el tipo de empresa",
+      ok:"Preguntaste cómo está registrado el negocio y elegiste <code>PFAE</code> antes de seguir.",
+      no:"No quedó registrado el tipo de empresa."},
+    pm:{t:"Cerraste la solicitud de una persona moral",
+      ok:"Elegiste <code>PM</code> y leíste el mensaje de despedida. Con persona moral la solicitud no continúa: este es el cierre correcto."},
     consent:{t:"Marcaste la autorización del cliente antes de capturar datos",
       ok:"Leíste el aviso y marcaste <code>Recibí autorización del cliente</code> antes de pedir cualquier dato.",
       no:"No quedó marcada la autorización. El aviso se lee de la pantalla y se confirma antes de capturar datos."},
@@ -900,7 +961,10 @@ resumen:{
 const app = document.getElementById("app");
 const C = CONTENIDO, F = C.form, P = C.panel;
 const PARO = ["corner","tecnico","rechazo","sindoc","noAutoriza"];
-const NUM = {"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"7a":7,"7b":7,"8":8,"9":9};
+/* Clave interna de pantalla → número que ve el agente.
+   "tipo" es la pantalla nueva (3); desde el consentimiento todo corre +1. */
+const TOTAL = 10;
+const NUM = {"1":1,"2":2,"tipo":3,"3":4,"4":5,"5":6,"6":7,"7":8,"7a":8,"7b":8,"8":9,"9":10};
 
 let S = {};
 function nuevoEstado(id){
@@ -909,6 +973,7 @@ function nuevoEstado(id){
     campos:{tel:"",codigo:"",nombres:"",ap1:"",ap2:"",fd:"",fm:"",fa:"",rfc:"",ingreso:"",
             actividad:"",regimen:"",doc:"",cp:"",ciudad:"",colonia:"",calle:"",num:"",
             detalles:"",instr:"",dia:"",vent:"",plan:"",buscar:""},
+    tipo:"",
     consent:false,
     otpIntentos:0, otpOk:false, otpAgotado:false, otpErr:"", reenvio:25,
     err:"", rfcManual:0, entrega:"", addrSel:null, zonaErr:false,
@@ -969,7 +1034,7 @@ function ult4(){ const d=digitos(v("tel")); return d.slice(-4)||"0000"; }
 function esc_(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 
 function sinAcentos(x){
-  return (x||"").normalize?(x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase():(x||"").toLowerCase();
+  return (x||"").normalize?(x||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase():(x||"").toLowerCase();
 }
 function catalogo(k){
   if(k==="regimen") return F.p5.regimenOpc.map(function(o){ return {n:o.n,d:o.d,g:""}; });
@@ -1003,7 +1068,7 @@ function resaltar(opcion,q){
 
 function generarRFC(){
   const n=v("nombres").trim(), a1=v("ap1").trim(), a2=v("ap2").trim();
-  const sinAcento=function(s){return s.normalize?s.normalize("NFD").replace(/[\u0300-\u036f]/g,""):s;};
+  const sinAcento=function(s){return s.normalize?s.normalize("NFD").replace(/[̀-ͯ]/g,""):s;};
   const A1=sinAcento(a1).toUpperCase(), A2=sinAcento(a2).toUpperCase(), N=sinAcento(n).toUpperCase();
   const vocal=(A1.slice(1).match(/[AEIOU]/)||["X"])[0];
   /* Sin segundo apellido el SAT usa las dos primeras letras del nombre */
@@ -1091,12 +1156,13 @@ function topbar(){
   const n=S.num||1;
   let h='<div class="top"><div class="brand">'+C.ui.marca+"</div>";
   if(enFlujo){
-    h+='<div class="prog">'+C.ui.progreso.replace("{n}",n)+'</div><div class="bar"><i style="width:'+Math.round(n/9*100)+'%"></i></div>';
+    h+='<div class="prog">'+C.ui.progreso.replace("{n}",n)+'</div><div class="bar"><i style="width:'+Math.round(n/TOTAL*100)+'%"></i></div>';
   }
   h+='<div class="sp"></div>';
   if(enFlujo && S.esc==="L"){
     h+='<div class="libre"><span class="esc">'+C.ui.modoLibre+'</span><select data-act="libre">'+
        '<option value="">—</option>'+
+       '<option value="pm">Persona moral (PM)</option>'+
        '<option value="zona">Zona no habilitada</option>'+
        '<option value="otpAgotado">Intentos de código agotados</option>'+
        '<option value="sindoc">Sin documento válido</option>'+
@@ -1145,6 +1211,15 @@ function menBloque(titulo,texto,parrafos){
 function todoBloque(texto){
   return '<div class="todo"><div class="t">ToDo</div><p>'+texto+"</p></div>";
 }
+function accBloque(titulo,texto){
+  return '<div class="acc"><div class="t">'+titulo+"</div><p>"+texto+"</p></div>";
+}
+function iconoAviso(){
+  return '<div class="pmico"><svg width="84" height="76" viewBox="0 0 84 76" aria-hidden="true">'+
+    '<defs><linearGradient id="gAv" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f0a24a"/><stop offset="1" stop-color="#f2a93b"/></linearGradient></defs>'+
+    '<path d="M35 8c3-6 11-6 14 0l31 56c3 6-1 11-8 11H12c-7 0-11-5-8-11z" fill="url(#gAv)" stroke="#e8763a" stroke-width="2"/>'+
+    '<rect x="38.5" y="22" width="7" height="30" rx="3.5" fill="#fff"/><circle cx="42" cy="61" r="4.2" fill="#fff"/></svg></div>';
+}
 function crmHead(){
   const n=(v("nombres")+" "+v("ap1")).trim()||"—";
   return '<div class="crmhead"><span class="who">'+esc_(n)+'</span>'+
@@ -1188,7 +1263,22 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 3 · consentimiento ---------- */
+  /* ---------- 3 · tipo de empresa (NUEVO) ---------- */
+  case "tipo": {
+    let h='<div class="crm"><div class="card"><div class="h1" style="margin-bottom:14px">'+F.ptipo.titulo+"</div>";
+    h+=accBloque(F.ptipo.accionesT,F.ptipo.acciones);
+    h+='<div class="tipobtns">';
+    F.ptipo.opciones.forEach(function(o){
+      h+='<button class="tipobtn'+(S.tipo===o?" on":"")+'" data-act="tipo" data-v="'+o+'">'+o+"</button>";
+    });
+    return h+"</div></div></div>";
+  }
+
+  /* ---------- 3 → PM · cierre (NUEVO) ---------- */
+  case "pm":
+    return '<div class="crm"><div class="card">'+iconoAviso()+menBloque(C.ui.menciona,F.ppm.texto)+"</div></div>";
+
+  /* ---------- 4 · consentimiento (clave "3") ---------- */
   case "3": {
     let h='<div class="crm"><div class="card"><div class="h1">'+F.p3.titulo+"</div>";
     h+=menBloque(C.ui.menciona,F.p3.aviso);
@@ -1199,7 +1289,7 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 4 · nombre completo ---------- */
+  /* ---------- 5 · nombre completo (clave "4") ---------- */
   case "4": {
     let h='<div class="crm"><div class="card"><div class="h1">'+F.p4.seccion+"</div>";
     h+='<p class="hint">'+F.p4.instruccion+"</p>";
@@ -1220,7 +1310,7 @@ function formHTML(){
     return h+"</div>";
   }
 
-  /* ---------- 5 · datos del negocio ---------- */
+  /* ---------- 6 · datos del negocio (clave "5") ---------- */
   case "5": {
     let h='<div class="crm"><div class="card">'+
       '<div class="f ac"><label>'+F.p5.actividad+'</label><p class="hint">'+F.p5.actividadHint+"</p>"+
@@ -1237,13 +1327,13 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 6 · revisión ---------- */
+  /* ---------- 7 · revisión (clave "6") ---------- */
   case "6":
     return '<div class="crm"><div class="card">'+
       '<div class="spin"></div><p class="hint" style="text-align:center">'+F.p6.espera+"</p>"+
       menBloque(C.ui.menciona,F.p6.texto)+"</div></div>";
 
-  /* ---------- 7 · domicilio de entrega ---------- */
+  /* ---------- 8 · domicilio de entrega (clave "7") ---------- */
   case "7": {
     const guardados=e.guardados&&e.guardados.length;
     let h='<div class="crm"><div class="card">'+crmHead()+
@@ -1261,7 +1351,7 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 7a · paquetería ---------- */
+  /* ---------- 8a · paquetería (clave "7a") ---------- */
   case "7a": {
     let h='<div class="crm"><div class="card">'+crmHead()+
       '<div class="h1">'+F.p7.titulo+'</div><p class="hint">'+F.p7.sub+"</p>"+domSel()+"</div>";
@@ -1274,7 +1364,7 @@ function formHTML(){
     return h+"</div>";
   }
 
-  /* ---------- 7b · embajador ---------- */
+  /* ---------- 8b · embajador (clave "7b") ---------- */
   case "7b": {
     let h='<div class="crm"><div class="card">'+crmHead()+
       '<div class="h1">'+F.p7.titulo+'</div><p class="hint">'+F.p7.sub+"</p>"+domSel()+"</div>";
@@ -1294,7 +1384,7 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 8 · plan ---------- */
+  /* ---------- 9 · plan (clave "8") ---------- */
   case "8": {
     let h='<div class="crm"><div class="card">'+todoBloque(F.p8.todo)+'<div class="h1">'+F.p8.titulo+"</div>";
     F.p8.planes.forEach(function(pl){
@@ -1306,7 +1396,7 @@ function formHTML(){
     return h+"</div></div>";
   }
 
-  /* ---------- 9 · entrega programada ---------- */
+  /* ---------- 10 · entrega programada (clave "9") ---------- */
   case "9": {
     const titulo=S.entrega==="embajador"
       ? F.p9.tarjetaEmb.replace("{fecha}",fechaLarga()).replace("{ventana}",v("vent")||"—")
@@ -1360,7 +1450,8 @@ function puedeResumen(){
    PANEL APUNTADOR
    ======================================================================= */
 const TITULOS = {
-  "1":F.p1.titulo,"2":F.p2.titulo,"3":F.p3.titulo,"4":F.p4.titulo,"5":F.p5.titulo,
+  "1":F.p1.titulo,"2":F.p2.titulo,"tipo":F.ptipo.titulo,"pm":F.ppm.titulo,
+  "3":F.p3.titulo,"4":F.p4.titulo,"5":F.p5.titulo,
   "6":F.p6.titulo,"7":F.p7.titulo,"7a":F.p7a.titulo,"7b":F.p7b.titulo,"8":F.p8.titulo,"9":F.p9.titulo,
   "corner":C.errores.corner.titulo,"tecnico":C.errores.tecnico.titulo,"rechazo":C.errores.rechazo.titulo,
   "sindoc":C.errores.sindoc.titulo,"noAutoriza":C.errores.noAutoriza.titulo
@@ -1369,7 +1460,7 @@ function panelKey(){
   if(S.pant==="2"&&S.otpAgotado) return "paro";
   if(PARO.indexOf(S.pant)>=0) return "paro";
   if(S.pant==="7"&&S.zonaErr) return "zona";
-  return "p"+S.pant;
+  return "p"+S.pant;      /* "tipo" → ptipo, "pm" → ppm */
 }
 function bloque(titulo,cuerpo){ return '<div class="pb"><h3>'+titulo+'</h3><div class="body">'+cuerpo+"</div></div>"; }
 function badge(modo){ return '<div><span class="badge '+(modo==="lit"?"lit":"wor")+'">'+(modo==="lit"?C.ui.badgeLit:C.ui.badgeWor)+"</span></div>"; }
@@ -1383,7 +1474,7 @@ function panelHTML(){
   /* 1 · Qué le dices */
   let dice=badge(d.modo)+'<div class="say'+(d.modo==="lit"?"":" words")+'">'+(d.dice||"")+"</div>";
   if(d.diceWor) dice+='<div style="margin-top:12px">'+badge("wor")+'<div class="say words">'+d.diceWor+"</div></div>";
-  if(k==="p9") dice+='<div class="say" style="margin-top:12px">'+guionFinal().map(function(p){return "<p style=\'margin:0 0 10px\'>"+p+"</p>";}).join("")+"</div>";
+  if(k==="p9") dice+='<div class="say" style="margin-top:12px">'+guionFinal().map(function(p){return "<p style='margin:0 0 10px'>"+p+"</p>";}).join("")+"</div>";
   if(k==="paro"&&S.pant!=="2") dice+='<div class="say" style="margin-top:12px">'+(C.errores[S.pant]?C.errores[S.pant].texto:"")+"</div>";
   h+=bloque(C.ui.bloques[0],dice);
 
@@ -1393,7 +1484,7 @@ function panelHTML(){
   if(k==="paro"&&S.pant==="rechazo"&&S.esc==="C") resp=null;
   if(resp) h+=bloque(C.ui.bloques[1],resp.map(function(r){return '<div class="cli">'+r+"</div>";}).join(""));
 
-  /* extras de la pantalla 8 */
+  /* extras de la pantalla de plan */
   if(k==="p8"){
     let ex="";
     const orden=["Independiente","Emprendedor","Empresario"];
@@ -1437,7 +1528,7 @@ function panelHTML(){
   }
 
   /* salida al resumen */
-  if(S.pant==="9"||(k==="paro"&&puedeResumen())){
+  if(S.pant==="9"||S.pant==="pm"||(k==="paro"&&puedeResumen())){
     h+='<button class="pbtn gh" data-act="resumen">'+C.ui.verResumen+"</button>";
   }
   return h;
@@ -1448,13 +1539,23 @@ function panelHTML(){
    ======================================================================= */
 function resumenHTML(){
   const R=C.resumen, it=R.items;
-  const filas=[
-    {ok:!!S.consent, t:it.consent.t, tx:S.consent?it.consent.ok:it.consent.no},
-    {ok:S.rfcManual===0, t:it.rfc.t, tx:S.rfcManual===0?it.rfc.ok:it.rfc.no.replace("{n}",S.rfcManual)},
-    {ok:(v("detalles").trim().length>=20), t:it.detalles.t, tx:(v("detalles").trim().length>=20)?it.detalles.ok:it.detalles.no},
-    {ok:!!S.llegoEntrega, t:it.entrega.t, tx:S.llegoEntrega?it.entrega.ok:it.entrega.no},
-    {info:true, t:it.tiempo.t, tx:it.tiempo.ok.replace("{t}",tiempoTexto())}
-  ];
+  let filas;
+  if(S.tipo==="PM"){
+    /* Cierre PM: la llamada termina antes del consentimiento; no se evalúan los demás hábitos */
+    filas=[
+      {ok:true, t:it.pm.t, tx:it.pm.ok},
+      {info:true, t:it.tiempo.t, tx:it.tiempo.ok.replace("{t}",tiempoTexto())}
+    ];
+  } else {
+    filas=[
+      {ok:S.tipo==="PFAE", t:it.tipo.t, tx:S.tipo==="PFAE"?it.tipo.ok:it.tipo.no},
+      {ok:!!S.consent, t:it.consent.t, tx:S.consent?it.consent.ok:it.consent.no},
+      {ok:S.rfcManual===0, t:it.rfc.t, tx:S.rfcManual===0?it.rfc.ok:it.rfc.no.replace("{n}",S.rfcManual)},
+      {ok:(v("detalles").trim().length>=20), t:it.detalles.t, tx:(v("detalles").trim().length>=20)?it.detalles.ok:it.detalles.no},
+      {ok:!!S.llegoEntrega, t:it.entrega.t, tx:S.llegoEntrega?it.entrega.ok:it.entrega.no},
+      {info:true, t:it.tiempo.t, tx:it.tiempo.ok.replace("{t}",tiempoTexto())}
+    ];
+  }
   let h='<div class="center"><div class="card"><div class="h1">'+R.titulo+'</div><p class="hint" style="font-size:15px">'+R.intro+"</p></div>";
   filas.forEach(function(f){
     h+='<div class="chk-row"><div class="ic">'+(f.info?"🟡":(f.ok?"🟢":"🔴"))+'</div><div class="tx"><b>'+f.t+"</b><span>"+f.tx+"</span></div></div>";
@@ -1505,6 +1606,11 @@ app.addEventListener("click",function(ev){
   case "verificar": S.otpIntentos=0; S.otpOk=false; S.otpAgotado=false; S.otpErr=""; set("codigo",""); return go("2");
   case "cambiarNumero": return go("1");
   case "reenviar": S.reenvio=25; clearInterval(tReenvio); tReenvio=setInterval(tick,1000); toast("Código reenviado por SMS y WhatsApp."); return;
+
+  /* NUEVO · tipo de empresa: PFAE sigue al consentimiento, PM cierra */
+  case "tipo":
+    S.tipo=val;
+    return go(val==="PM"?"pm":"3");
 
   case "consent": S.consent=!S.consent; S.err=""; render(); return;
   case "contConsent":
@@ -1570,7 +1676,8 @@ function validarOTP(){
   if(v("codigo")===e.codigo){
     S.otpOk=true; S.otpErr="";
     render();
-    tRevision=setTimeout(function(){ if(S.pant==="2"&&S.otpOk) go("3"); },1400);
+    /* tras el código correcto pasa a la pantalla nueva: Tipo de empresa */
+    tRevision=setTimeout(function(){ if(S.pant==="2"&&S.otpOk) go("tipo"); },1400);
     return;
   }
   S.otpIntentos++;
@@ -1597,6 +1704,7 @@ app.addEventListener("change",function(ev){
   if(el.dataset&&el.dataset.act==="libre"){
     const val=el.value;
     if(!val) return;
+    if(val==="pm"){ S.tipo="PM"; go("pm"); return; }
     if(val==="zona"){ go("7"); S.zonaErr=true; render(); return; }
     if(val==="otpAgotado"){ S.otpAgotado=true; go("2"); return; }
     go(val); return;
