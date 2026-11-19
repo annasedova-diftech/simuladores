@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Llamadas a Persona Moral · Cuenta Empresa</title>
+<meta name="sim:category" content="PyME">
+<meta name="sim:description" content="Curso para agentes CPA: Día 1 y Día 2 con certificación">
+<style>
+  :root{
+    --naranja:#FF4F12;      /* acento de marca: ajústalo al naranja exacto de Plata */
+    --naranja-suave:#FFF1EC;
+    --tinta:#141414;
+    --gris:#6B6B6B;
+    --linea:#E7E5E3;
+    --fondo:#F5F4F2;
+    --blanco:#FFFFFF;
+    --verde:#0F9D58;
+    --verde-suave:#E9F7EF;
+    --rojo:#D7342A;
+    --rojo-suave:#FDECEA;
+    --azul-suave:#EEF3FF;
+    --radio:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Arial,sans-serif;
+    color:var(--tinta);background:var(--fondo);
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;cursor:pointer}
+
+  /* ---------- barra superior ---------- */
+  .barra{
+    position:sticky;top:0;z-index:40;background:var(--blanco);
+    border-bottom:1px solid var(--linea);
+  }
+  .barra-in{
+    max-width:1100px;margin:0 auto;padding:12px 24px;
+    display:flex;align-items:center;gap:16px;
+  }
+  .marca{font-weight:800;letter-spacing:.06em;color:var(--naranja);font-size:14px}
+  .barra-titulo{
+    font-size:14px;color:var(--gris);border-left:1px solid var(--linea);
+    padding-left:16px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .btn-indice{
+    border:1px solid var(--linea);background:var(--blanco);border-radius:999px;
+    padding:8px 16px;font-size:14px;font-weight:600;
+  }
+  .btn-indice:hover{border-color:var(--tinta)}
+  .progreso{height:3px;background:var(--linea)}
+  .progreso span{display:block;height:3px;background:var(--naranja);width:0;transition:width .3s}
+
+  /* ---------- lienzo ---------- */
+  .lienzo{max-width:1100px;margin:0 auto;padding:40px 24px 120px}
+  h1{font-size:40px;line-height:1.1;margin:0 0 12px;letter-spacing:-.02em}
+  h2{font-size:28px;line-height:1.2;margin:0 0 20px;letter-spacing:-.01em}
+  h3{font-size:17px;margin:0 0 6px}
+  p{margin:0 0 14px}
+  .tenue{color:var(--gris)}
+
+  .tarjeta{
+    background:var(--blanco);border:1px solid var(--linea);border-radius:var(--radio);
+    padding:20px 22px;margin:0 0 16px;
+  }
+
+  /* ---------- gancho del personaje ---------- */
+  .gancho{display:flex;gap:14px;align-items:flex-start}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--naranja);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:700;flex:none;
+  }
+  .gancho-quien{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);font-weight:700}
+  .gancho-txt{font-weight:600;margin:2px 0 10px}
+  .revelar{
+    border:1px solid var(--linea);background:var(--blanco);border-radius:999px;
+    padding:6px 14px;font-size:13px;font-weight:600;
+  }
+  .respuesta{
+    margin-top:10px;background:var(--verde-suave);border-radius:10px;padding:12px 14px;
+    font-size:15px;display:none;
+  }
+  .respuesta.ver{display:block}
+
+  /* ---------- bloques ---------- */
+  .cita{border-left:3px solid var(--naranja);padding:4px 0 4px 16px;margin:0 0 16px}
+  .cita b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja)}
+  .cita span{font-size:18px;font-weight:600}
+
+  .guion{background:var(--naranja-suave);border-radius:10px;padding:12px 16px;margin:0 0 16px}
+  .guion b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);margin-bottom:2px}
+  .guion span{font-size:16px;font-weight:500}
+
+  .aviso{border-radius:var(--radio);padding:16px 18px;margin:0 0 16px;border:1px solid transparent}
+  .aviso.info{background:var(--azul-suave);border-color:#D7E2FF}
+  .aviso.alerta{background:var(--rojo-suave);border-color:#F6CFCB}
+  .aviso.ok{background:var(--verde-suave);border-color:#CFEBDA}
+
+  .rejilla{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:0 0 16px}
+
+  .enlace{display:block;text-decoration:none;color:inherit}
+  .enlace:hover{border-color:var(--naranja)}
+  .enlace h3{color:var(--naranja)}
+  .enlace h3::after{content:" ↗";font-weight:400}
+
+  table{width:100%;border-collapse:collapse;background:var(--blanco);
+        border:1px solid var(--linea);border-radius:var(--radio);overflow:hidden;margin:0 0 16px}
+  th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--linea);vertical-align:top;font-size:15px}
+  th{background:#FAF9F8;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gris)}
+  tr:last-child td{border-bottom:none}
+  .tabla-scroll{overflow-x:auto;margin:0 0 16px}
+  .tabla-scroll table{margin:0}
+
+  ul.lista{margin:0 0 16px;padding-left:20px}
+  ul.lista li{margin-bottom:8px}
+
+  .paso{display:flex;gap:14px;margin-bottom:12px}
+  .paso-n{
+    width:28px;height:28px;border-radius:50%;background:var(--naranja-suave);color:var(--naranja);
+    font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;font-size:14px;
+  }
+
+  /* ---------- preguntas ---------- */
+  .reto{background:var(--blanco);border:2px solid var(--naranja);border-radius:var(--radio);padding:20px 22px;margin:24px 0 0}
+  .reto-et{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--naranja);font-weight:700;margin-bottom:8px}
+  .reto h3{font-size:19px;margin-bottom:4px}
+  .opciones{margin:14px 0 0;display:flex;flex-direction:column;gap:8px}
+  .opcion{
+    display:flex;gap:12px;align-items:flex-start;border:1px solid var(--linea);
+    border-radius:10px;padding:12px 14px;background:var(--blanco);text-align:left;width:100%;
+  }
+  .opcion:hover{border-color:var(--tinta)}
+  .opcion .marca{
+    width:18px;height:18px;border:2px solid #C9C6C3;flex:none;margin-top:2px;
+  }
+  .opcion[data-tipo="unica"] .marca{border-radius:50%}
+  .opcion[data-tipo="multiple"] .marca{border-radius:5px}
+  .opcion.sel{border-color:var(--naranja)}
+  .opcion.sel .marca{border-color:var(--naranja);background:var(--naranja);box-shadow:inset 0 0 0 3px #fff}
+  .opcion.bien{border-color:var(--verde);background:var(--verde-suave)}
+  .opcion.mal{border-color:var(--rojo);background:var(--rojo-suave)}
+  .opcion[disabled]{cursor:default;opacity:1;color:var(--tinta);-webkit-text-fill-color:var(--tinta)}
+  .veredicto{margin-top:12px;border-radius:10px;padding:12px 14px;font-size:15px}
+  .veredicto.bien{background:var(--verde-suave)}
+  .veredicto.mal{background:var(--rojo-suave)}
+  .veredicto b{display:block;margin-bottom:2px}
+
+  /* ---------- pie ---------- */
+  .pie{
+    position:fixed;left:0;right:0;bottom:0;background:var(--blanco);
+    border-top:1px solid var(--linea);z-index:30;
+  }
+  .pie-in{max-width:1100px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
+  .pie-et{flex:1;font-size:13px;color:var(--gris)}
+  .btn{
+    border:1px solid var(--linea);background:var(--blanco);border-radius:999px;
+    padding:11px 22px;font-weight:600;
+  }
+  .btn:hover{border-color:var(--tinta)}
+  .btn.primario{background:var(--naranja);border-color:var(--naranja);color:#fff}
+  .btn.primario:hover{filter:brightness(.94)}
+  .btn[disabled]{opacity:.4;cursor:default;filter:none}
+
+  /* ---------- índice ---------- */
+  .velo{position:fixed;inset:0;background:rgba(20,20,20,.3);z-index:50;display:none}
+  .velo.ver{display:block}
+  .indice{
+    position:fixed;top:0;right:0;bottom:0;width:340px;max-width:90vw;background:var(--blanco);
+    z-index:60;transform:translateX(100%);transition:transform .25s;overflow-y:auto;padding:20px;
+  }
+  .indice.ver{transform:none}
+  .indice h3{font-size:18px;margin-bottom:16px}
+  .idx-item{display:flex;gap:12px;align-items:center;padding:10px 8px;border-radius:10px;width:100%;
+            border:none;background:none;text-align:left}
+  .idx-item:hover{background:var(--fondo)}
+  .idx-item[disabled]{opacity:.4;cursor:default}
+  .idx-n{width:24px;height:24px;border-radius:50%;background:var(--fondo);color:var(--gris);
+         font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+  .idx-item.actual .idx-n{background:var(--naranja);color:#fff}
+  .idx-item.hecho .idx-n{background:var(--verde);color:#fff}
+
+  /* ---------- portada e identidad ---------- */
+  .portada{background:var(--naranja);color:#fff;border-radius:22px;padding:48px 44px;margin-bottom:20px}
+  .portada h1{color:#fff}
+  .portada p{color:rgba(255,255,255,.9);max-width:62ch}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 0}
+  .chip{background:rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:13px}
+  .campo{display:block;margin-bottom:14px}
+  .campo span{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+  .campo input{
+    width:100%;padding:12px 14px;border:1px solid var(--linea);border-radius:10px;font:inherit;background:var(--blanco);
+  }
+  .campo input:focus{outline:2px solid var(--naranja);outline-offset:-1px;border-color:transparent}
+  .error{color:var(--rojo);font-size:14px;margin-top:8px;display:none}
+  .error.ver{display:block}
+  .cargando{font-size:14px;color:var(--gris);display:none}
+  .cargando.ver{display:block}
+
+  /* ---------- tarjetas de entrada (Día 1 / Día 2) ---------- */
+  .dias{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin:0 0 16px}
+  .dia{display:flex;flex-direction:column;gap:8px;padding:24px 24px 22px;margin:0}
+  .dia .reto-et{margin-bottom:0}
+  .dia h2{font-size:24px;margin:0}
+  .dia p{margin:0;flex:1}
+  .dia .btn{align-self:flex-start;margin-top:10px}
+  .dia.pronto{opacity:.75}
+  .dia.pronto .reto-et{color:var(--gris)}
+  .pronto-et{display:inline-block;align-self:flex-start;background:var(--fondo);color:var(--gris);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600;margin-top:10px}
+
+  /* ---------- resultado ---------- */
+  .marcador{font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .modulo-portada{
+    background:linear-gradient(135deg,var(--naranja),#FF7A45);color:#fff;border-radius:22px;
+    padding:60px 44px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .modulo-portada h2{color:#fff;font-size:34px;margin:0}
+  .modulo-n{font-size:92px;font-weight:800;opacity:.35;line-height:1}
+
+  /* ---------- Día 2: varios retos por pantalla, certificación ---------- */
+  .reto + .reto{margin-top:16px}
+  .btn-comprobar{margin-top:12px}
+  .modulo-resumen{color:rgba(255,255,255,.9);margin:10px 0 0;max-width:60ch}
+  .modulo-portada .chips{margin-top:14px}
+  .contador{position:sticky;top:60px;z-index:20;background:var(--blanco);border:1px solid var(--linea);
+            border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;display:inline-block;margin:0 0 16px}
+  .reglas .tarjeta h3{font-size:22px;color:var(--naranja)}
+  .resultado-cert{text-align:center;padding:36px 22px}
+  .resultado-cert .marcador{margin:10px 0}
+  .resultado-cert h2{margin-bottom:8px}
+  h2.aprobada{color:var(--verde)} h2.reprobada{color:var(--rojo)}
+
+  @media (max-width:640px){
+    h1{font-size:30px} h2{font-size:23px}
+    .lienzo{padding:24px 16px 120px}
+    .portada,.modulo-portada{padding:32px 24px}
+    .modulo-n{display:none}
+    .barra-titulo{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <div class="barra-in">
+    <div class="marca">PLATA</div>
+    <div class="barra-titulo" id="barraTitulo"></div>
+    <button class="btn-indice" id="btnIndice" style="display:none">Contenido</button>
+  </div>
+  <div class="progreso"><span id="barraProgreso"></span></div>
+</div>
+
+<div class="lienzo" id="lienzo"></div>
+
+<div class="pie" id="pie" style="display:none">
+  <div class="pie-in">
+    <div class="pie-et" id="pieEtiqueta"></div>
+    <button class="btn" id="btnAtras">Atrás</button>
+    <button class="btn primario" id="btnSiguiente">Siguiente</button>
+  </div>
+</div>
+
+<div class="velo" id="velo"></div>
+<nav class="indice" id="indice"><h3>Contenido</h3><div id="indiceLista"></div></nav>
+
+<script>
+// ---------------------------------------------------------------- configuración de envío
+// Formulario que recibe el avance y las respuestas: https://docs.google.com/forms/d/e/<id>/formResponse
+// Si está vacía, el curso funciona completo pero no envía nada (modo de prueba local).
+var FORM_ACTION_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdVGP7QO6h7faTcvq9j_vZJUP0W76rysUvwYCPJJPmC62Dkgg/formResponse';
+// Identificadores de los campos del formulario (entry.NNN), en el mismo orden que el formulario.
+var ENTRADAS = { token:'entry.1428114339', accion:'entry.1951677321', nombre:'entry.1129431595', apellido:'entry.1164039940', datos:'entry.199275706' };
+// Token compartido entre esta página y el receptor. Si no coincide, el envío se descarta.
+var TOKEN = 'ueiv869zxw8v1nr657ku5hql';
+
+// ---------------------------------------------------------------- contenido
+// Día 1: objeto CURSO (módulos → pantallas → bloques, un reto por pantalla, quiz por módulo).
+var CURSO = {
+  titulo: 'Llamadas a Persona Moral: cómo abrir la Cuenta Empresa',
+  subtitulo: 'Día 1 · De quién está del otro lado a los documentos subidos',
+  entradilla: 'La tarea no te dice quién está en la línea: eso lo averiguas tú en los primeros ' +
+              'minutos de la llamada. De tu respuesta dependen la rama en el CRM, la lista de ' +
+              'documentos y el camino de la solicitud.',
+  duracion: '3 h 30 min · 4 módulos',
+
+  temas: {
+    'pm-vs-pfae': 'Quién es el cliente: PM o PFAE',
+    'producto': 'Qué incluye la Cuenta Empresa y los planes',
+    'clientes': 'Clientes y tipo de negocio',
+    'proceso': 'La llamada paso a paso y el CRM',
+    'documentos': 'Documentos y carga',
+    'limites': 'Lo que no se promete'
+  },
+
+  modulos: [
+
+    // ══════════════════════════════════════════════════ MÓDULO 1
+    {
+      id: 'm1',
+      titulo: 'Persona Moral: quién es y qué cambia en la llamada',
+      resumen: 'Qué es un cliente empresa, con quién vas a hablar y cómo es la llamada',
+      duracion: '45 min',
+      pantallas: [
+        {
+          titulo: 'La situación',
+          gancho: {
+            persona: 'Diego', rol: 'Agente',
+            pregunta: 'Diego lleva la llamada de una empresa igual que una de PFAE. ¿Qué puede salir mal?',
+            respuesta: 'Para una empresa la cuenta no se abre en cinco minutos: otros documentos, una revisión y una cita con el embajador.'
+          },
+          bloques: [
+            { t:'parrafo', texto:'El cliente es una empresa. Tú llevas la llamada como siempre con PFAE: le cuentas de la cuenta, el cliente dice que sí y tú le dices:' },
+            { t:'cita', quien:'Agente', texto:'Perfecto, en un par de minutos queda abierta, todo se hace en la app' },
+            { t:'parrafo', texto:'Una semana después ese cliente llama a soporte: no hay cuenta, le piden unos documentos, una cita.' },
+            { t:'cita', quien:'Cliente', texto:'Me prometieron que en cinco minutos' },
+            { t:'aviso', tono:'alerta', texto:'Para una empresa la cuenta no se abre como para una persona con negocio: otros documentos, una revisión, una cita, otros plazos, y otro resultado que cuenta como tu éxito. Si no lo sabes, le prometes al cliente algo que no va a pasar, y eso es una infracción grave.' }
+          ]
+        },
+        {
+          titulo: 'PFAE y PM no son lo mismo',
+          gancho: {
+            persona: 'Valeria', rol: 'Agente',
+            pregunta: 'Valeria tiene en la línea a «Ferretería Gómez, S. de R.L. de C.V.». ¿Es su cliente de siempre?',
+            respuesta: 'No. Las siglas después del nombre significan que del otro lado hay una empresa, no una persona con negocio.'
+          },
+          bloques: [
+            { t:'tarjetas', items:[
+              { titulo:'PFAE · Persona Física con Actividad Empresarial', texto:'Una persona que tiene su negocio a su propio nombre: el dueño de la tiendita, el freelancer, el taxista, el contador independiente. Tu cliente de siempre.' },
+              { titulo:'PM · Persona Moral', texto:'Una empresa: una persona jurídica que existe aparte de las personas que son sus dueñas. Tiene su propio nombre, su propio RFC y sus propios documentos.' }
+            ] },
+            { t:'parrafo', texto:'Cómo reconocer una empresa por su nombre: después del nombre siempre hay unas siglas, que son su forma legal. Para ti lo importante es una sola cosa: si hay siglas, es una empresa.' },
+            { t:'tabla', encabezados:['Siglas','Qué significan','Quién suele registrarse así'], filas:[
+              ['S.A. de C.V.','Sociedad Anónima de Capital Variable','La forma más común: comercio, restaurantes, producción'],
+              ['S. de R.L. de C.V.','Sociedad de Responsabilidad Limitada de Capital Variable','Negocios pequeños y familiares con varios socios'],
+              ['S.A.S.','Sociedad por Acciones Simplificada','Empresas pequeñas registradas en línea, muchas veces con un solo dueño'],
+              ['S.C.','Sociedad Civil','Servicios profesionales: contadores, abogados, consultores']
+            ] },
+            { t:'lista', items:[
+              'el despacho «Contadores Asociados, S.C.»',
+              'el restaurante «La Parrilla del Norte, S.A. de C.V.»',
+              'la tienda de materiales «Ferretería Gómez, S. de R.L. de C.V.»',
+              'una tienda en línea pequeña registrada como S.A.S.'
+            ] }
+          ]
+        },
+        {
+          titulo: 'Qué cambia para ti: tres cosas',
+          bloques: [
+            { t:'pasos', items:[
+              { titulo:'La cuenta es de la empresa', texto:'Se abre a nombre de la empresa, no de una persona. El dueño de la empresa no es el dueño de la cuenta.' },
+              { titulo:'Por la empresa actúa su representante legal', texto:'Es la persona a la que los documentos de la empresa le dan el derecho de firmar por ella. Casi siempre es el dueño o el director, pero no siempre. Solo él puede abrir la cuenta.' },
+              { titulo:'El banco revisa a la empresa por sus documentos', texto:'El banco está obligado por ley a confirmar que la empresa existe, quién firma por ella y a quién pertenece. De ahí el paquete de documentos y una revisión de hasta 3 días, en lugar de una cuenta abierta en 5 minutos.' }
+            ] }
+          ],
+          reto: {
+            id:'m1-r1', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'En la llamada te contesta un socio de la empresa. ¿Puede abrir él la cuenta?',
+            opciones:[
+              {id:'a', texto:'Sí, cualquier socio puede abrirla'},
+              {id:'b', texto:'Solo el representante legal de la empresa'},
+              {id:'c', texto:'Sí, si es también el dueño del negocio'}
+            ],
+            correcta:'b',
+            explicacion:'Por la empresa actúa su representante legal, la persona con derecho a firmar por ella. Casi siempre es el dueño o el director, pero hay que preguntarlo, no suponerlo.'
+          }
+        },
+        {
+          titulo: 'Qué le vendes a una empresa',
+          bloques: [
+            { t:'tabla', encabezados:['Qué','Para qué le sirve a la empresa'], filas:[
+              ['Todo en una app, sin token','Toda la cuenta en el celular, también los SPEI. Se abre y se maneja sin ir a una sucursal, y todo se confirma en la app, sin dispositivo aparte. La versión web, para trabajar desde la computadora.'],
+              ['Nómina y pagos por lista','Un archivo CSV en lugar de decenas de transferencias a mano. La función no tiene costo; las transferencias a otros bancos cuentan como SPEI del plan.'],
+              ['Ahorro Empresa','Flexible: metes y sacas el dinero cuando quieras, intereses cada día, hasta 15 % anual con la promoción. Fijo: de 28 a 360 días, desde 10,000 MXN, tasa fija y sin retiro anticipado, hasta 9 % anual.'],
+              ['Tarjetas corporativas, físicas y virtuales','Cada empleado gasta dentro de su límite y el director ve todos los gastos. Las virtuales, sin costo y las que necesites.'],
+              ['Roles para tu equipo','El director no presta su acceso. Admin: casi lo mismo que el dueño. Contador: ve los movimientos y prepara pagos, y el dueño los aprueba. Usuario de tarjeta: ve solo su tarjeta.'],
+              ['Crédito Respaldo','Un sobregiro: si a la cuenta le falta dinero, puede quedar en negativo hasta 200,000 pesos, y la deuda se paga con los siguientes ingresos. En todos los planes; el monto depende de la evaluación.'],
+              ['Tres planes: Empieza / Impulsa / Expande','La empresa paga solo por lo que usa, sin penalización por saldo mínimo. El plan lo elige el cliente en la solicitud.']
+            ] },
+            { t:'parrafo', texto:'También tiene: SPEI 24/7, CFDI desde la versión web, pagos al SAT sin costo, ligas de pago y cotizaciones, cuentas adicionales en pesos, Apartado, depósitos de efectivo en OXXO y cajeros Plata, y soporte 24/7 por chat.' },
+            { t:'aviso', tono:'ok', texto:'Si el cliente ya tiene cuenta personal en Plata, la cuenta de la empresa aparece en la misma app como un perfil aparte, «Negocios»: un solo inicio de sesión, el dinero no se mezcla, y cambias de perfil con un toque.' }
+          ],
+          reto: {
+            id:'m1-r2', tema:'producto', tipo:'unica',
+            texto:'El cliente: «Cada quincena le pago a quince empleados uno por uno desde la app del banco; se me va toda la tarde». ¿Qué parte del producto lo resuelve?',
+            opciones:[
+              {id:'a', texto:'Tarjetas corporativas para los empleados'},
+              {id:'b', texto:'La nómina por lista: un archivo CSV, todas las transferencias'},
+              {id:'c', texto:'SPEI todos los días'}
+            ],
+            correcta:'b',
+            explicacion:'La nómina y los pagos por lista convierten decenas de transferencias a mano en un solo archivo. La función no tiene costo.'
+          }
+        },
+        {
+          titulo: 'Qué problemas de la empresa resuelve la cuenta',
+          gancho: {
+            persona:'Andrea', rol:'Agente',
+            pregunta:'Andrea oye «somos varios y no sé quién gasta qué». ¿Es el mismo dolor que el de una persona con negocio?',
+            respuesta:'No. Una empresa no pide «una tarjeta y transferir», pide control sobre quién hace qué con el dinero de la empresa.'
+          },
+          bloques: [
+            { t:'tabla', encabezados:['Lo que dice el cliente','Lo que le duele','Lo que lo resuelve'], filas:[
+              ['«En la sucursal hay fila y yo tengo trabajo»','Tiempo perdido en el banco','Todo en una app: la cuenta y los SPEI desde el celular, sin sucursal y sin token'],
+              ['«Cada viernes me paso dos horas pagando la nómina uno por uno»','Pagos a mano','Nómina y pagos por lista, en un archivo'],
+              ['«Los empleados compran gasolina y material, no alcanzo a revisar los tickets»','Sin control sobre los gastos del equipo','Tarjetas corporativas, cada una con su límite'],
+              ['«Mi contador necesita acceso, pero no quiero que pueda transferir»','Dar acceso es un riesgo','El rol de contador: ve y prepara pagos, y el dueño los aprueba'],
+              ['«El dinero está en la cuenta sin hacer nada»','El saldo no rinde','Ahorro Empresa: Flexible hasta 15 % anual con la promoción; Fijo hasta 9 % anual'],
+              ['«Pago mensualidad y no uso nada»','Paga de más','Tres planes según el volumen; Empieza sin mensualidad con 30,000 de saldo']
+            ] }
+          ]
+        },
+        {
+          titulo: 'Con qué clientes vas a trabajar',
+          bloques: [
+            { t:'parrafo', texto:'A las llamadas de empresas llegan dos tipos de clientes.' },
+            { t:'tabla', encabezados:['Tipo','Quién es','Qué significa para ti'], filas:[
+              ['Golden','Ya tiene algún producto de Plata: tarjeta de crédito, de débito o la cuenta de negocios para PFAE','Nos conoce y entra a la app. Pero el producto pudo haberlo contratado como persona: eso no te dice si tiene una empresa ni si él es su representante'],
+              ['Warm','Empezó una solicitud de un producto de Plata y no la terminó','Nos conoce, pero todavía no es cliente. El proceso empieza desde cero: con él es especialmente importante dejar claro qué hacer después de la llamada']
+            ] },
+            { t:'aviso', tono:'alerta', texto:'Que el cliente conozca Plata no te dice que tenga una empresa ni que él sea su representante. No supongas nada: pregunta.' }
+          ],
+          reto: {
+            id:'m1-r3', tema:'clientes', tipo:'unica',
+            texto:'Cliente Golden: «Sí, soy cliente de Plata desde hace dos años, tengo la tarjeta de crédito». ¿Qué te dice eso de su negocio?',
+            opciones:[
+              {id:'a', texto:'Que es PM'},
+              {id:'b', texto:'Que es PFAE'},
+              {id:'c', texto:'Nada: si tiene negocio y cuál es, lo averiguas igual que con cualquier cliente'}
+            ],
+            correcta:'c',
+            explicacion:'Pudo contratar ese producto como persona. Ser Golden habla de su relación con Plata, no de su negocio.'
+          }
+        },
+        {
+          titulo: 'El camino de la empresa hasta la cuenta',
+          bloques: [
+            { t:'parrafo', texto:'Tu parte es el paso 1. Los demás pasos los hacen el cliente, el banco y el embajador.' },
+            { t:'pasos', items:[
+              { titulo:'Averiguas quién está del otro lado', texto:'Una empresa o una persona con negocio, y si quien te contesta tiene derecho a abrir la cuenta a nombre de la empresa.' },
+              { titulo:'Explicas y respondes objeciones', texto:'Le explicas para qué le sirve la cuenta a ese negocio en particular.' },
+              { titulo:'Llenas la solicitud en el CRM', texto:'Datos de la empresa y del representante.' },
+              { titulo:'Dices los documentos y dónde subirlos', texto:'Le ofreces quedarte en la línea mientras los sube. Si no puede ahora, lo impulsas a subirlos él mismo en los próximos dos días.' },
+              { titulo:'Explicas qué sigue y registras el resultado', texto:'El detalle de cada paso está en los siguientes módulos.' }
+            ] },
+            { t:'aviso', tono:'info', texto:'Tu llamada cuenta como exitosa cuando el cliente subió todos los documentos dentro de las 48 horas después de la llamada. No «solicitud creada», no «el cliente dijo que sí»: todos los documentos subidos.' }
+          ]
+        },
+        {
+          titulo: 'Lo que no haces en esta llamada',
+          bloques: [
+            { t:'lista', items:[
+              'No prometes que la cuenta se abrirá ni cuándo. El único plazo que mencionas: «normalmente hasta 3 días de revisión».',
+              'No dices «lo dejamos listo en cinco minutos»: con una empresa no funciona así.',
+              'No recibes documentos por WhatsApp ni por correo, y no los subes tú por el cliente.',
+              'No mencionas los planes ni los beneficios de PFAE: las empresas tienen los suyos.',
+              'No prometes lo que todavía no existe: tarjeta de crédito para la empresa, cuenta en dólares, transferencias internacionales.',
+              'No mencionas otros bancos por su nombre ni sus tarifas: es una infracción grave.'
+            ] }
+          ],
+          reto: {
+            id:'m1-r4', tema:'limites', tipo:'unica',
+            texto:'El cliente: «¿Si subo todo hoy, mañana ya tengo la cuenta?». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'«Sí, mañana ya la tienes.»'},
+              {id:'b', texto:'«Eso depende del banco, no sé.»'},
+              {id:'c', texto:'«Normalmente la revisión toma hasta tres días después de que subas todos los documentos, y después se agenda la cita con el embajador. Es un estimado, no un plazo garantizado.»'}
+            ],
+            correcta:'c',
+            explicacion:'Das el único plazo que sí puedes dar, marcándolo como estimado. Prometer una fecha de apertura es una infracción grave.'
+          }
+        },
+        {
+          titulo: 'Lo esencial del módulo',
+          bloques: [
+            { t:'tarjetas', items:[
+              { titulo:'PM es una empresa; PFAE, una persona con negocio', texto:'La cuenta es de la empresa, por ella actúa su representante legal, y el banco la revisa por sus documentos: hasta 3 días en lugar de 5 minutos.' },
+              { titulo:'Golden y Warm no te dicen nada de su negocio', texto:'Pregunta, no supongas.' },
+              { titulo:'Tu parte es la llamada', texto:'Quién está del otro lado → solicitud en el CRM → qué documentos y dónde → subirlos juntos o él solo en dos días → qué sigue. Éxito: todos los documentos subidos en 48 horas.' }
+            ] }
+          ]
+        }
+      ],
+      quiz: {
+        titulo: 'Quiz del módulo 1',
+        intro: 'Cinco preguntas. No llevan calificación: son para que veas qué quedó claro y qué conviene repasar.',
+        preguntas: [
+          { id:'m1-q1', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'La empresa de la tarea se llama «Ferretería Gómez, S. de R.L. de C.V.». ¿Qué puedes suponer por el nombre?',
+            opciones:[
+              {id:'a', texto:'Por el nombre no se puede suponer nada', correcta:false},
+              {id:'b', texto:'Lo más probable es que sea una empresa (PM)', correcta:true},
+              {id:'c', texto:'Lo más probable es que sea PFAE', correcta:false}
+            ],
+            explicacion:'Las siglas después del nombre son la forma legal de una empresa. Si hay siglas, es PM.' },
+          { id:'m1-q2', tema:'clientes', tipo:'multiple',
+            texto:'¿Qué clientes llegan a las llamadas de empresas? Elige todas las correctas.',
+            opciones:[
+              {id:'a', texto:'Clientes que ya conocen Plata', correcta:true},
+              {id:'b', texto:'Clientes que nunca han oído de Plata', correcta:false},
+              {id:'c', texto:'Clientes que ya tienen tarjeta de crédito u otro producto de Plata', correcta:true},
+              {id:'d', texto:'No podemos suponer nada de los clientes que nos van a tocar', correcta:false}
+            ],
+            explicacion:'Llegan Golden y Warm: los dos ya conocen Plata. Lo que no sabes es si tienen una empresa y si quien contesta la representa.' },
+          { id:'m1-q3', tema:'proceso', tipo:'unica',
+            texto:'El cliente aceptó abrir la cuenta y la solicitud ya quedó creada en el CRM. ¿Qué haces ahora?',
+            opciones:[
+              {id:'a', texto:'Le pido que me mande los documentos por WhatsApp y los subo yo', correcta:false},
+              {id:'b', texto:'Le digo que ya quedó todo y que le va a llamar el embajador', correcta:false},
+              {id:'c', texto:'Le digo los documentos y le ofrezco subirlos juntos ahora o en dos días', correcta:true}
+            ],
+            explicacion:'La lista completa de documentos, dónde subirlos y cuándo. Tú no recibes ni subes documentos por el cliente.' },
+          { id:'m1-q4', tema:'proceso', tipo:'unica',
+            texto:'¿Cuándo cuenta tu llamada con una empresa como exitosa?',
+            opciones:[
+              {id:'a', texto:'Cuando el cliente subió todos los documentos dentro de las 48 horas', correcta:true},
+              {id:'b', texto:'Cuando la solicitud queda creada en el CRM', correcta:false},
+              {id:'c', texto:'Cuando la cuenta está abierta', correcta:false}
+            ],
+            explicacion:'Ni «solicitud creada» ni «el cliente dijo que sí»: todos los documentos subidos en 48 horas.' },
+          { id:'m1-q5', tema:'limites', tipo:'unica',
+            texto:'El cliente: «¿Puedo abrir también una cuenta en dólares?». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'«Sí, la abres desde la app»', correcta:false},
+              {id:'b', texto:'«Sí, sale el próximo año»', correcta:false},
+              {id:'c', texto:'«Hoy no la tenemos. Anoto tu interés para que te contacten cuando esté disponible»', correcta:true}
+            ],
+            explicacion:'No prometes lo que todavía no existe. Registras el interés y sigues con lo que sí ofrece Plata.' }
+        ]
+      }
+    },
+
+    // ══════════════════════════════════════════════════ MÓDULO 2
+    {
+      id: 'm2',
+      titulo: 'Quién está del otro lado: cómo calificar al cliente y su negocio',
+      resumen: 'Cómo preguntar para no adivinar, quién puede abrir la cuenta y qué ofrecerle a ese negocio',
+      duracion: '55 min',
+      pantallas: [
+        {
+          titulo: 'La situación',
+          bloques: [
+            { t:'parrafo', texto:'La tarea no dice quién es el cliente. Contesta y te dice:' },
+            { t:'cita', quien:'Cliente', texto:'Tengo mi negocio, vendo materiales de construcción, estoy en RESICO' },
+            { t:'parrafo', texto:'Suena a un emprendedor de siempre: eliges PFAE y sigues con tu guion de siempre. Cinco minutos después resulta que los materiales los vende «Materiales del Bajío, S.A. de C.V.», el cliente es su administrador y la solicitud ya se fue por la rama equivocada.' },
+            { t:'aviso', tono:'alerta', texto:'Calificaste al cliente por intuición, no con una pregunta. «Mi negocio», «RESICO», «vendo» no dicen nada sobre si es una empresa o una persona. Y la elección PFAE / PM en el CRM cambia todo el camino de la solicitud: otras pantallas, otros documentos, otra revisión.' }
+          ]
+        },
+        {
+          titulo: 'Primero preguntas directo',
+          bloques: [
+            { t:'parrafo', texto:'Calificar al cliente es el segundo paso de la llamada: justo después del saludo y antes de leer el aviso de privacidad. En la pantalla «Tipo de empresa» del CRM eliges PFAE o PM.' },
+            { t:'guion', texto:'¿Te registraste ante el SAT como persona física o como una empresa con razón social propia?' },
+            { t:'parrafo', texto:'La mayoría contesta de inmediato. Si el cliente no entiende la pregunta, en esa misma pantalla del CRM tienes la pista para explicar la diferencia:' },
+            { t:'tarjetas', items:[
+              { titulo:'PFAE', texto:'«Trabajas por tu cuenta y tu negocio está registrado a tu nombre»' },
+              { titulo:'PM', texto:'«Tu negocio está registrado como una empresa legalmente constituida»' }
+            ] },
+            { t:'parrafo', texto:'Respuesta segura → eliges la rama. Si duda, si contesta «pues, tengo mi negocio» → pasas a las tres preguntas de confirmación.' }
+          ]
+        },
+        {
+          titulo: 'Tres preguntas que responden con exactitud',
+          bloques: [
+            { t:'parrafo', texto:'Cuando el cliente no está seguro, preguntas por hechos que sí conoce. Con una sola de las tres basta.' },
+            { t:'tabla', encabezados:['Qué preguntas','Qué contesta','Quién está del otro lado'], filas:[
+              ['«¿Me puedes compartir tu RFC?»','12 caracteres, por ejemplo LBM190208B27','Empresa (PM)'],
+              ['','13 caracteres, por ejemplo REFX020726CI9','Persona con negocio (PFAE)'],
+              ['«¿Tu negocio tiene acta constitutiva firmada ante notario?»','Sí','Empresa (PM)'],
+              ['','No / «¿y eso qué es?»','PFAE'],
+              ['«¿Tus facturas salen a tu nombre o a nombre de la empresa?»','A nombre de la empresa','Empresa (PM)'],
+              ['','A mi nombre','PFAE']
+            ] },
+            { t:'lista', items:[
+              'El RFC lo asigna el SAT: a una empresa, de 12 caracteres; a una persona, de 13, sin excepciones.',
+              'El acta constitutiva es el documento con el que se crea una empresa ante notario; una persona con negocio no lo tiene.',
+              'Las facturas siempre salen a nombre de quien está registrado en el SAT.'
+            ] },
+            { t:'aviso', tono:'info', texto:'La más confiable es el RFC: de todos modos lo vas a necesitar más adelante en la solicitud, y la respuesta no depende de cómo entienda el cliente las palabras «empresa» y «negocio».' },
+            { t:'parrafo', texto:'Si el cliente no sabe ni el RFC ni qué es el acta, mándalo a su Constancia de Situación Fiscal:' },
+            { t:'guion', texto:'Lo puedes ver en tu Constancia de Situación Fiscal. La descargas en sat.gob.mx — Constancias → Constancia de Situación Fiscal — o en la app SAT Móvil. También te la puede dar tu contador' },
+            { t:'tabla', encabezados:['Qué ves en el primer bloque de la CSF','Quién está del otro lado'], filas:[
+              ['RFC de 13 caracteres; la línea «CURP»; las líneas «Nombre(s)», «Primer Apellido», «Segundo Apellido»','Persona (PFAE)'],
+              ['RFC de 12 caracteres; la línea «Denominación/Razón Social» con el nombre de la empresa; la línea «Régimen Capital»','Empresa (PM)']
+            ] }
+          ],
+          reto: {
+            id:'m2-r1', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Tengo una tienda de abarrotes, todo está a mi nombre, las facturas también salen a mi nombre. El RFC ahorita no me lo sé». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'Elijo PM: una tienda de abarrotes es un negocio'},
+              {id:'b', texto:'Elijo PFAE: las facturas a su nombre responden directo a una de las tres preguntas'},
+              {id:'c', texto:'No puedo elegir hasta que el cliente encuentre el RFC'}
+            ],
+            correcta:'b',
+            explicacion:'Con una sola de las tres preguntas basta. Las facturas salen a nombre de quien está registrado en el SAT.'
+          }
+        },
+        {
+          titulo: 'Qué es una señal de PM y qué no',
+          bloques: [
+            { t:'parrafo', texto:'El cliente casi nunca dice «soy Persona Moral». Pero sí dice cosas que delatan a una empresa, y otras que solo parecen una señal.' },
+            { t:'tabla', encabezados:['Escuchas','Qué significa'], filas:[
+              ['La forma de la empresa después del nombre: S.A. de C.V., S. de R.L. de C.V., S.A.S., S.C., S.A.P.I. de C.V.','Casi seguro es una empresa: confírmalo con una de las tres preguntas'],
+              ['«Socios», «accionistas»','Empresa: una persona con negocio no tiene accionistas'],
+              ['«Representante legal», «poder», «administrador único»','Empresa: esos papeles solo existen en una persona moral'],
+              ['«La cuenta a nombre de la empresa»','Empresa']
+            ] },
+            { t:'tabla', encabezados:['Escuchas','Por qué no es una señal'], filas:[
+              ['«Tengo un negocio»','Negocio tienen tanto una PFAE como una empresa'],
+              ['«Estoy en RESICO»','RESICO lo tienen personas y empresas. Decide el RFC: 12 caracteres es empresa, aunque esté en RESICO'],
+              ['«Mi contador me lleva todo»','Contador tienen todos. Y el contador es quien le puede decir el RFC o darle la CSF'],
+              ['Ventas grandes, varias sucursales, empleados','El tamaño del negocio no dice nada de cómo está registrado']
+            ] },
+            { t:'aviso', tono:'alerta', texto:'Una señal es motivo para preguntar, no para elegir la rama. La rama la eliges solo con la respuesta.' }
+          ],
+          reto: {
+            id:'m2-r2', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Estoy en RESICO, tengo un taller pequeño. Mi RFC es LBM190208B27». ¿Qué eliges en el CRM?',
+            opciones:[
+              {id:'a', texto:'PFAE: RESICO y «taller pequeño»'},
+              {id:'b', texto:'Pregunto por el acta constitutiva para confirmar'},
+              {id:'c', texto:'PM: el RFC tiene 12 caracteres, es una empresa; RESICO no cambia eso'}
+            ],
+            correcta:'c',
+            explicacion:'El RFC de 12 caracteres es de una empresa, sin excepciones. RESICO existe para personas y para empresas.'
+          }
+        },
+        {
+          titulo: 'El régimen fiscal: para qué te sirve saberlo',
+          bloques: [
+            { t:'parrafo', texto:'Es el conjunto de reglas con las que el SAT le calcula los impuestos a cada contribuyente. Cada régimen tiene una clave de tres dígitos y viene en la CSF.' },
+            { t:'tarjetas', items:[
+              { titulo:'601 — General de Ley Personas Morales', texto:'El régimen general de las empresas comerciales. La mayoría de tus clientes empresa están aquí.' },
+              { titulo:'626 — RESICO', texto:'El régimen simplificado para empresas con ingresos de hasta 35 millones al año. La misma clave existe para personas, por eso no te dice si es empresa.' }
+            ] },
+            { t:'pasos', items:[
+              { titulo:'El cliente te dice el régimen en lugar de contestar', texto:'«Estoy en el 601» es una empresa; «estoy en RESICO» no se sabe: confirma con el RFC.' },
+              { titulo:'Hay regímenes con los que no se abre la cuenta', texto:'Por ejemplo el de consolidación (609) o los de empresas petroleras y multinacionales. No tienes que memorizar la lista: el sistema revisa el régimen durante la solicitud. Tu tarea es no prometerle la cuenta a una empresa a la que no se la van a abrir.' },
+              { titulo:'El régimen es compatible, pero la forma no', texto:'Una Asociación Civil (A.C.) tiene régimen 603 compatible, pero hoy no se abren cuentas para A.C. Si el cliente mismo te lo dice, contestas con la frase de la base de conocimiento.' }
+            ] },
+            { t:'guion', texto:'En este momento no podemos abrir Cuentas Empresa para empresas constituidas como Asociación Civil (A.C.). Por ahora, el producto no está disponible para este tipo de entidad' },
+            { t:'aviso', tono:'info', texto:'La lista completa de regímenes compatibles está en la base de conocimiento, artículo «Descripción general del PyME + preguntas».' }
+          ]
+        },
+        {
+          titulo: 'Quién tiene derecho a abrir la cuenta',
+          bloques: [
+            { t:'parrafo', texto:'La cuenta se abre a nombre de la empresa, así que solo puede abrirla quien tiene el derecho de firmar por ella: el representante legal. Ese derecho no depende del puesto ni de la participación: está escrito en los documentos.' },
+            { t:'tabla', encabezados:['Quién','¿Puede abrir la cuenta?'], filas:[
+              ['El administrador único','Casi siempre sí: sus facultades quedan en el acta constitutiva. En una S.A.S. su nombre aparece directo en la forma M47 del Registro Público de Comercio'],
+              ['Un director, uno de los socios, un accionista','Solo si tiene facultades otorgadas, en el acta o en un poder aparte. Tener una parte de la empresa y firmar por ella son cosas distintas'],
+              ['El contador, un gerente, un asistente, un familiar','No, aunque se lo hayan encargado y tenga todos los documentos a la mano']
+            ] },
+            { t:'tarjetas', items:[
+              { titulo:'Acta constitutiva', texto:'El documento con el que se crea la empresa ante notario. Ahí dice quién la administra y con qué facultades.' },
+              { titulo:'Poder notarial', texto:'Un poder otorgado ante notario cuando las facultades se dan después o a otra persona. Muchas veces viene como acta de asamblea.' }
+            ] },
+            { t:'parrafo', texto:'En los dos, el banco necesita ver el derecho de abrir cuentas bancarias: en el texto aparece como «abrir cuentas bancarias» o «poder de administración».' },
+            { t:'guion', texto:'Eso viene en los documentos de la empresa. Revisa en el acta constitutiva quién está nombrado como administrador o representante y si tiene facultades para abrir cuentas bancarias — busca "abrir cuentas bancarias" o "poder de administración"' }
+          ],
+          reto: {
+            id:'m2-r3', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Somos tres socios. Supongo que sí puedo abrir la cuenta, soy socio». ¿Qué le dices?',
+            opciones:[
+              {id:'a', texto:'Que un socio seguro puede'},
+              {id:'b', texto:'Que el derecho de abrir cuentas está en el acta constitutiva o en un poder notarial, y le pido revisar cuál de los socios está nombrado representante con esas facultades'},
+              {id:'c', texto:'Que la cuenta solo la puede abrir el director'}
+            ],
+            correcta:'b',
+            explicacion:'Ser socio no da por sí solo la facultad de firmar por la empresa; esa facultad está escrita en los documentos.'
+          }
+        },
+        {
+          titulo: 'Cuándo el cliente no es nuestro',
+          bloques: [
+            { t:'parrafo', texto:'No toda llamada termina en una solicitud. Situaciones en las que no inicias o no continúas:' },
+            { t:'tabla', encabezados:['Situación','Cómo lo sabes'], filas:[
+              ['La persona no tiene un negocio registrado','A la pregunta directa y a las de confirmación contesta «no»; trabaja como empleado o de manera informal.'],
+              ['Quien contesta no tiene facultades para abrir la cuenta','Ver la pantalla «Quién tiene derecho a abrir la cuenta»'],
+              ['La empresa es A.C. o está en un régimen no compatible','El cliente mismo menciona la forma o el régimen; lo revisas en la base de conocimiento'],
+              ['El representante no tiene ni INE ni permiso de residencia','Se detecta en la solicitud; sin uno de esos documentos no se abre la cuenta']
+            ] },
+            { t:'aviso', tono:'ok', texto:'PFAE no es «cliente que no es nuestro». Si del otro lado hay una persona con negocio, eliges PFAE y llevas la solicitud por la rama PFAE, con el guion Golden o Non-Golden según la tarea.' }
+          ]
+        },
+        {
+          titulo: 'Tipo de negocio → qué ofreces',
+          bloques: [
+            { t:'parrafo', texto:'Calificar no es solo «empresa o no». Para que tu propuesta dé en el blanco, necesitas saber a qué se dedica la empresa: cada negocio paga por cosas distintas.' },
+            { t:'guion', texto:'Cuéntame en dos palabras, ¿a qué se dedica la empresa?' },
+            { t:'tabla', encabezados:['Tipo de negocio','Qué le suele importar','Qué ofreces'], filas:[
+              ['Consultoría y servicios profesionales','Pagar a muchos colaboradores a mano','Pagos por lista en un archivo; roles y aprobaciones'],
+              ['Producción y comercio','Decenas de pagos a proveedores','Pagos por lista; CFDI desde el banco; ligas de pago'],
+              ['IT y software','Pagos a desarrolladores uno por uno; pagos urgentes de noche','Pagos por lista; roles; SPEI a cualquier hora; tarjeta virtual'],
+              ['Construcción e inmobiliario','El encargado de obra no puede pagar; nómina en efectivo','Tarjeta con límite para el encargado; nómina en un archivo; cuenta adicional por obra'],
+              ['Transporte, logística y turismo','El chofer necesita dinero en ruta','Tarjeta con límite para el chofer; pagos por lista; efectivo en OXXO'],
+              ['Contadores y auditores','Los clientes no mandan estados de cuenta; impuestos al último día','Rol de contador; pagos al SAT; todo en línea'],
+              ['Marketing y publicidad','Presupuestos de varios clientes en una cuenta','Cuentas adicionales con su tarjeta; pagos por lista']
+            ] },
+            { t:'tarjetas', items:[
+              { titulo:'Control', texto:'El dueño no tiene que hacerlo todo: roles para su equipo y tarjetas con límite.' },
+              { titulo:'Tiempo', texto:'Todo en una app, sin sucursal y sin token. Nómina y proveedores en un solo archivo.' },
+              { titulo:'Dinero', texto:'Crédito Respaldo hasta 200,000 para cuando los clientes pagan tarde; Ahorro Empresa para el saldo que no se usa.' }
+            ] }
+          ]
+        },
+        {
+          titulo: 'Lo esencial del módulo',
+          bloques: [
+            { t:'lista', items:[
+              'Primero la pregunta directa: cómo está registrado en el SAT. Si no está seguro, cualquiera de las tres de confirmación. Si no lo sabe, lo mandas a la CSF, primer bloque.',
+              '«Mi negocio», RESICO, el contador, las ventas no son señales. La forma de la empresa, los socios y el representante legal son motivo para preguntar, no para elegir.',
+              'Régimen fiscal: 601 es empresa; RESICO no se sabe. Un régimen raro: revísalo en la base de conocimiento antes de la solicitud.',
+              'La cuenta solo la puede abrir el representante legal con facultades para abrir cuentas bancarias.',
+              'No es nuestro cliente: sin negocio registrado, sin facultades, A.C. o régimen no compatible, sin INE ni permiso de residencia. PFAE sí es nuestro, solo que por otra rama.',
+              'A qué se dedica la empresa lo averiguas en el primer minuto, y eliges el ángulo: control, tiempo o dinero.'
+            ] }
+          ]
+        }
+      ],
+      quiz: {
+        titulo: 'Quiz del módulo 2',
+        intro: 'Seis preguntas sobre cómo calificar al cliente. Sin calificación.',
+        preguntas: [
+          { id:'m2-q1', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Es un negocio familiar, dos restaurantes, ya llevamos diez años. ¿El RFC? RPN150320KL8». ¿Qué eliges en el CRM?',
+            opciones:[
+              {id:'a', texto:'PFAE: «negocio familiar» suena a persona con negocio', correcta:false},
+              {id:'b', texto:'PM: el RFC tiene 12 caracteres', correcta:true},
+              {id:'c', texto:'Pregunto por el acta constitutiva antes de elegir', correcta:false}
+            ],
+            explicacion:'Doce caracteres es una empresa, sin excepciones. Con el RFC ya no hace falta confirmar nada más.' },
+          { id:'m2-q2', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'¿Cuál de estas respuestas te dice con seguridad que es una Persona Moral?',
+            opciones:[
+              {id:'a', texto:'«Estoy en RESICO»', correcta:false},
+              {id:'b', texto:'«Tengo ventas grandes y cinco empleados»', correcta:false},
+              {id:'c', texto:'«Las facturas salen a nombre de la empresa, no al mío»', correcta:true}
+            ],
+            explicacion:'Las facturas salen a nombre de quien está registrado en el SAT. RESICO y el tamaño del negocio no dicen nada.' },
+          { id:'m2-q3', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Estamos en el 601, General de Ley». ¿Qué te dice eso?',
+            opciones:[
+              {id:'a', texto:'Es una empresa en el régimen más común: elijo PM', correcta:true},
+              {id:'b', texto:'Nada: el régimen no es señal, pregunto el RFC', correcta:false},
+              {id:'c', texto:'Tengo que revisar si el régimen es compatible', correcta:false}
+            ],
+            explicacion:'El 601 es exclusivo de personas morales. El que no distingue es RESICO.' },
+          { id:'m2-q4', tema:'pm-vs-pfae', tipo:'unica',
+            texto:'El cliente: «Soy el contador, el director me pidió abrir la cuenta, tengo todos los documentos». ¿Puede?',
+            opciones:[
+              {id:'a', texto:'Sí: tiene los documentos y el director se lo encargó', correcta:false},
+              {id:'b', texto:'Sí, si pone los datos del director', correcta:false},
+              {id:'c', texto:'No: la cuenta la abre solo el representante con facultades por acta o por poder', correcta:true}
+            ],
+            explicacion:'Tener los documentos no da el derecho de firmar por la empresa.' },
+          { id:'m2-q5', tema:'clientes', tipo:'unica',
+            texto:'El cliente: «Somos un despacho jurídico pequeño, S.C., tres socios, viajamos mucho a juzgados». ¿Qué le ofreces primero?',
+            opciones:[
+              {id:'a', texto:'Una inversión en Ahorro Fijo a 360 días', correcta:false},
+              {id:'b', texto:'Todo en línea y sin token: pueden pagar y aprobar desde cualquier ciudad', correcta:true},
+              {id:'c', texto:'Una cuenta en dólares', correcta:false}
+            ],
+            explicacion:'Su dolor es no estar en la oficina. El ángulo es tiempo, no rendimiento.' },
+          { id:'m2-q6', tema:'clientes', tipo:'unica',
+            texto:'El cliente: «Surtimos empaques a cadenas de tiendas, cada mes son decenas de pagos». ¿Qué es lo más importante para este negocio?',
+            opciones:[
+              {id:'a', texto:'Tarjetas virtuales para publicidad', correcta:false},
+              {id:'b', texto:'Una cuenta adicional en pesos para cada cliente', correcta:false},
+              {id:'c', texto:'Pagos a proveedores por lista en un solo archivo y CFDI desde el banco', correcta:true}
+            ],
+            explicacion:'Producción y comercio: decenas de pagos y facturación. Ese es el dolor que resuelves.' }
+        ]
+      }
+    },
+
+    // ══════════════════════════════════════════════════ MÓDULO 3
+    {
+      id: 'm3',
+      titulo: 'La llamada con una empresa de principio a fin',
+      resumen: 'Ocho pasos, las pantallas del CRM, los guiones, los planes y las objeciones',
+      duracion: '70 min',
+      pantallas: [
+        {
+          titulo: 'La llamada de un vistazo',
+          bloques: [
+            { t:'parrafo', texto:'En la llamada con una empresa hay ocho pasos y tres puntos donde tomas una decisión en el CRM.' },
+            { t:'aviso', tono:'info', texto:'El orden de las pantallas lo marca el CRM: mientras no completes la actual, la siguiente no se abre. Pero el pitch va antes del CRM: el cliente primero tiene que querer la cuenta y después contestar preguntas sobre el RFC.' }
+          ]
+        },
+        {
+          titulo: 'Paso 1: el saludo',
+          bloques: [
+            { t:'parrafo', texto:'Te presentas, dices que llamas de Banco Plata, en una frase explicas para qué le sirve la cuenta a su empresa y pasas de inmediato a calificar. Tono pausado, seguro y profesional, sin muletillas informales.' },
+            { t:'guion', texto:'Hola, ¿qué tal, [nombre del cliente]? Muy buenos días. Mucho gusto, te saluda [tu nombre] de Banco Plata.' },
+            { t:'guion', texto:'Te contacto porque estamos apoyando a empresas como la tuya a optimizar su tesorería y simplificar su operación diaria. A través de una plataforma digital muy ágil, puedes generar hasta un 15 % de rendimiento anual en el saldo de tu cuenta, operar transferencias SPEI y pagos sin comisiones extra, y gestionar tu facturación e impuestos directamente desde la web.' },
+            { t:'guion', texto:'Por cierto, para darte una asesoría precisa: actualmente tu empresa opera bajo el régimen de Persona Moral, ¿cierto?' },
+            { t:'parrafo', texto:'Tres beneficios en una sola frase y de inmediato la pregunta sobre Persona Moral. Si contesta «no» o «no sé», haces las tres preguntas del módulo anterior.' },
+            { t:'aviso', tono:'alerta', texto:'Si contesta otra persona, o el cliente dice que de la cuenta se encarga alguien más, preguntas quién decide esos temas en la empresa y pides su contacto.' }
+          ]
+        },
+        {
+          titulo: 'Paso 2: el pitch',
+          bloques: [
+            { t:'parrafo', texto:'Dos o tres beneficios según lo que escuchaste, no todos seguidos. Primero, dos o tres preguntas sobre su negocio:' },
+            { t:'lista', items:[
+              '«¿A qué se dedica la empresa?»',
+              '«¿Cuántas personas trabajan contigo?»',
+              '«¿Cómo pagan hoy a proveedores y a tu equipo?»',
+              '«¿Qué te quita más tiempo en la parte administrativa?»'
+            ] },
+            { t:'parrafo', texto:'Eliges el argumento según la respuesta y lo dices con la estructura Característica → Puente → Beneficio: qué hace la cuenta, «esto significa que», qué gana el cliente.' },
+            { t:'tabla', encabezados:['Lo que escuchas','Lo que dices'], filas:[
+              ['Quiere controlar a su equipo','«Puedes emitir tarjetas corporativas para tus empleados, cada una con su propio límite. Y con Roles para tu equipo cada persona tiene su nivel de acceso: dueño, administrador, contador o usuario de tarjeta»'],
+              ['Quiere simplificar y no ir al banco','«Con Plata Negocios manejas la banca y los pagos desde una sola app, sin ir a ninguna sucursal: también los SPEI, que funcionan 24/7. Sin token. Y en la versión web emites CFDI y pagas la nómina»'],
+              ['Paga a proveedores o nómina','«Puedes pagar nómina y facturas desde la versión web, incluso subiendo listas en CSV. Además, en tu lista de contrapartes ves una marca si un proveedor aparece en las listas del SAT»'],
+              ['Quiere que su dinero rinda','«El dinero que no estás usando lo puedes poner en Ahorro Flexible: lo sacas cuando quieras y genera intereses todos los días. Con Impulsa o Expande hoy hay una tasa promocional de 15 % anual sobre el saldo de hasta 1,000,000. Es una promoción y la tasa puede cambiar»'],
+              ['Le preocupa el costo','«El plan Empieza cuesta 199 MXN al mes y no pagas la mensualidad si el saldo al cierre de cada día del mes es de 30,000 MXN o más. Además, los primeros dos meses no pagas mensualidad»']
+            ] },
+            { t:'guion', texto:'Perfecto, [nombre del cliente]. Vamos a avanzar de una vez con la apertura: te acompaño paso a paso y nos toma solo unos minutos.' },
+            { t:'guion', texto:'¿Quieres vincular la tarjeta al número de teléfono que termina en […]?' }
+          ],
+          reto: {
+            id:'m3-r1', tema:'producto', tipo:'unica',
+            texto:'El cliente: «Tenemos 12 repartidores, cada uno compra gasolina y refacciones, no alcanzo a revisar los tickets». ¿Qué beneficio mencionas primero?',
+            opciones:[
+              {id:'a', texto:'Transferencias SPEI todos los días'},
+              {id:'b', texto:'Tarjetas corporativas para los empleados, cada una con su límite'},
+              {id:'c', texto:'El plan Empieza por 199 y gratis con saldo de 30,000'}
+            ],
+            correcta:'b',
+            explicacion:'Su dolor es el control del gasto del equipo, no el costo ni la velocidad.'
+          }
+        },
+        {
+          titulo: 'Los planes',
+          bloques: [
+            { t:'parrafo', texto:'Los conoces, pero no los discutes: el plan lo elige el cliente en la solicitud. Si pregunta, debes saber responder.' },
+            { t:'tabla', encabezados:['Plan','Costo sin IVA','Lo principal y para quién'], filas:[
+              ['Empieza','199 MXN al mes / 1,990 al año; 0 si el saldo al cierre de cada día es de 30,000 o más','1 tarjeta física, 5 CFDI al mes, cada SPEI saliente 5 MXN. Ahorro Flexible 5 %. Para empresas con poca operación'],
+              ['Impulsa','599 MXN al mes / 5,990 al año','50 SPEI salientes, 50 CFDI, 4 usuarios, 3 tarjetas físicas. Ahorro Flexible 7 %; con promoción 15 % hasta 1,000,000. Para empresas en crecimiento'],
+              ['Expande','1,999 MXN al mes / 19,990 al año','1,000 SPEI, 1,000 CFDI, usuarios y tarjetas sin límite, gerente personal. Ahorro Flexible 8 %; con promoción 15 %. Para alto volumen']
+            ] },
+            { t:'lista', items:[
+              'Los primeros 2 meses sin costo en cualquier plan; el plan anual: 12 meses al precio de 10.',
+              'Las tarjetas virtuales son sin costo en todos los planes.',
+              'El cliente puede subir de plan en cualquier momento desde la app, y vuelve a tener 2 meses sin costo.'
+            ] }
+          ]
+        },
+        {
+          titulo: 'Paso 3: la rama y el consentimiento',
+          bloques: [
+            { t:'parrafo', texto:'Pantalla «Tipo de empresa»: eliges PM y la solicitud queda en la rama PM. Si resulta que es PFAE, eliges PFAE y sigues con el guion Golden o Non-Golden según la tarea.' },
+            { t:'guion', texto:'Excelente, [nombre del cliente]. Antes de revisar los detalles de tu perfil operativo, por normatividad bancaria es necesario hacer una breve lectura legal.' },
+            { t:'parrafo', texto:'En la pantalla «Obtener consentimiento del cliente» lees el aviso tal cual, palabra por palabra y de manera pausada:' },
+            { t:'guion', texto:'Al continuar con este proceso autorizas a Banco Plata, S.A., Institución de Banca Múltiple para tratar tus datos personales de conformidad con el Aviso de Privacidad disponible en bancoplata.mx. ¿Estás de acuerdo en continuar con el proceso?' },
+            { t:'aviso', tono:'alerta', texto:'Sin consentimiento no avanzas: el CRM no te deja, y saltarte el aviso es una infracción grave.' }
+          ],
+          reto: {
+            id:'m3-r2', tema:'limites', tipo:'unica',
+            texto:'El cliente te interrumpe durante el aviso: «Sí, sí, eso ya lo leí, sigamos». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'Marco «Recibí autorización», porque ya dijo que sí'},
+              {id:'b', texto:'Me salto el aviso, ya dio su consentimiento para otro producto'},
+              {id:'c', texto:'Lo leo hasta el final y le pregunto si está de acuerdo'}
+            ],
+            correcta:'c',
+            explicacion:'El aviso se lee completo y el consentimiento va después. Saltárselo es una infracción grave.'
+          }
+        },
+        {
+          titulo: 'Paso 4: datos de la empresa',
+          bloques: [
+            { t:'guion', texto:'Perfecto, muchas gracias. Para iniciar la validación de la cuenta, vamos a registrar los datos básicos de la empresa y del representante.' },
+            { t:'tabla', encabezados:['Campo en pantalla','Qué preguntas','En qué te fijas'], filas:[
+              ['RFC de la empresa (12 dígitos)','«¿Me puedes compartir el RFC de la empresa?»','12 caracteres. Si son 13, es el RFC de una persona: la rama está mal elegida'],
+              ['Ingresos mensuales esperados','«¿Cuánto espera facturar la empresa al mes, aproximadamente?»','Monto aproximado; no hace falta exactitud'],
+              ['¿Está autorizado para abrir cuentas en nombre de la empresa?','«¿Tú estás autorizado para abrir cuentas a nombre de la empresa?»','Facultades en el acta o en un poder notarial vigente']
+            ] },
+            { t:'parrafo', texto:'Si elige «No están autorizados», el CRM pide el contacto del autorizado:' },
+            { t:'guion', texto:'La cuenta de la empresa solo la puede abrir quien tiene facultades para hacerlo. ¿Me compartes el nombre y el teléfono de esa persona? Nos ponemos en contacto con él o ella' },
+            { t:'parrafo', texto:'Nombre y teléfono van en «Comentario del resultado», resultado «Respuesta - Otra persona autorizada», Cerrar tarea.' },
+            { t:'aviso', tono:'info', texto:'Dos pantallas que el CRM muestra solo: «El cliente ya tiene una solicitud» (no creas otra, cierras la tarea) y el rechazo en la evaluación previa (lo lees desde la pantalla, no das la razón y cierras la tarea).' }
+          ],
+          reto: {
+            id:'m3-r3', tema:'proceso', tipo:'unica',
+            texto:'El cliente te dicta el RFC: «REFX020726CI9». ¿Qué significa?',
+            opciones:[
+              {id:'a', texto:'Normal, lo capturo'},
+              {id:'b', texto:'Un RFC de 13 caracteres es de una persona: la rama está mal elegida, regreso a calificar'},
+              {id:'c', texto:'Le pido el RFC del contador'}
+            ],
+            correcta:'b',
+            explicacion:'Trece caracteres es una persona física. La solicitud iría por la rama equivocada.'
+          }
+        },
+        {
+          titulo: 'Paso 5: datos del representante',
+          bloques: [
+            { t:'parrafo', texto:'Campos: Nombre(s), Primer apellido, Segundo apellido, Fecha de nacimiento, Documento para verificación de identidad.' },
+            { t:'aviso', tono:'alerta', texto:'El nombre va como en la INE, letra por letra: cualquier diferencia detiene la revisión. Pídele al cliente que tome su INE y te lo dicte de ahí.' },
+            { t:'guion', texto:'¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y con tus datos actualizados' },
+            { t:'parrafo', texto:'Si no tiene ni INE ni permiso de residencia, eliges «Ninguna de las anteriores» y lees desde la pantalla:' },
+            { t:'guion', texto:'Lo sentimos, pero no podemos abrir una cuenta para tu empresa sin una INE o tarjeta de residencia. Puedes volver a solicitarla en cuanto tengas alguno de estos documentos' }
+          ],
+          reto: {
+            id:'m3-r4', tema:'proceso', tipo:'unica',
+            texto:'El cliente: «José Luis Hernández, el segundo apellido ni lo uso». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'Capturo lo que dijo y dejo vacío el segundo apellido'},
+              {id:'b', texto:'Pongo «N/A» en el segundo apellido'},
+              {id:'c', texto:'Le pido que tome su INE y me dicte nombre y los dos apellidos tal como aparecen ahí'}
+            ],
+            correcta:'c',
+            explicacion:'Cualquier diferencia con la INE detiene la revisión.'
+          }
+        },
+        {
+          titulo: 'Paso 6: solicitud creada y los documentos',
+          bloques: [
+            { t:'parrafo', texto:'El CRM muestra «Tu solicitud se creó correctamente». Le dices al cliente qué documentos va a subir y después explicas cada uno en una frase. Es la parte principal de la llamada.' },
+            { t:'guion', texto:'Para la fase final de activación, el sistema te va a pedir subir de forma digital el acta constitutiva con el sello del Registro Público de Comercio, la Constancia de Situación Fiscal de la empresa, y la INE del representante legal y de los accionistas con 25 % o más. ¿Los tienes a la mano en este momento?' },
+            { t:'aviso', tono:'alerta', texto:'Tú no envías ningún enlace. Los documentos los sube el cliente en su solicitud, en la app de Plata, mejor desde la computadora.' },
+            { t:'guion', texto:'Si estás listo para subir todos los documentos ahora, me quedo contigo en la llamada y te ayudo en cada paso. ¿Lo hacemos ahora?' },
+            { t:'guion', texto:'Perfecto. ¿Puedes subir todos los documentos tú mismo en los próximos dos días? No te va a tomar mucho tiempo' },
+            { t:'tabla', encabezados:['Obligatorio para todos','Qué le dices al cliente'], filas:[
+              ['Constancia de Situación Fiscal','«La CSF de la empresa, RFC de 12 caracteres, no la tuya personal. Con no más de tres meses. Y sube todas las páginas»'],
+              ['Acta constitutiva','«Todas las páginas, incluidas las últimas, con las firmas y el sello del notario»'],
+              ['Comprobante de inscripción en el RPC','«El documento con el número de FME. Muchas veces viene al final del acta»'],
+              ['INE del representante','«Vigente, por los dos lados. El nombre en la solicitud va como en la INE»'],
+              ['INE de cada dueño con 25 % o más','«De cada quien tenga 25 % o más, directo o a través de otra empresa; ambos lados»']
+            ] },
+            { t:'tabla', encabezados:['Solo en algunos casos','Cuándo se necesita'], filas:[
+              ['Poder notarial','Si la facultad de abrir cuentas no está en el acta constitutiva'],
+              ['Comprobante de domicilio','Solo si el domicilio real es distinto del fiscal que aparece en la CSF'],
+              ['Constancia notarial','Si la inscripción en el registro todavía está en trámite'],
+              ['Documentos de la empresa accionista','Si entre los dueños hay una persona moral'],
+              ['Acta de asamblea o estructura de accionistas','Si los dueños cambiaron después de constituir la empresa']
+            ] }
+          ],
+          reto: {
+            id:'m3-r5', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «¿Todo eso? El acta la tiene el notario, y la CSF es del año pasado». ¿Qué respondes?',
+            opciones:[
+              {id:'a', texto:'«No, sube lo que tengas, lo demás te lo piden después»'},
+              {id:'b', texto:'«Te entiendo. Veamos qué tienes a la mano y te digo qué es obligatorio y qué depende de tu caso. La CSF descárgala nueva del portal del SAT, son cinco minutos; el acta pídesela al notario en digital»'},
+              {id:'c', texto:'«La CSF del año pasado sirve»'}
+            ],
+            correcta:'b',
+            explicacion:'Ningún «no lo tengo» termina la venta: le dices dónde conseguirlo y sigues.'
+          }
+        },
+        {
+          titulo: 'Paso 7: qué sigue',
+          bloques: [
+            { t:'parrafo', texto:'El cliente debe escuchar cuatro pasos: carga de documentos → revisión del banco → cita con el embajador → revisión final y cuenta.' },
+            { t:'guion', texto:'Cuando subas todo, el banco revisa los documentos, normalmente hasta tres días. Después te visita un embajador: le muestras los originales y firmas el contrato. Después de la revisión final se abre la cuenta' },
+            { t:'guion', texto:'¿Tienes alguna otra duda en la que te pueda apoyar antes de colgar? Te agradezco mucho tu tiempo y la confianza. ¡Que tengas un excelente día!' },
+            { t:'aviso', tono:'info', texto:'El éxito de tu llamada: todos los documentos subidos en dos días. Todo lo que hiciste en los pasos 6 y 7 trabaja justo para eso.' }
+          ]
+        },
+        {
+          titulo: 'Paso 8: resultado de la llamada',
+          bloques: [
+            { t:'parrafo', texto:'Panel «Resultado de la tarea»: eliges el resultado y en «Comentario del resultado» escribes lo que debe saber el siguiente que abra al cliente. El resultado habla de la llamada; el comentario, del cliente.' },
+            { t:'aviso', tono:'alerta', texto:'Si la solicitud quedó creada, no registras resultado.' },
+            { t:'tabla', encabezados:['Resultado','Cuándo lo eliges'], filas:[
+              ['Otra persona autorizada','Quien contestó no está autorizado. Pides nombre y teléfono del autorizado'],
+              ['Documentos de otra persona','Está autorizado, pero los documentos los tiene el contador, un socio o el notario'],
+              ['El cliente no es una empresa','No tiene negocio: ni PM ni PFAE'],
+              ['No está formalizado ante SAT','El negocio no está registrado ante el SAT'],
+              ['No cuenta con CSF','El cliente no tiene CSF y no puede obtenerla'],
+              ['No está de acuerdo','Escuchó y no aceptó'],
+              ['Reacción negativa / que no le vuelvan a llamar','No se le vuelve a llamar'],
+              ['Que le vuelvan a llamar','Pide que le llamen después; cuándo, en el comentario'],
+              ['Contestó otra persona','Contestó alguien distinto de la persona de la tarea'],
+              ['Problema técnico','El CRM o la app no dejaron terminar la llamada'],
+              ['Sin respuesta: buzón / número incorrecto / otro','No se logró contactar']
+            ] }
+          ]
+        },
+        {
+          titulo: 'Practica en el simulador del CRM',
+          bloques: [
+            { t:'parrafo', texto:'Antes de seguir, recorre la rama PM en el simulador: todas las pantallas de este módulo, en el mismo orden que en el CRM.' },
+            { t:'parrafo', texto:'En la barra superior verás diferentes escenarios. Puedes elegir uno de ellos o el modo libre si quieres practicar por tu cuenta.' },
+            { t:'enlaces', items:[
+              { titulo:'Simulador de ventas PM', texto:'La rama PM completa, por escenarios o en modo libre', url:'https://sites.google.com/dif.tech/pyme/simuladores/inhouse-pm-simulador-de-ventas#h.gygkf9lmuu89' },
+              { titulo:'Cierre de la tarea', texto:'Practica cómo seleccionar el resultado de cierre', url:'https://sites.google.com/dif.tech/pyme/simuladores/inhouse-pm-simulador-de-ventas#h.mr3i7l9gzztu' }
+            ] }
+          ]
+        },
+        {
+          titulo: 'Preguntas frecuentes y objeciones',
+          bloques: [
+            { t:'parrafo', texto:'La regla de siempre: escucha, responde y haz una pregunta para avanzar. No prometas aprobación ni plazos.' },
+            { t:'tabla', encabezados:['El cliente dice','Qué respondes','Pregunta para avanzar'], filas:[
+              ['«Ya tengo cuenta en otro banco»','«No necesitas decidir hoy si vas a cambiar toda tu operación. Puedes probar Plata Negocios para transferencias, pagos, tarjetas y usuarios, y comparar». No mencionas el banco del cliente ni comparas sus tarifas','«¿Qué te gustaría mejorar de tu cuenta actual: costos, control de gastos, transferencias o facturación?»'],
+              ['«¿Cuál plan me conviene?»','Empieza 199 y sin costo con 30,000 de saldo; Impulsa 599 con 50 transferencias, 50 CFDI, 4 usuarios; Expande 1,999 con mil transferencias y gerente personal. En cualquier plan, 2 meses sin mensualidad','«¿Cuántas transferencias, tarjetas, usuarios y CFDI necesitas al mes?»'],
+              ['«¿Y si después quiero cambiar de plan?»','«Puedes subir de plan en cualquier momento desde la app: el cambio es inmediato y tienes dos meses sin costo. Para bajar, lo pides a soporte»','«¿Con qué plan te gustaría empezar?»'],
+              ['«¿Cuánto tarda? ¿Me garantizan que la abren?»','«Normalmente hasta tres días después de que subas todos los documentos. Es un estimado, no una garantía: la apertura está sujeta a la validación de Banco Plata»','«¿Te parece si repasamos los documentos antes de enviarlos?»'],
+              ['«¿Es seguro un banco sin sucursales?»','«Banco Plata es un banco con licencia, Institución de Banca Múltiple, y nos regula la CNBV igual que a cualquier otro banco en México. Un embajador va contigo a entregarte la tarjeta, y soporte responde por chat 24/7»','«¿Tu duda principal es la seguridad, el acceso o la atención ante un problema?»'],
+              ['«¿Tienen crédito?»','«Por ahora no hay tarjeta de crédito para empresas. Pero tienes Crédito Respaldo: hasta 200,000 en negativo, y la deuda se paga con los siguientes ingresos»','«¿Qué tan seguido te falta dinero antes de que te paguen tus clientes?»'],
+              ['«¿Cuenta en dólares o transferencias internacionales?»','«Por ahora, lamentablemente, no». No das fechas; anotas su interés en el comentario','«¿Qué más necesitas resolver hoy con tu cuenta?»']
+            ] }
+          ],
+          reto: {
+            id:'m3-r6', tema:'limites', tipo:'unica',
+            texto:'El cliente: «Ya tengo cuenta en otro banco, ¿para qué quiero otra?». ¿Qué respondes?',
+            opciones:[
+              {id:'a', texto:'«Nuestra app es mejor que la de tu banco»'},
+              {id:'b', texto:'«Tu banco te cobra por el token y nosotros no»'},
+              {id:'c', texto:'«Perfecto, no necesitas decidir nada hoy. Puedes probar Plata Negocios para transferencias, pagos, tarjetas y usuarios, y comparar. ¿Qué te gustaría mejorar de tu cuenta actual?»'}
+            ],
+            correcta:'c',
+            explicacion:'No comparas con otros bancos ni los mencionas: es una infracción grave. Bajas el compromiso y haces una pregunta para avanzar.'
+          }
+        },
+        {
+          titulo: 'Dónde buscar la respuesta',
+          bloques: [
+            { t:'parrafo', texto:'Todo lo que necesitas en la llamada con una empresa está en cuatro lugares. Si no lo recuerdas: «lo confirmo» y buscas.' },
+            { t:'tabla', encabezados:['Pregunta del cliente','Dónde está la respuesta'], filas:[
+              ['Beneficios, PFAE o PM, regímenes fiscales, A.C., promoción de rendimiento','«Descripción general del PyME + preguntas»'],
+              ['Documentos, cómo descargar la CSF, qué pasa después de enviar la solicitud','«Solicitud del producto PM»'],
+              ['Planes, precios, qué incluye cada uno, cambio de plan','«Planes PM: guía de consultas»'],
+              ['Si el embajador llega a la ciudad del cliente','«Cobertura de entrega de la tarjeta física»']
+            ] }
+          ]
+        },
+        {
+          titulo: 'En resumen',
+          bloques: [
+            { t:'lista', items:[
+              'El pitch va antes del CRM: dos o tres preguntas sobre el negocio y 2–3 beneficios según la respuesta.',
+              'Ocho pasos, tres salidas: PFAE → rama PFAE; no autorizado → contacto del autorizado; sin INE ni permiso → texto de la pantalla y tarea cerrada.',
+              'Aviso de privacidad, tal cual y hasta el final. El nombre del representante, letra por letra como en la INE.',
+              'Documentos: la lista completa, cada uno en una frase. Solo por la solicitud, mejor desde la computadora, sin enviar enlaces.',
+              'Al final, los cuatro pasos que siguen y el estimado «normalmente hasta tres días», sin promesas.'
+            ] }
+          ]
+        }
+      ],
+      quiz: {
+        titulo: 'Quiz del módulo 3',
+        intro: 'Siete preguntas sobre la llamada completa. Sin calificación.',
+        preguntas: [
+          { id:'m3-q1', tema:'producto', tipo:'unica',
+            texto:'El cliente: «Lo importante es que mi contador pueda entrar y ver los movimientos, pero sin poder transferir». ¿Qué beneficio mencionas?',
+            opciones:[
+              {id:'a', texto:'Tarjetas corporativas con límites', correcta:false},
+              {id:'b', texto:'Roles para tu equipo: el contador solo ve y prepara, y el dueño aprueba', correcta:true},
+              {id:'c', texto:'El plan más barato', correcta:false}
+            ],
+            explicacion:'El rol de contador es exactamente eso: ve los movimientos y prepara pagos, sin poder transferir.' },
+          { id:'m3-q2', tema:'clientes', tipo:'unica',
+            texto:'El cliente: «Tengo una constructora pequeña, ahorita con tres obras al mismo tiempo». ¿Qué haces?',
+            opciones:[
+              {id:'a', texto:'Le menciono todos los beneficios, para que alguno le sirva', correcta:false},
+              {id:'b', texto:'Le pido el RFC para empezar la solicitud', correcta:false},
+              {id:'c', texto:'Le pregunto: «¿Qué te quita más tiempo en la parte administrativa?»', correcta:true}
+            ],
+            explicacion:'Primero el dolor, después el beneficio. Dos o tres beneficios elegidos, no todos seguidos.' },
+          { id:'m3-q3', tema:'producto', tipo:'unica',
+            texto:'Agencia de marketing: «Solo yo puedo hacer los pagos. Cuando estoy en juntas, los pagos se quedan esperando». ¿Qué mencionas primero?',
+            opciones:[
+              {id:'a', texto:'Cuentas adicionales en pesos, una para cada cliente', correcta:false},
+              {id:'b', texto:'Roles para tu equipo: alguien prepara el pago y tú lo apruebas desde el celular', correcta:true},
+              {id:'c', texto:'Ahorro Flexible con la promoción de 15 %', correcta:false}
+            ],
+            explicacion:'El cuello de botella es que solo él puede pagar: lo resuelven los roles y la aprobación desde la app.' },
+          { id:'m3-q4', tema:'limites', tipo:'unica',
+            texto:'El cliente: «Mi contador dice que mejor me quede en mi banco». ¿Qué respondes?',
+            opciones:[
+              {id:'a', texto:'«Tu contador no conoce Plata, nosotros somos mejores»', correcta:false},
+              {id:'b', texto:'«Está bien, te llamo en otro momento»', correcta:false},
+              {id:'c', texto:'«No tienes que mover todo hoy: puedes usar Plata para algo concreto y comparar. Y tu contador puede tener su propio acceso. ¿Qué es lo que más trabajo te da hoy con tu banco?»', correcta:true}
+            ],
+            explicacion:'Bajas el compromiso, resuelves la objeción del contador con el rol de contador y haces una pregunta para avanzar.' },
+          { id:'m3-q5', tema:'proceso', tipo:'unica',
+            texto:'El cliente es gerente; el director le pidió abrir la cuenta. En la pantalla de autorización, ¿qué haces?',
+            opciones:[
+              {id:'a', texto:'«Sí, están autorizados», el director se lo pidió', correcta:false},
+              {id:'b', texto:'Sigo con el gerente y en los datos del representante pongo al director', correcta:false},
+              {id:'c', texto:'«No están autorizados», pido el contacto del director y cierro con «Otra persona autorizada»', correcta:true}
+            ],
+            explicacion:'Un encargo verbal no da facultades. El CRM te lleva justo a pedir el contacto del autorizado.' },
+          { id:'m3-q6', tema:'documentos', tipo:'unica',
+            texto:'¿Cuál de estos documentos sube el cliente solo en un caso específico?',
+            opciones:[
+              {id:'a', texto:'Acta constitutiva', correcta:false},
+              {id:'b', texto:'INE del representante', correcta:false},
+              {id:'c', texto:'Comprobante de domicilio, solo si el domicilio real es distinto del fiscal', correcta:true}
+            ],
+            explicacion:'El acta y la INE son obligatorias siempre; el comprobante de domicilio solo si no coincide con la CSF.' },
+          { id:'m3-q7', tema:'limites', tipo:'unica',
+            texto:'El cliente: «Si subo todo hoy, ¿cuándo la abren?». ¿Qué respondes?',
+            opciones:[
+              {id:'a', texto:'«En tres días»', correcta:false},
+              {id:'b', texto:'«No sé, depende del banco»', correcta:false},
+              {id:'c', texto:'«Normalmente hasta tres días después de subir todos los documentos, después la cita con el embajador. Es un estimado, no una garantía»', correcta:true}
+            ],
+            explicacion:'El único plazo que das es el estimado de revisión, marcado como estimado.' }
+        ]
+      }
+    },
+
+    // ══════════════════════════════════════════════════ MÓDULO 4
+    {
+      id: 'm4',
+      titulo: 'Después de la llamada: la solicitud y los documentos',
+      resumen: 'Qué es cada documento, dónde se consigue y cómo prevenir el error con una frase',
+      duracion: '50 min',
+      pantallas: [
+        {
+          titulo: 'Lo que el cliente ve en su solicitud',
+          bloques: [
+            { t:'parrafo', texto:'Tienes que saber cómo es la solicitud: tres bloques, luego el plan, y la solicitud pasa a revisión.' },
+            { t:'aviso', tono:'info', texto:'El sistema revisa cada documento en cuanto se sube y muestra un aviso si algo está mal. El aviso no detiene la solicitud: el cliente puede seguir, pero entonces el oficial le vuelve a pedir el documento. Por eso conviene prevenir los errores en la llamada.' }
+          ]
+        },
+        {
+          titulo: 'CSF: Constancia de Situación Fiscal',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','La constancia del SAT con el registro de la empresa: RFC, nombre, régimen, actividades, domicilio fiscal. Tiene varias páginas'],
+              ['Dónde se obtiene','En sat.gob.mx con el RFC y la contraseña de la empresa, en 5 minutos'],
+              ['Qué buscar','El RFC de la empresa (12 caracteres). La fecha de emisión: no más de 3 meses. El domicilio fiscal: si coincide con el real'],
+              ['Errores frecuentes','Suben solo la primera página; el documento tiene más de 3 meses; suben el acta en lugar de la CSF; suben la CSF personal (13 caracteres y CURP)']
+            ] },
+            { t:'guion', texto:'La CSF de la empresa, la del portal del SAT, no el acta: RFC de 12 caracteres, el nombre de la empresa arriba, con no más de tres meses y todas las páginas, no solo la primera' },
+            { t:'parrafo', texto:'Cómo se descarga, paso a paso, para dictárselo al cliente:' },
+            { t:'lista', items:[
+              'Entra al portal del SAT o busca «descargar CSF».',
+              'En la sección «Inicia el trámite», selecciona «Obtén la Constancia».',
+              'En «Pasos a seguir», haz clic en «Ingresa al servicio».',
+              'Inicia sesión con tu RFC y tu contraseña, escribe el captcha y presiona «Enviar».',
+              'Haz clic en «Generar Constancia».',
+              'El documento se abre en PDF: descárgalo con el ícono de la flecha.'
+            ] }
+          ],
+          reto: {
+            id:'m4-r1', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «Sí tengo la CSF, la bajé en marzo para el banco» (estamos en noviembre). ¿Qué le dices?',
+            opciones:[
+              {id:'a', texto:'«Perfecto, súbela»'},
+              {id:'b', texto:'«Tiene que tener máximo tres meses: descarga una nueva, son cinco minutos»'},
+              {id:'c', texto:'«Entonces no hace falta la CSF»'}
+            ],
+            correcta:'b',
+            explicacion:'La CSF no puede tener más de tres meses. Descargar una nueva toma cinco minutos.'
+          }
+        },
+        {
+          titulo: 'Acta constitutiva',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','La escritura con la que se constituyó la empresa ante notario: nombre, socios, participación, quién la administra y con qué facultades. De 10 a 60 páginas'],
+              ['Dónde se obtiene','Con el notario en digital, o en los documentos de la empresa'],
+              ['Qué buscar','Al inicio, el número de escritura y el notario. La forma legal. Las facultades del representante: «actos de administración», «abrir cuentas bancarias». Al final, firmas y sello del notario'],
+              ['Error frecuente','Suben el acta de asamblea en lugar de la constitutiva; faltan páginas']
+            ] },
+            { t:'guion', texto:'El acta con la que se constituyó la empresa, todas las páginas hasta las firmas y el sello del notario' },
+            { t:'aviso', tono:'info', texto:'Acta de asamblea: el acta de una asamblea de accionistas ante notario con lo que cambió después de la constitución. Se sube además del acta constitutiva solo si algo cambió, y la más reciente. Se distingue fácil: el primer párrafo dice «PROTOCOLIZACIÓN DEL ACTA DE ASAMBLEA».' }
+          ]
+        },
+        {
+          titulo: 'Comprobante de inscripción en el RPC',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','El documento del Registro Público de Comercio que dice que la empresa está inscrita: boleta de inscripción, forma M4 (S.A., S. de R.L.) o M47 (S.A.S.)'],
+              ['Dónde se obtiene','En las últimas páginas del acta: casi siempre viene ahí. Si no, con el notario'],
+              ['Qué buscar','Arriba dice «Registro Público de Comercio» y tiene el número de FME. Si no tiene esas palabras ni el FME, no es este documento'],
+              ['Error frecuente','Suben el acta en el paso del RPC: es lo que más vuelve a pedir el oficial']
+            ] },
+            { t:'guion', texto:'Revisa las últimas páginas del acta: ahí viene la página del Registro Público de Comercio con el número de FME. Esa se sube aparte' }
+          ],
+          reto: {
+            id:'m4-r2', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «¿Cuál boleta? Solo tengo el acta, ahí viene el sello del registro».',
+            opciones:[
+              {id:'a', texto:'«Con el sello basta, sube el acta en los dos pasos»'},
+              {id:'b', texto:'«Entonces sin ella»'},
+              {id:'c', texto:'«Abre las últimas páginas del acta: ahí viene la página del Registro Público de Comercio con el número de FME. Esa súbela en el paso del RPC»'}
+            ],
+            correcta:'c',
+            explicacion:'La boleta casi siempre está dentro del mismo archivo del acta, en las últimas páginas.'
+          }
+        },
+        {
+          titulo: 'Poder notarial',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','Un poder ante notario: a quién y con qué facultades nombró la empresa. Solo hace falta si el acta no le da a esa persona la facultad de abrir cuentas'],
+              ['Dónde se obtiene','Con el notario o en los documentos de la empresa'],
+              ['Qué buscar','Las palabras «cuentas bancarias» o «actos de administración»: búscalas con Ctrl+F. El nombre, igual que en la INE. Número de escritura, firma y sello'],
+              ['Error frecuente','Una carta simple de la empresa en lugar del poder notarial; un poder a nombre de otra persona']
+            ] },
+            { t:'guion', texto:'El poder solo hace falta si el acta no te da la facultad de abrir cuentas. Si sí, omites el paso o subes ahí la misma acta' }
+          ]
+        },
+        {
+          titulo: 'INE del representante y de los dueños',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','La INE del representante (si es extranjero: pasaporte y tarjeta de residente) y la INE de cada dueño con 25 % o más, directo o a través de otra empresa'],
+              ['Dónde se obtiene','El representante la tiene a la mano; las de los socios, con ellos'],
+              ['Qué revisar','Vigente; los dos lados; a color, no fotocopia. El nombre en la solicitud, letra por letra como en la INE'],
+              ['Error frecuente','Falta uno de los dueños; INE en blanco y negro o de un solo lado']
+            ] },
+            { t:'guion', texto:'La INE de cada quien tenga 25 % o más, directo o a través de otra empresa, por los dos lados y a color. A ti te agregas, pero tu INE no la subes otra vez' }
+          ],
+          reto: {
+            id:'m4-r3', tema:'documentos', tipo:'unica',
+            texto:'El cliente tiene 50 %, su hermano 30 % y una empresa con un solo dueño tiene 20 %. ¿De quién se necesita INE?',
+            opciones:[
+              {id:'a', texto:'De los tres'},
+              {id:'b', texto:'Solo del cliente'},
+              {id:'c', texto:'Del cliente y de su hermano'}
+            ],
+            correcta:'c',
+            explicacion:'Solo de quienes tienen 25 % o más. El 20 % de la otra empresa queda por debajo del umbral.'
+          }
+        },
+        {
+          titulo: 'Comprobante de domicilio',
+          bloques: [
+            { t:'tabla', encabezados:['Qué saber','Detalle'], filas:[
+              ['Qué es','Un recibo de luz, agua o internet, un contrato de arrendamiento o un estado de cuenta, a nombre de la empresa y con no más de 3 meses'],
+              ['Cómo saber si hace falta','«¿La empresa opera en el domicilio que viene en la CSF?» Sí: no hace falta. No: hace falta'],
+              ['Qué revisar','El nombre de la empresa, la fecha o el periodo, el domicilio completo'],
+              ['Error frecuente','Un recibo a nombre de alguien ajeno a la empresa o con más de 3 meses']
+            ] },
+            { t:'guion', texto:'Si el domicilio es el de la CSF, no subes nada. Si es otro, un recibo a nombre de la empresa con no más de tres meses' }
+          ]
+        },
+        {
+          titulo: 'El cliente dice: «No lo tengo»',
+          bloques: [
+            { t:'aviso', tono:'ok', texto:'Ningún «no lo tengo» en la llamada significa que no hay venta. Le dices dónde conseguirlo y sigues.' },
+            { t:'tabla', encabezados:['El cliente dice','Qué respondes','La venta'], filas:[
+              ['«La CSF es vieja / no la tengo a la mano»','«Descarga una nueva en el portal del SAT, son cinco minutos»','Sigue'],
+              ['«El acta la tiene el notario / solo la tengo en papel»','«Pídela al notario en digital o tómale foto página por página»','Sigue'],
+              ['«¿Qué es la boleta del RPC?»','«Mira las últimas páginas del acta: casi siempre viene ahí, con el número de FME»','Sigue'],
+              ['«La empresa es nueva, todavía no está en el RPC»','«Una carta del notario que diga que la inscripción está en trámite»','Sigue'],
+              ['«Somos S.C., no estamos en el RPC»','«Sirve el comprobante del Registro Público de la Propiedad»','Sigue'],
+              ['«No tengo poder»','«Seguro no lo necesitas: si el acta te da la facultad de abrir cuentas, omites ese paso»','Sigue'],
+              ['«Un socio vive en el extranjero / no tiene INE»','«Para un dueño basta con el pasaporte»','Sigue'],
+              ['«No tengo INE, solo pasaporte» (el representante mexicano)','El texto de la pantalla del CRM: sin INE ni tarjeta de residencia no se puede abrir la cuenta','Se detiene'],
+              ['«Los documentos los tiene el contador»','Su contacto en el comentario, resultado «Documentos de otra persona»','En pausa']
+            ] }
+          ],
+          reto: {
+            id:'m4-r4', tema:'documentos', tipo:'unica',
+            texto:'El cliente es el administrador único: «No tengo poder notarial. ¿Sin eso no se puede?»',
+            opciones:[
+              {id:'a', texto:'«Si en el acta dice que puedes abrir cuentas, no necesitas poder: omites ese paso o subes ahí la misma acta»'},
+              {id:'b', texto:'«Sin poder no se puede, pídelo al notario»'},
+              {id:'c', texto:'«Omite el paso, el poder nunca hace falta»'}
+            ],
+            correcta:'a',
+            explicacion:'El poder solo sustituye lo que el acta no da. Al administrador único el acta normalmente ya se lo da.'
+          }
+        },
+        {
+          titulo: 'Preguntas frecuentes sobre los documentos',
+          bloques: [
+            { t:'tabla', encabezados:['El cliente dice','Qué respondes','Pregunta para avanzar'], filas:[
+              ['«Son demasiados documentos»','«Revisemos qué tienes a la mano y te digo qué es obligatorio y qué depende de tu caso»','«¿Tienes la CSF y el acta constitutiva?»'],
+              ['«¿Para qué quieren el acta?»','«Muestra cómo se constituyó la empresa, quién es dueño y quién la representa»','«¿La tienes en digital o con tu notario?»'],
+              ['«¿Se los mando por WhatsApp?»','«Los documentos se suben solo en la solicitud: solo así pasan la revisión»','«¿Ya tienes abierta la solicitud en la versión web?»'],
+              ['«No quiero dar los documentos de mis socios»','«Por ley, el banco debe conocer a los dueños con 25 % o más; es igual en todos los bancos»','«¿Tu duda es cómo se usa la información o quién tiene que presentar documentos?»'],
+              ['«¿Por qué el embajador le toma fotos a los documentos?»','«Por ley debemos verificar que sean auténticos; la foto es la constancia de que los revisamos»','—'],
+              ['«¿A la cita puedo llevar copias?»','«Solo originales: INE, acta y poder, si lo tienes. Sin ellos la cita se cancela»','«¿El acta original está en la oficina o con el notario?»']
+            ] }
+          ],
+          reto: {
+            id:'m4-r5', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «El acta original la tiene el notario; a la cita llevo una copia, ¿está bien?»',
+            opciones:[
+              {id:'a', texto:'«Sí, con la copia basta, el embajador le toma foto»'},
+              {id:'b', texto:'«No hace falta llevar nada, el embajador ya vio el acta en la solicitud»'},
+              {id:'c', texto:'«Se necesitan los originales: INE, acta y poder, si lo tienes. Con una copia la cita se cancela; recoge el original con el notario y agenda la cita para cuando lo tengas»'}
+            ],
+            correcta:'c',
+            explicacion:'En la cita el embajador revisa originales. Con copias la cita se cancela y el proceso se atrasa.'
+          }
+        },
+        {
+          titulo: 'Lo esencial del módulo',
+          bloques: [
+            { t:'lista', items:[
+              'Después de la llamada: carga en 48 h → revisión de hasta 3 días → cita con originales → revisión final → cuenta. Los plazos son una referencia; la tarjeta en la cita, solo en CDMX y Monterrey.',
+              'Tú no revisas los documentos. Sabes qué es cada uno, dónde se obtiene y qué buscar, y previenes el error con una frase.',
+              'Cinco errores: CSF personal; acta de asamblea en lugar de la constitutiva; el acta en lugar de la boleta del RPC; faltan páginas o INE en blanco y negro; falta un dueño con 25 % o más.',
+              '«No lo tengo» no es el final: SAT, notario, últimas páginas del acta, pasaporte. Solo se detiene si el representante no tiene INE ni tarjeta de residencia.'
+            ] }
+          ]
+        }
+      ],
+      quiz: {
+        titulo: 'Quiz del módulo 4',
+        intro: 'Siete preguntas sobre los documentos. Sin calificación.',
+        preguntas: [
+          { id:'m4-q1', tema:'proceso', tipo:'unica',
+            texto:'El cliente subió todo el viernes: ¿cuándo es la cita?',
+            opciones:[
+              {id:'a', texto:'«El lunes»', correcta:false},
+              {id:'b', texto:'«La revisión normalmente toma hasta tres días; cuando termine, en la solicitud se abre la agenda para la cita. Es una referencia»', correcta:true},
+              {id:'c', texto:'«No sé»', correcta:false}
+            ],
+            explicacion:'Primero la revisión, después la agenda. El plazo es una referencia, no una promesa.' },
+          { id:'m4-q2', tema:'documentos', tipo:'unica',
+            texto:'El sistema dice «CSF de persona física». ¿Qué pasó?',
+            opciones:[
+              {id:'a', texto:'Que dé «continuar»', correcta:false},
+              {id:'b', texto:'La empresa no tiene CSF', correcta:false},
+              {id:'c', texto:'Subió su CSF personal (RFC de 13 caracteres); se necesita la de la empresa, con RFC de 12', correcta:true}
+            ],
+            explicacion:'Es el error más común con la CSF: la personal en lugar de la de la empresa.' },
+          { id:'m4-q3', tema:'documentos', tipo:'unica',
+            texto:'¿Qué se sube en el paso «Comprobante de inscripción en el RPC»?',
+            opciones:[
+              {id:'a', texto:'La boleta, la forma M4 o la M47 con el número de FME', correcta:true},
+              {id:'b', texto:'El acta constitutiva', correcta:false},
+              {id:'c', texto:'La CSF', correcta:false}
+            ],
+            explicacion:'Subir el acta en este paso es lo que más vuelve a pedir el oficial.' },
+          { id:'m4-q4', tema:'documentos', tipo:'unica',
+            texto:'Dueños: el cliente tiene 40 %, su socio 35 % y cinco personas 5 % cada una. ¿A quién agrega?',
+            opciones:[
+              {id:'a', texto:'A los siete', correcta:false},
+              {id:'b', texto:'A sí mismo y a su socio', correcta:true},
+              {id:'c', texto:'Solo a sí mismo', correcta:false}
+            ],
+            explicacion:'Solo los dueños con 25 % o más. El 5 % de cada uno de los otros queda fuera.' },
+          { id:'m4-q5', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «Ya bajé la CSF; subo la primera hoja, la del RFC». ¿Qué le dices?',
+            opciones:[
+              {id:'a', texto:'«Sí, lo importante es el RFC de la primera»', correcta:false},
+              {id:'b', texto:'«Sube la primera y, si piden lo demás, lo subes»', correcta:false},
+              {id:'c', texto:'«Sube todas las páginas: en las siguientes vienen las actividades y el régimen»', correcta:true}
+            ],
+            explicacion:'El régimen y las actividades están después de la primera página, y el banco los necesita.' },
+          { id:'m4-q6', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «Me dice que a la CSF le falta una página. ¿Subo solo la segunda?»',
+            opciones:[
+              {id:'a', texto:'«Sí, solo la segunda»', correcta:false},
+              {id:'b', texto:'«Ignora el aviso y sigue»', correcta:false},
+              {id:'c', texto:'«Sube el documento completo, con todas sus páginas: en un solo PDF o una foto por página»', correcta:true}
+            ],
+            explicacion:'El documento se sube entero. Completarlo «a pedazos» deja la revisión incompleta.' },
+          { id:'m4-q7', tema:'documentos', tipo:'unica',
+            texto:'El cliente: «La CSF es el acta, ¿no? Subo el acta».',
+            opciones:[
+              {id:'a', texto:'«Sí, cualquiera de las dos sirve»', correcta:false},
+              {id:'b', texto:'«No, la CSF es una constancia del SAT: se descarga en sat.gob.mx y arriba dice "Constancia de Situación Fiscal". El acta es del notario y va en su propio paso»', correcta:true},
+              {id:'c', texto:'«Entonces sube el comprobante del RPC»', correcta:false}
+            ],
+            explicacion:'Son dos documentos de origen distinto: uno del SAT y otro del notario, cada uno en su paso.' }
+        ]
+      }
+    }
+  ]
+};
+
+// Día 2: objeto CURSO2 (pantallas con `retos`, módulo sin quiz) y CERTIFICACION (25 preguntas).
+var CURSO2 = {
+  id: 'dia2',
+  titulo: 'Día 2: QA, Infracciones Graves y certificación',
+  subtitulo: 'Cómo se evalúa tu llamada y la certificación del curso',
+  entradilla: 'Ya sabes cómo QA evalúa tus llamadas. Aquí repasas rápido cómo se calculan ' +
+              'los puntos, qué pasos tiene cada atributo y qué son las Infracciones Graves. ' +
+              'Al final, la certificación del curso completo.',
+  duracion: '1 h 15 min · 1 módulo + certificación',
+
+  temas: {
+    'qa-puntos': 'Cómo QA pone los puntos',
+    'qa-pasos': 'Los pasos de cada atributo',
+    'infracciones': 'Infracciones Graves',
+    'qa-evaluar': 'Evaluar una llamada como QA'
+  },
+
+  modulos: [{
+    id: 'd2m1',
+    titulo: 'Repaso rápido: QA en 5 minutos',
+    resumen: 'Cómo se cuentan los puntos, qué pasos tiene cada atributo y qué cuenta como ' +
+             'Infracción Grave. Tres rondas cortas con respuesta al instante.',
+    duracion: '35 min',
+    pantallas: [
+
+      {
+        titulo: 'Cómo QA evalúa tu llamada',
+        bloques: [
+          { t:'parrafo', texto:'QA revisa tu llamada con un checklist. No todos los pasos se evalúan en todas las llamadas: por ejemplo, los pasos de Manejo de objeciones solo si el cliente plantea una objeción.' },
+          { t:'pasos', items:[
+            ['Tu llamada', 'QA la revisa con un checklist'],
+            ['5 atributos', 'Precisión y cumplimiento del proceso · Relación y tono · Calificación y descubrimiento · Manejo de objeciones · Resultado y siguiente paso'],
+            ['Sí o no en cada paso', 'Un paso es una acción concreta, no un intento: lo hiciste o no lo hiciste'],
+            ['0, 1 o 2 puntos', 'QA cuenta los pasos cumplidos y pone los puntos de cada atributo']
+          ] },
+          { t:'parrafo', texto:'Ejemplo real: el atributo «Resultado y siguiente paso» tiene 6 pasos.' },
+          { t:'tabla', encabezados:['Paso','¿Lo hizo el agente?'], filas:[
+            ['a. Intento claro de cierre','Sí'],
+            ['b. Explica la siguiente acción','Sí'],
+            ['c. Confirma que el cliente entiende','No'],
+            ['d. Programa la devolución de llamada','Sí'],
+            ['e. Deja un resultado claro','Sí'],
+            ['f. Evita un cierre vago','Sí']
+          ] },
+          { t:'aviso', tono:'info', texto:'5 de 6 pasos → 1 punto. En este atributo: 0–3 pasos son 0 puntos, 4–5 pasos son 1 punto, 6 pasos son 2 puntos.' },
+          { t:'aviso', tono:'alerta', texto:'Las Infracciones Graves van aparte del checklist. Un incumplimiento legal o normativo se registra como Infracción Grave y no se duplica en los atributos.' }
+        ]
+      },
+
+      {
+        titulo: 'Los pasos de cada atributo',
+        bloques: [
+          { t:'parrafo', texto:'Un paso es una acción concreta. Los pasos marcados «si aplica» QA no los revisa en todas las llamadas, solo cuando se da la situación: por ejemplo, «Usa el nombre del cliente» se revisa solo si conoces su nombre.' },
+          { t:'tabla', encabezados:['1. Precisión y cumplimiento del proceso — 5 pasos',''], filas:[
+            ['a','Explica bien el producto, beneficios, condiciones y limitaciones'],
+            ['b','Guía al cliente en cada etapa del proceso'],
+            ['c','Pide vincular el teléfono (si aplica)'],
+            ['d','Hace las preguntas de precalificación requeridas'],
+            ['e','Registra bien el resultado en el CRM'],
+            ['Puntos','0–3 pasos: 0 pt · 4 pasos: 1 pt · 5 pasos: 2 pt']
+          ] },
+          { t:'tabla', encabezados:['2. Relación y tono — 7 pasos',''], filas:[
+            ['a','Tono profesional, respetuoso y amable'],
+            ['b','Explica claro, con lenguaje adecuado al cliente'],
+            ['c','Habla natural, no como robot'],
+            ['d','Reconoce la inquietud del cliente (si aplica)'],
+            ['e','Escucha sin interrumpir'],
+            ['f','Usa el nombre del cliente (si aplica)'],
+            ['g','Beneficios relevantes, sin presionar'],
+            ['Puntos','0–4 pasos: 0 pt · 5–6 pasos: 1 pt · 7 pasos: 2 pt']
+          ] },
+          { t:'tabla', encabezados:['3. Calificación y descubrimiento — 7 pasos',''], filas:[
+            ['a','Identifica el tipo de negocio'],
+            ['b','Pregunta cómo maneja hoy sus finanzas (si aplica)'],
+            ['c','Identifica dificultades y necesidades'],
+            ['d','Pregunta si usa otro banco (si aplica)'],
+            ['e','Identifica necesidades de transferencias y pagos (si aplica)'],
+            ['f','Aclara qué resultado espera'],
+            ['g','Conecta el producto con una necesidad'],
+            ['Puntos','0–4 pasos: 0 pt · 5–6 pasos: 1 pt · 7 pasos: 2 pt']
+          ] },
+          { t:'tabla', encabezados:['4. Manejo de objeciones — 8 pasos · solo si hay objeción',''], filas:[
+            ['a','Reconoce la objeción antes de responder'],
+            ['b','Pregunta la razón real'],
+            ['c','Responde con un beneficio relevante'],
+            ['d','Adapta la respuesta al cliente'],
+            ['e','Hace dos intentos distintos'],
+            ['f','Usa argumentos diferentes'],
+            ['g','Comprueba si se resolvió'],
+            ['h','Acepta el rechazo definitivo'],
+            ['Puntos','0–5 pasos: 0 pt · 6–7 pasos: 1 pt · 8 pasos: 2 pt']
+          ] },
+          { t:'tabla', encabezados:['5. Resultado y siguiente paso — 6 pasos',''], filas:[
+            ['a','Intento claro de cierre'],
+            ['b','Explica la siguiente acción'],
+            ['c','Confirma que el cliente entiende'],
+            ['d','Programa la devolución de llamada (si aplica)'],
+            ['e','Deja un resultado claro'],
+            ['f','Evita un cierre vago'],
+            ['Puntos','0–3 pasos: 0 pt · 4–5 pasos: 1 pt · 6 pasos: 2 pt']
+          ] }
+        ]
+      },
+
+      {
+        titulo: 'Infracciones Graves',
+        bloques: [
+          { t:'parrafo', texto:'Las Infracciones Graves van aparte del checklist: un incumplimiento legal o normativo se registra como Infracción Grave y no se duplica en los atributos.' },
+          { t:'tabla', encabezados:['Grupo','Infracciones'], filas:[
+            ['Divulgación de datos o incumplimiento legal','Aviso de privacidad · Preguntas obligatorias · Solicitud sin INE / RFC · Consentimiento del cliente · Información confidencial antes de la verificación · Mención del nombre de otros bancos · Venta no autorizada a un tercero'],
+            ['Información falsa o engañosa','Información falsa / expectativas falsas'],
+            ['Comportamiento agresivo, irrespetuoso o discriminatorio','Grosería · Lenguaje ofensivo · Actitud']
+          ] }
+        ]
+      },
+
+      {
+        titulo: 'Ronda 1: ¿Es Infracción Grave?',
+        bloques: [
+          { t:'parrafo', texto:'Siete situaciones. Decide rápido: ¿es Infracción Grave o no? Y si lo es, ¿cuál? Nada de esto se califica.' }
+        ],
+        retos: [
+          { id:'d2-r1-1', tema:'infracciones', tipo:'unica',
+            texto:'Para que el cliente entienda mejor el producto, por iniciativa propia comparas Plata con un banco específico y dices su nombre.',
+            opciones:[
+              {id:'a', texto:'No es Infracción Grave'},
+              {id:'b', texto:'Mención del nombre de otros bancos'},
+              {id:'c', texto:'Información falsa / expectativas falsas'}
+            ],
+            correcta:'b',
+            explicacion:'Es una Infracción Grave mencionar de forma proactiva los nombres de otras instituciones bancarias durante la conversación con el cliente.' },
+
+          { id:'d2-r1-2', tema:'infracciones', tipo:'unica',
+            texto:'El cliente te dice que su negocio ya tiene cuenta en otro banco. Tú no mencionas ningún banco y le preguntas para qué usa esa cuenta.',
+            opciones:[
+              {id:'a', texto:'Mención del nombre de otros bancos'},
+              {id:'b', texto:'Información confidencial antes de la verificación'},
+              {id:'c', texto:'No es Infracción Grave'}
+            ],
+            correcta:'c',
+            explicacion:'Tú no mencionaste ningún banco. Identificar si el cliente usa otro banco es un paso de Calificación y descubrimiento.' },
+
+          { id:'d2-r1-3', tema:'infracciones', tipo:'unica',
+            texto:'El cliente tiene dudas. Para tranquilizarlo, le dices que su cuenta seguro se la aprueban.',
+            opciones:[
+              {id:'a', texto:'Información falsa / expectativas falsas'},
+              {id:'b', texto:'No es Infracción Grave'},
+              {id:'c', texto:'Grosería'}
+            ],
+            correcta:'a',
+            explicacion:'Es una Infracción Grave garantizar resultados, aprobaciones, beneficios o funcionalidades que no pueden garantizarse.' },
+
+          { id:'d2-r1-4', tema:'infracciones', tipo:'unica',
+            texto:'Contesta otra persona, no la de la tarea. El titular de la cuenta no dio autorización, pero tú sigues con el proceso con esa persona.',
+            opciones:[
+              {id:'a', texto:'Consentimiento del cliente'},
+              {id:'b', texto:'No es Infracción Grave'},
+              {id:'c', texto:'Venta no autorizada a un tercero'}
+            ],
+            correcta:'c',
+            explicacion:'Es una Infracción Grave continuar el proceso de venta con un tercero sin autorización del titular de la cuenta.' },
+
+          { id:'d2-r1-5', tema:'infracciones', tipo:'unica',
+            texto:'Le leíste al cliente el aviso de privacidad, pero no respondió nada. Marcas en el CRM «Recibí autorización del cliente» y sigues con el proceso.',
+            opciones:[
+              {id:'a', texto:'Aviso de privacidad'},
+              {id:'b', texto:'Consentimiento del cliente'},
+              {id:'c', texto:'No es Infracción Grave'}
+            ],
+            correcta:'b',
+            explicacion:'Es Infracción Grave continuar el proceso sin obtener el consentimiento requerido del cliente. Quedarse callado no es aceptar: pregúntale si está de acuerdo y continúa solo cuando te responda.' },
+
+          { id:'d2-r1-6', tema:'infracciones', tipo:'unica',
+            texto:'El cliente te pregunta lo mismo por tercera vez. Le respondes con ironía.',
+            opciones:[
+              {id:'a', texto:'Lenguaje ofensivo'},
+              {id:'b', texto:'No es Infracción Grave'},
+              {id:'c', texto:'Actitud'}
+            ],
+            correcta:'c',
+            explicacion:'Es una Infracción Grave comportarse de forma irónica, sarcástica, burlona o claramente irrespetuosa con el cliente.' },
+
+          { id:'d2-r1-7', tema:'infracciones', tipo:'unica',
+            texto:'Conoces el nombre del cliente, pero no lo usas en toda la llamada.',
+            opciones:[
+              {id:'a', texto:'No es Infracción Grave'},
+              {id:'b', texto:'Actitud'},
+              {id:'c', texto:'Grosería'}
+            ],
+            correcta:'a',
+            explicacion:'No es Infracción Grave. Usar el nombre del cliente es un paso de Relación y tono, y ahí pierdes ese paso.' }
+        ]
+      },
+
+      {
+        titulo: 'Ronda 2: une cada paso con su atributo',
+        bloques: [
+          { t:'parrafo', texto:'Cinco pasos, cinco atributos. ¿A cuál pertenece cada uno? Si te atoras, vuelve a la pantalla «Los pasos de cada atributo».' }
+        ],
+        retos: [
+          { id:'d2-r2-1', tema:'qa-pasos', tipo:'unica',
+            texto:'«Preguntas la razón real de la objeción». ¿De qué atributo es este paso?',
+            opciones:[
+              {id:'a', texto:'Calificación y descubrimiento'},
+              {id:'b', texto:'Manejo de objeciones'},
+              {id:'c', texto:'Relación y tono'}
+            ],
+            correcta:'b',
+            explicacion:'Es el paso b de Manejo de objeciones: antes de responder, entiendes qué hay detrás de la objeción.' },
+
+          { id:'d2-r2-2', tema:'qa-pasos', tipo:'unica',
+            texto:'«Usas el nombre del cliente de forma natural». ¿De qué atributo es este paso?',
+            opciones:[
+              {id:'a', texto:'Relación y tono'},
+              {id:'b', texto:'Resultado y siguiente paso'},
+              {id:'c', texto:'Precisión y cumplimiento del proceso'}
+            ],
+            correcta:'a',
+            explicacion:'Es el paso f de Relación y tono, y solo se evalúa si conoces el nombre del cliente.' },
+
+          { id:'d2-r2-3', tema:'qa-pasos', tipo:'unica',
+            texto:'«Explicas la siguiente acción que debe hacer el cliente». ¿De qué atributo es este paso?',
+            opciones:[
+              {id:'a', texto:'Manejo de objeciones'},
+              {id:'b', texto:'Calificación y descubrimiento'},
+              {id:'c', texto:'Resultado y siguiente paso'}
+            ],
+            correcta:'c',
+            explicacion:'Es el paso b de Resultado y siguiente paso: el cliente cuelga sabiendo qué sigue.' },
+
+          { id:'d2-r2-4', tema:'qa-pasos', tipo:'unica',
+            texto:'«Registras correctamente el resultado de la llamada en el CRM». ¿De qué atributo es este paso?',
+            opciones:[
+              {id:'a', texto:'Precisión y cumplimiento del proceso'},
+              {id:'b', texto:'Resultado y siguiente paso'},
+              {id:'c', texto:'Relación y tono'}
+            ],
+            correcta:'a',
+            explicacion:'Es el paso e de Precisión y cumplimiento del proceso. Lo que pasó en la llamada tiene que quedar bien escrito.' },
+
+          { id:'d2-r2-5', tema:'qa-pasos', tipo:'unica',
+            texto:'«Identificas qué tipo de negocio tiene el cliente». ¿De qué atributo es este paso?',
+            opciones:[
+              {id:'a', texto:'Precisión y cumplimiento del proceso'},
+              {id:'b', texto:'Calificación y descubrimiento'},
+              {id:'c', texto:'Manejo de objeciones'}
+            ],
+            correcta:'b',
+            explicacion:'Es el paso a de Calificación y descubrimiento: sin saber qué negocio es, no puedes conectar el producto con una necesidad.' }
+        ]
+      },
+
+      {
+        titulo: 'Ronda 3: tú eres QA',
+        bloques: [
+          { t:'parrafo', texto:'Ahora tú eres QA. Lee lo que pasó en la llamada y evalúa el atributo Manejo de objeciones.' },
+          { t:'cita', quien:'Qué pasó en la llamada', texto:'Al inicio de la llamada, el cliente contó que tiene dos tiendas y pasa el día moviéndose entre ellas.' },
+          { t:'parrafo', texto:'Luego el cliente dice que no tiene tiempo para trámites de banco. El agente reconoce que el tiempo es importante para él y le pregunta qué es exactamente lo que le quita tiempo. El cliente responde: ir a la sucursal. El agente explica que todo es en línea y no tiene que ir a ninguna sucursal. Pero responde con una frase general y no la relaciona con que el cliente pasa el día moviéndose entre sus dos tiendas.' },
+          { t:'parrafo', texto:'El cliente todavía duda, pero sigue en la conversación. El agente da otro argumento: puede hacer transferencias a cualquier hora directo desde su celular, en la app de Banco Plata. Sin preguntar si la duda quedó resuelta, el agente pasa directo a los datos de la solicitud. El cliente rechaza de forma definitiva. El agente le agradece y cierra la llamada con amabilidad.' }
+        ],
+        retos: [
+          { id:'d2-r3-1', tema:'qa-evaluar', tipo:'multiple',
+            texto:'¿Qué pasos de Manejo de objeciones cumplió el agente? Elige todos los que cumplió.',
+            opciones:[
+              {id:'a', texto:'Reconoce la objeción antes de responder', correcta:true},
+              {id:'b', texto:'Pregunta la razón real', correcta:true},
+              {id:'c', texto:'Responde con un beneficio relevante', correcta:true},
+              {id:'d', texto:'Adapta la respuesta al cliente', correcta:false},
+              {id:'e', texto:'Hace dos intentos distintos', correcta:true},
+              {id:'f', texto:'Usa argumentos diferentes', correcta:true},
+              {id:'g', texto:'Comprueba si se resolvió', correcta:false},
+              {id:'h', texto:'Acepta el rechazo definitivo', correcta:true}
+            ],
+            explicacion:'Cumplió 6 de 8. Le faltaron dos: no relacionó su respuesta con las dos tiendas del cliente (no adaptó), y pasó a la solicitud sin preguntar si la duda quedó resuelta.' },
+
+          { id:'d2-r3-2', tema:'qa-evaluar', tipo:'unica',
+            texto:'El agente cumplió 6 de 8 pasos. ¿Cuántos puntos recibe en Manejo de objeciones?',
+            opciones:[
+              {id:'a', texto:'0 puntos'},
+              {id:'b', texto:'1 punto'},
+              {id:'c', texto:'2 puntos'}
+            ],
+            correcta:'b',
+            explicacion:'De 6 a 7 pasos es 1 punto. Para llegar a 2, el agente tenía que relacionar su respuesta con las dos tiendas del cliente y comprobar si la duda quedó resuelta.' }
+        ]
+      },
+
+      {
+        titulo: 'Lo esencial del módulo',
+        bloques: [
+          { t:'lista', items:[
+            'QA revisa cada llamada con un checklist de 5 atributos; en cada paso solo hay sí o no.',
+            'Un paso es una acción concreta, no un intento.',
+            'Cada atributo da 0, 1 o 2 puntos según cuántos pasos cumpliste.',
+            'Los pasos «si aplica» solo se revisan cuando se da la situación.',
+            'Las Infracciones Graves van aparte del checklist y no se duplican en los atributos.',
+            'Los tres grupos de Infracciones Graves: incumplimiento legal o de datos, información falsa, y comportamiento irrespetuoso.'
+          ] },
+          { t:'aviso', tono:'ok', texto:'Lo que sigue es la certificación del curso completo: los dos días. Esa sí se califica.' }
+        ]
+      }
+
+    ],
+    quiz: null
+  }]
+};
+
+var CERTIFICACION = {
+  id: 'cert',
+  titulo: 'Certificación final',
+  intro: 'Ahora demuestras todo lo que aprendiste en el curso: beneficios, argumentos según ' +
+         'lo que necesita el cliente, objeciones, planes, calificación, la llamada y los ' +
+         'documentos. Responde todas las preguntas. Tu entrenador revisa los resultados y ' +
+         'te los comparte después.',
+  minimoCorrectas: 22,
+  totalPreguntas: 25,
+  intentosMaximos: 2,
+
+  temas: {
+    'beneficios': 'Qué le ofreces a cada negocio',
+    'promociones': 'Ahorro y promociones',
+    'pitch': 'Cómo construyes la frase',
+    'planes': 'Planes y mensualidad',
+    'objeciones': 'Objeciones y preguntas frecuentes',
+    'calificacion': 'Calificar al cliente y quién abre la cuenta',
+    'llamada': 'El cierre de la llamada',
+    'documentos': 'Documentos'
+  },
+
+  preguntas: [
+
+    { id:'c01', tema:'beneficios',
+      texto:'El cliente: «Tengo tres encargados de obra, compran material en las obras y yo me entero de los gastos hasta fin de mes». ¿Qué le ofreces primero?',
+      opciones:[
+        {id:'a', texto:'Ahorro Fijo: la tasa queda fija todo el plazo, hasta 9 % anual', correcta:false},
+        {id:'b', texto:'Tarjetas corporativas para los encargados, cada una con su límite, y tú ves todos los gastos', correcta:true},
+        {id:'c', texto:'Nómina por lista: un solo archivo CSV desde la versión web', correcta:false}
+      ] },
+
+    { id:'c02', tema:'beneficios',
+      texto:'El cliente: «Mi contador tiene que ver los movimientos y preparar pagos, pero no debe transferir sin mí». ¿Qué le conviene?',
+      opciones:[
+        {id:'a', texto:'Prestarle al contador tu usuario y contraseña de la app por un tiempo', correcta:false},
+        {id:'b', texto:'Una tarjeta corporativa para el contador con un límite bajo', correcta:false},
+        {id:'c', texto:'El plan Expande con gerente personal para la empresa', correcta:false},
+        {id:'d', texto:'El rol «Contador»: ve los movimientos y prepara pagos, y tú los apruebas', correcta:true}
+      ] },
+
+    { id:'c03', tema:'beneficios',
+      texto:'El cliente: «Cada viernes me paso dos horas pagando la nómina a 25 empleados uno por uno». ¿Qué beneficio mencionas?',
+      opciones:[
+        {id:'a', texto:'Las transferencias SPEI funcionan 24/7, puedes pagar hasta de noche', correcta:false},
+        {id:'b', texto:'Nómina por lista: un archivo CSV en lugar de 25 transferencias, la función no tiene costo', correcta:true},
+        {id:'c', texto:'Tarjetas corporativas para los empleados, cada una con su límite', correcta:false}
+      ] },
+
+    { id:'c04', tema:'promociones',
+      texto:'El cliente: «Tengo unos 800 mil en la cuenta que no voy a usar en un par de meses». ¿Qué frase es correcta?',
+      opciones:[
+        {id:'a', texto:'«Incluso con Empieza ese dinero te va a dar 15 % anual»', correcta:false},
+        {id:'b', texto:'«Con Impulsa o Expande hoy hay una promoción: 15 % anual sobre el saldo de hasta 1,000,000. Es una promoción y la tasa puede cambiar»', correcta:true},
+        {id:'c', texto:'«Te garantizamos 15 % anual sobre todo el saldo durante todo el año»', correcta:false}
+      ] },
+
+    { id:'c05', tema:'beneficios',
+      texto:'El cliente: «Mis clientes me pagan a 60 días y a mis proveedores les tengo que pagar ya». ¿Qué le ofreces?',
+      opciones:[
+        {id:'a', texto:'Una tarjeta de crédito para la empresa con límite de hasta 200,000 pesos', correcta:false},
+        {id:'b', texto:'Ahorro Fijo para apartar desde antes el dinero de los proveedores', correcta:false},
+        {id:'c', texto:'Crédito Respaldo: la cuenta puede quedar en negativo hasta 200,000 pesos y la deuda se paga con los siguientes ingresos; el monto depende de la evaluación', correcta:true}
+      ] },
+
+    { id:'c06', tema:'beneficios',
+      texto:'El cliente: «Me paso el día entre mis dos tiendas, no tengo tiempo de ir a una sucursal». ¿Cuál es el beneficio principal?',
+      opciones:[
+        {id:'a', texto:'Ahorro Flexible: el dinero rinde y lo sacas cuando quieras', correcta:false},
+        {id:'b', texto:'Ligas de pago para que tus clientes paguen con tarjeta en línea', correcta:false},
+        {id:'c', texto:'Todo en una app: la cuenta y los SPEI desde el celular, sin sucursal y sin token', correcta:true}
+      ] },
+
+    { id:'c07', tema:'beneficios',
+      texto:'Una agencia de marketing: «Los presupuestos de cinco clientes están en una sola cuenta, todo se mezcla». ¿Qué le ofreces?',
+      opciones:[
+        {id:'a', texto:'El rol «Contador» para que el contador ordene los pagos', correcta:false},
+        {id:'b', texto:'Cuentas adicionales en pesos, una por cliente, cada una con su tarjeta', correcta:true},
+        {id:'c', texto:'Crédito Respaldo por si a algún presupuesto le falta dinero', correcta:false}
+      ] },
+
+    { id:'c08', tema:'pitch',
+      texto:'El cliente te dijo que paga a cada proveedor uno por uno. ¿Cómo construyes la frase?',
+      opciones:[
+        {id:'a', texto:'Menciono todos los beneficios seguidos para que el cliente elija lo que necesita', correcta:false},
+        {id:'b', texto:'Característica → «esto significa que…» → beneficio: «Subes la lista de proveedores en un solo archivo; esto significa que les pagas a todos al mismo tiempo, no uno por uno»', correcta:true},
+        {id:'c', texto:'Primero menciono los planes y precios, y después lo que hace la cuenta', correcta:false}
+      ] },
+
+    { id:'c09', tema:'planes',
+      texto:'El cliente: «No quiero pagar 199 al mes». ¿Qué es correcto?',
+      opciones:[
+        {id:'a', texto:'«Empieza es gratis siempre, sin ninguna condición»', correcta:false},
+        {id:'b', texto:'«Eso lo vemos después, el plan lo eliges en la solicitud»', correcta:false},
+        {id:'c', texto:'«Con Empieza no pagas mensualidad si el saldo al cierre de cada día es de 30,000 o más. Y los primeros dos meses no pagas en ningún plan»', correcta:true}
+      ] },
+
+    { id:'c10', tema:'planes',
+      texto:'El cliente: «¿Y si después quiero un plan más grande?». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Solo después de un año, cuando termine el plan anual»', correcta:false},
+        {id:'b', texto:'«Tendrías que cerrar esta cuenta y abrir una nueva»', correcta:false},
+        {id:'c', texto:'«Subes de plan cuando quieras desde la app, y en el nuevo plan vuelves a tener dos meses sin costo»', correcta:true}
+      ] },
+
+    { id:'c11', tema:'objeciones',
+      texto:'El cliente: «Ya tengo cuenta en otro banco». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Entiendo. Entonces no te quito tiempo, te llamo en un par de meses»', correcta:false},
+        {id:'b', texto:'«Nuestra app es más cómoda y las tarifas son más bajas que en tu banco»', correcta:false},
+        {id:'c', texto:'«No necesitas decidir hoy. Prueba Plata para pagos y tarjetas y compara. ¿Qué te gustaría mejorar de tu cuenta actual?»', correcta:true}
+      ] },
+
+    { id:'c12', tema:'objeciones',
+      texto:'El cliente: «Mi contador dice que mejor me quede en mi banco, ahí ya tenemos todo configurado». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Te entiendo. No tienes que mover todo: empieza con algo, por ejemplo los pagos a proveedores, y compara. Y tu contador tiene su propio acceso. ¿Qué te quita más tiempo hoy?»', correcta:true},
+        {id:'b', texto:'«Le mando la información a tu contador y él decide si Plata Negocios les conviene»', correcta:false},
+        {id:'c', texto:'«Tu contador puede equivocarse: nuestras condiciones son mejores que las de los bancos con los que trabajan»', correcta:false}
+      ] },
+
+    { id:'c13', tema:'objeciones',
+      texto:'El cliente: «¿Cuánto tarda? Si entrego todos los documentos, ¿me garantizan que la abren?». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Si subes todo hoy, en tres días la cuenta está abierta, seguro»', correcta:false},
+        {id:'b', texto:'«Normalmente la revisión toma hasta tres días después de subir todo. Es un estimado, no una garantía: la apertura depende de la validación del banco»', correcta:true},
+        {id:'c', texto:'«Con el paquete completo de documentos la aprobación está garantizada, casi no hay rechazos»', correcta:false}
+      ] },
+
+    { id:'c14', tema:'objeciones',
+      texto:'El cliente: «No tienen sucursales. ¿Es seguro tener mi dinero en un banco digital?». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Sí, somos más seguros que los bancos grandes: ellos tienen muchas más quejas»', correcta:false},
+        {id:'b', texto:'«Sí, tu dinero está asegurado por cualquier monto, no hay ningún riesgo»', correcta:false},
+        {id:'c', texto:'«Sí. Banco Plata es un banco con licencia y nos regula la CNBV. Y sí hay personas: el embajador y el chat 24/7»', correcta:true}
+      ] },
+
+    { id:'c15', tema:'objeciones',
+      texto:'El cliente: «Son demasiados documentos, no tengo tiempo para eso». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Sube lo que tengas ahorita y lo demás te lo piden después»', correcta:false},
+        {id:'b', texto:'«Mándame todo por WhatsApp y yo lo subo a la solicitud»', correcta:false},
+        {id:'c', texto:'«Te entiendo. Revisemos qué tienes a la mano y te digo qué es obligatorio. ¿Tienes la CSF y el acta?»', correcta:true}
+      ] },
+
+    { id:'c16', tema:'objeciones',
+      texto:'El cliente: «¿Puedo abrir también una cuenta en dólares?». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Sí, sale el próximo año, yo te llamo»', correcta:false},
+        {id:'b', texto:'«Hoy no la tenemos. Anoto tu interés en el comentario»', correcta:true},
+        {id:'c', texto:'«Sí, la abres tú mismo en la app después de la activación»', correcta:false}
+      ] },
+
+    { id:'c17', tema:'calificacion',
+      texto:'El cliente: «Estoy en RESICO, tengo un taller pequeño. Mi RFC es de 12 caracteres». ¿Qué eliges?',
+      opciones:[
+        {id:'a', texto:'PFAE: RESICO y negocio pequeño', correcta:false},
+        {id:'b', texto:'PM: el RFC tiene 12 caracteres, es una empresa; RESICO no cambia eso', correcta:true},
+        {id:'c', texto:'No es nuestro cliente: con RESICO no se abren cuentas para empresas', correcta:false}
+      ] },
+
+    { id:'c18', tema:'calificacion',
+      texto:'El cliente: «Soy el contador de la empresa, el director me pidió abrir la cuenta, tengo todos los documentos». ¿Qué haces?',
+      opciones:[
+        {id:'a', texto:'Sigo con la solicitud: el director se lo pidió y tiene los documentos', correcta:false},
+        {id:'b', texto:'Marco «No están autorizados», pido el contacto del autorizado, resultado «Otra persona autorizada»', correcta:true},
+        {id:'c', texto:'Lleno la solicitud con el contador y en los datos del representante pongo al director', correcta:false}
+      ] },
+
+    { id:'c19', tema:'calificacion',
+      texto:'En la llamada resulta que el cliente es PFAE; en la descripción de la tarea dice «Golden». ¿Qué haces?',
+      opciones:[
+        {id:'a', texto:'Le pregunto si tiene otros productos de Plata y según su respuesta elijo el guion', correcta:false},
+        {id:'b', texto:'Cierro la tarea: en esta línea no atendemos PFAE', correcta:false},
+        {id:'c', texto:'Elijo PFAE y sigo con el guion Golden: lo veo en la descripción de la tarea', correcta:true}
+      ] },
+
+    { id:'c20', tema:'llamada',
+      texto:'La solicitud quedó creada y le ofreces subir los documentos juntos. El cliente: «Los documentos están en la computadora y ahorita voy manejando». ¿Qué le dices?',
+      opciones:[
+        {id:'a', texto:'«Entonces mándamelos por WhatsApp cuando llegues y yo los subo»', correcta:false},
+        {id:'b', texto:'«Entiendo. ¿Puedes subir todos los documentos tú mismo en los próximos dos días? No te va a tomar mucho tiempo»', correcta:true},
+        {id:'c', texto:'«Va, súbelos cuando puedas: la solicitud no caduca»', correcta:false}
+      ] },
+
+    { id:'c21', tema:'documentos',
+      texto:'¿Qué documentos son obligatorios para cualquier empresa?',
+      opciones:[
+        {id:'a', texto:'CSF, acta constitutiva, poder notarial, INE del representante y comprobante de domicilio', correcta:false},
+        {id:'b', texto:'CSF, acta constitutiva, INE del representante y la INE de todos los accionistas, sin importar su participación', correcta:false},
+        {id:'c', texto:'CSF, acta constitutiva, comprobante de inscripción en el RPC, INE del representante e INE de cada dueño con 25 % o más', correcta:true}
+      ] },
+
+    { id:'c22', tema:'documentos',
+      texto:'¿En qué caso la empresa sube comprobante de domicilio?',
+      opciones:[
+        {id:'a', texto:'Solo si el domicilio real de la empresa es distinto del fiscal de la CSF', correcta:true},
+        {id:'b', texto:'Siempre: sin él el banco no puede revisar a la empresa', correcta:false},
+        {id:'c', texto:'Solo si la empresa tiene menos de un año de constituida', correcta:false}
+      ] },
+
+    { id:'c23', tema:'documentos',
+      texto:'El cliente es administrador único: «No tengo poder notarial. ¿Sin eso no se puede?». ¿Qué respondes?',
+      opciones:[
+        {id:'a', texto:'«Sin poder notarial no se puede abrir la cuenta de la empresa: primero pídelo al notario»', correcta:false},
+        {id:'b', texto:'«El poder solo lo necesitan los extranjeros; tú puedes saltarte ese paso»', correcta:false},
+        {id:'c', texto:'«Si en el acta dice que puedes abrir cuentas, no necesitas poder: omites ese paso o subes ahí la misma acta»', correcta:true}
+      ] },
+
+    { id:'c24', tema:'documentos',
+      texto:'Al subir los documentos, al cliente le aparece el aviso «CSF de persona física». ¿Qué pasó?',
+      opciones:[
+        {id:'a', texto:'La CSF tiene más de tres meses: hay que descargar una nueva del portal del SAT', correcta:false},
+        {id:'b', texto:'Subió su CSF personal (RFC de 13 caracteres, con CURP); se necesita la de la empresa, con RFC de 12', correcta:true},
+        {id:'c', texto:'Subió solo la primera página de la CSF y se necesitan todas', correcta:false}
+      ] },
+
+    { id:'c25', tema:'documentos',
+      texto:'El cliente tiene 40 %, su socio 35 % y cinco personas 5 % cada una. ¿De quién se sube INE?',
+      opciones:[
+        {id:'a', texto:'Del cliente y de su socio', correcta:true},
+        {id:'b', texto:'De los siete dueños', correcta:false},
+        {id:'c', texto:'Solo del cliente', correcta:false}
+      ] }
+
+  ]
+};
+
+var DIA2 = (typeof CURSO2 !== 'undefined' && CURSO2) ? CURSO2 : null;
+var CERT = (typeof CERTIFICACION !== 'undefined' && CERTIFICACION) ? CERTIFICACION : null;
+var DIAS = { 1: CURSO, 2: DIA2 };
+
+// ---------------------------------------------------------------- estado
+var LS = 'pm-curso-agente';          // identidad recordada en este navegador
+var LS_PROGRESO = 'pm-curso:';       // + clave (Día 1) · 'pm-curso:dia2:' + clave (Día 2)
+
+var dia = 1;           // día elegido en la portada
+var curso = CURSO;     // contenido del día activo
+var agente = null;     // {clave, nombre, apellido, pasoActual, estado, modulosHechos}
+var pasos = [];        // lista plana de pantallas
+var i = 0;             // paso actual
+var maxVisto = 0;      // hasta dónde llegó
+var respuestasQuiz = {};
+var revisiones = {};   // moduloId -> resultado de la revisión del quiz
+var certFase = 'intro';   // 'intro' | 'preguntas' | 'resultado'
+var respuestasCert = {};  // preguntaId -> [opcionId]
+var ordenCert = {};       // preguntaId -> opciones barajadas del intento en curso
+
+// ---------------------------------------------------------------- utilidades
+function el(sel){ return document.querySelector(sel); }
+function esc(s){
+  return String(s == null ? '' : s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+function barajar(a){
+  var r = a.slice();
+  for (var k = r.length - 1; k > 0; k--){
+    var j = Math.floor(Math.random() * (k + 1));
+    var t = r[k]; r[k] = r[j]; r[j] = t;
+  }
+  return r;
+}
+
+// ---------------------------------------------------------------- identidad
+/** «Juan  PÉREZ» y «juan perez» caen en la misma clave. */
+function clave_(nombre, apellido){
+  return (String(nombre || '') + ' ' + String(apellido || ''))
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+}
+function tituloCase_(s){
+  return String(s || '').trim().replace(/\s+/g, ' ')
+    .replace(/(^|\s|-)([\p{L}])/gu, function(m, pre, letra){ return pre + letra.toUpperCase(); });
+}
+
+// ---------------------------------------------------------------- progreso local
+function claveProgreso(clave){
+  return LS_PROGRESO + (dia === 2 ? 'dia2:' : '') + clave;
+}
+function leerProgreso(clave){
+  var p = null;
+  try { p = JSON.parse(localStorage.getItem(claveProgreso(clave)) || 'null'); } catch(e){}
+  p = p || {};
+  return {
+    pasoActual: Number(p.pasoActual) || 0,
+    modulosHechos: Array.isArray(p.modulosHechos) ? p.modulosHechos.slice() : [],
+    estado: p.estado || 'en progreso',
+    creado: p.creado || null,
+    fechaTermino: p.fechaTermino || null,
+    cert: (p.cert && Array.isArray(p.cert.intentos)) ? { intentos: p.cert.intentos.slice() } : { intentos: [] }
+  };
+}
+function guardarProgreso(clave, cambios){
+  var p = leerProgreso(clave);
+  Object.keys(cambios).forEach(function(k){ p[k] = cambios[k]; });
+  p.ultimoAcceso = new Date().toISOString();
+  try { localStorage.setItem(claveProgreso(clave), JSON.stringify(p)); } catch(e){}
+  return p;
+}
+
+// ---------------------------------------------------------------- envío al formulario
+/**
+ * Envía un payload al formulario como campos entry.*: token, accion, nombre, apellido y
+ * datos (JSON con el resto del payload). Si no hay URL, no hace nada. Una reintentada a los 3 s.
+ */
+function enviar(payload){
+  if (!FORM_ACTION_URL) return;
+  var nombre = payload.nombre || (agente ? agente.nombre : '');
+  var apellido = payload.apellido || (agente ? agente.apellido : '');
+  var datos = {};
+  Object.keys(payload).forEach(function(k){
+    if (k === 'token' || k === 'accion' || k === 'nombre' || k === 'apellido') return;
+    datos[k] = payload[k];
+  });
+  var params = new URLSearchParams();
+  params.append(ENTRADAS.token, TOKEN);
+  params.append(ENTRADAS.accion, payload.accion || '');
+  params.append(ENTRADAS.nombre, nombre);
+  params.append(ENTRADAS.apellido, apellido);
+  params.append(ENTRADAS.datos, JSON.stringify(datos));
+
+  function intento(n){
+    var reintentar = function(){ if (n < 1) setTimeout(function(){ intento(n + 1); }, 3000); };
+    try {
+      fetch(FORM_ACTION_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: params,
+        keepalive: true
+      }).catch(reintentar);
+    } catch(e){ reintentar(); }
+  }
+  intento(0);
+}
+
+// ---------------------------------------------------------------- estructura
+function construirPasos(){
+  pasos = [{ tipo:'identidad' }];
+  curso.modulos.forEach(function(m, mi){
+    pasos.push({ tipo:'modulo', modulo:m, n:mi + 1 });
+    m.pantallas.forEach(function(p){
+      pasos.push({ tipo:'pantalla', modulo:m, pantalla:p, n:mi + 1 });
+    });
+    if (m.quiz) pasos.push({ tipo:'quiz', modulo:m, n:mi + 1 });
+  });
+  if (dia === 2 && CERT) pasos.push({ tipo:'cert' });
+  else pasos.push({ tipo:'resultado' });
+}
+
+/** Último paso al que se vuelve al retomar: la certificación sí, la pantalla final del Día 1 no. */
+function ultimoPasoRetomable(){
+  return pasos[pasos.length - 1].tipo === 'cert' ? pasos.length - 1 : pasos.length - 2;
+}
+
+function nombreDia(){ return dia === 2 ? 'Día 2' : 'Día 1'; }
+
+// ---------------------------------------------------------------- arranque
+function arrancar(){
+  pintarTitular();
+}
+
+function identidadGuardada(){
+  var g = null;
+  try { g = JSON.parse(localStorage.getItem(LS) || 'null'); } catch(e){}
+  return (g && g.clave) ? g : null;
+}
+
+/** Portada general: nombre del curso y tarjetas de entrada a cada día. */
+function pintarTitular(){
+  dia = 1; curso = CURSO; agente = null; i = 0; maxVisto = 0;
+  respuestasQuiz = {}; revisiones = {}; certFase = 'intro'; respuestasCert = {}; ordenCert = {};
+  el('#pie').style.display = 'none';
+  el('#btnIndice').style.display = 'none';
+  el('#barraProgreso').style.width = '0';
+  el('#barraTitulo').textContent = CURSO.titulo;
+  window.scrollTo(0,0);
+
+  var h =
+    '<div class="portada">' +
+      '<h1>' + esc(CURSO.titulo) + '</h1>' +
+      '<p>' + esc(CURSO.entradilla) + '</p>' +
+      '<div class="chips"><span class="chip">Curso para agentes CPA</span>' +
+      '<span class="chip">Día 1 · práctica sin calificación</span>' +
+      '<span class="chip">Día 2 · certificación</span></div>' +
+    '</div>' +
+    '<div class="dias">' +
+      '<div class="tarjeta dia">' +
+        '<div class="reto-et">Día 1</div>' +
+        '<h2>' + esc(CURSO.subtitulo.replace(/^Día 1\s*·\s*/, '')) + '</h2>' +
+        '<p class="tenue">' + esc(CURSO.duracion) + ' · quiz después de cada módulo, sin calificación.</p>' +
+        '<button class="btn primario" id="btnDia1">Entrar al Día 1</button>' +
+      '</div>';
+
+  if (DIA2){
+    h += '<div class="tarjeta dia">' +
+        '<div class="reto-et">Día 2 · Certificación</div>' +
+        '<h2>' + esc((DIA2.subtitulo || '').replace(/^Día 2\s*·\s*/, '') || DIA2.titulo) + '</h2>' +
+        '<p class="tenue">' + esc(DIA2.duracion || '') + '</p>' +
+        '<button class="btn primario" id="btnDia2">Entrar al Día 2</button>' +
+      '</div>';
+  } else {
+    h += '<div class="tarjeta dia pronto">' +
+        '<div class="reto-et">Día 2 · Certificación</div>' +
+        '<h2>Certificación con puntaje</h2>' +
+        '<p class="tenue">Repaso del Día 1 y evaluación final con puntaje mínimo.</p>' +
+        '<span class="pronto-et">Disponible próximamente</span>' +
+      '</div>';
+  }
+  h += '</div>';
+
+  el('#lienzo').innerHTML = h;
+  el('#btnDia1').onclick = function(){ elegirDia(1); };
+  if (DIA2) el('#btnDia2').onclick = function(){ elegirDia(2); };
+}
+
+function elegirDia(n){
+  if (!DIAS[n]) return;
+  dia = n; curso = DIAS[n];
+  construirPasos();
+  revisiones = {}; respuestasQuiz = {}; maxVisto = 0;
+  certFase = 'intro'; respuestasCert = {}; ordenCert = {};
+  var g = identidadGuardada();
+  if (g) pintarBienvenida(g);
+  else { i = 0; pintar(); }
+}
+
+function pintarBienvenida(g){
+  el('#pie').style.display = 'none';
+  el('#btnIndice').style.display = 'none';
+  el('#barraTitulo').textContent = curso.titulo;
+  window.scrollTo(0,0);
+  el('#lienzo').innerHTML =
+    '<div class="portada"><h1>Hola otra vez, ' + esc(g.nombre) + '</h1>' +
+    '<p>Retomamos el ' + nombreDia() + ' donde te quedaste.</p></div>' +
+    '<button class="btn primario" id="btnSeguir">Continuar</button> ' +
+    '<button class="btn" id="btnOtro">No soy yo</button> ' +
+    '<button class="btn" id="btnInicio">Volver a la portada</button>';
+  el('#btnSeguir').onclick = function(){
+    identificar(g.nombre, g.apellido, function(){
+      i = Math.max(1, Math.min(agente.pasoActual, ultimoPasoRetomable()));
+      pintar();
+    });
+  };
+  el('#btnOtro').onclick = function(){
+    try { localStorage.removeItem(LS); } catch(e){}
+    i = 0; pintar();
+  };
+  el('#btnInicio').onclick = pintarTitular;
+}
+
+/** Registro: identidad + progreso guardado en este navegador, y aviso al receptor. */
+function identificar(nombre, apellido, luego){
+  var a;
+  try {
+    nombre = tituloCase_(nombre);
+    apellido = tituloCase_(apellido);
+    if (!nombre || !apellido) throw new Error('Falta el nombre o el apellido.');
+    var clave = clave_(nombre, apellido);
+    var prog = leerProgreso(clave);
+    if (!prog.creado) prog = guardarProgreso(clave, { creado: new Date().toISOString() });
+    else guardarProgreso(clave, {});
+    a = { clave: clave, nombre: nombre, apellido: apellido,
+          pasoActual: prog.pasoActual, estado: prog.estado,
+          modulosHechos: prog.modulosHechos };
+  } catch(err){
+    var e = el('#errorIdent');
+    if (e){ e.textContent = err.message || 'No se pudo guardar. Intenta de nuevo.'; e.classList.add('ver'); }
+    var c = el('#cargandoIdent'); if (c) c.classList.remove('ver');
+    return;
+  }
+  agente = a;
+  maxVisto = Math.max(maxVisto, a.pasoActual || 0);
+  try {
+    localStorage.setItem(LS, JSON.stringify({ clave:a.clave, nombre:a.nombre, apellido:a.apellido }));
+  } catch(e){}
+  enviar({ accion:'registrar', nombre:a.nombre, apellido:a.apellido });
+  if (luego) luego();
+}
+
+/** Avance: pasoActual = max(anterior, paso). */
+function guardarPaso(paso){
+  if (!agente) return;
+  var prog = leerProgreso(agente.clave);
+  if (paso > prog.pasoActual) guardarProgreso(agente.clave, { pasoActual: paso });
+  else guardarProgreso(agente.clave, {});
+  agente.pasoActual = Math.max(prog.pasoActual, paso);
+  enviar({ accion:'paso', paso: paso });
+}
+
+// ---------------------------------------------------------------- pintado
+function pintar(){
+  var p = pasos[i];
+  maxVisto = Math.max(maxVisto, i);
+  window.scrollTo(0,0);
+
+  if (p.tipo === 'identidad')      pintarIdentidad();
+  else if (p.tipo === 'modulo')    pintarModulo(p);
+  else if (p.tipo === 'pantalla')  pintarPantalla(p);
+  else if (p.tipo === 'quiz')      pintarQuiz(p);
+  else if (p.tipo === 'cert')      pintarCert();
+  else                             pintarResultado();
+
+  actualizarCromo(p);
+  if (agente && i > 0) guardarPaso(i);
+}
+
+function actualizarCromo(p){
+  var pct = Math.round(i * 100 / (pasos.length - 1));
+  el('#barraProgreso').style.width = pct + '%';
+  el('#barraTitulo').textContent = curso.titulo;
+  el('#btnIndice').style.display = (p.tipo === 'identidad') ? 'none' : '';
+  var sinPie = p.tipo === 'identidad' || p.tipo === 'resultado' ||
+               (p.tipo === 'cert' && certFase === 'resultado');
+  el('#pie').style.display = sinPie ? 'none' : '';
+  var etiqueta = p.modulo ? ('Módulo ' + p.n + ' · ' + p.modulo.titulo) : '';
+  if (p.tipo === 'cert'){
+    etiqueta = (certFase === 'preguntas')
+      ? ('Respondidas ' + contarCert() + ' de ' + CERT.preguntas.length)
+      : CERT.titulo;
+  }
+  el('#pieEtiqueta').textContent = etiqueta;
+  el('#btnAtras').disabled = (i <= 1) || (p.tipo === 'cert' && certFase === 'preguntas');
+}
+
+function pintarIdentidad(){
+  el('#lienzo').innerHTML =
+    '<h1>Antes de empezar</h1>' +
+    '<p class="tenue">Escribe tu nombre y tu apellido. Con eso guardamos tu avance y tus ' +
+    'respuestas, y puedes retomar el curso donde lo dejaste.</p>' +
+    '<div class="tarjeta" style="max-width:460px">' +
+      '<label class="campo"><span>Nombre</span><input id="inNombre" autocomplete="given-name"></label>' +
+      '<label class="campo"><span>Apellido</span><input id="inApellido" autocomplete="family-name"></label>' +
+      '<button class="btn primario" id="btnIdent">Empezar el ' + nombreDia() + '</button> ' +
+      '<button class="btn" id="btnVolverPortada">Volver</button>' +
+      '<div class="error" id="errorIdent"></div>' +
+      '<div class="cargando" id="cargandoIdent">Guardando…</div>' +
+    '</div>';
+
+  function enviarIdentidad(){
+    var n = el('#inNombre').value.trim(), a = el('#inApellido').value.trim();
+    var e = el('#errorIdent'); e.classList.remove('ver');
+    if (n.length < 2 || a.length < 2){
+      e.textContent = 'Escribe tu nombre y tu apellido completos.'; e.classList.add('ver'); return;
+    }
+    el('#cargandoIdent').classList.add('ver');
+    identificar(n, a, function(){
+      i = Math.max(1, Math.min(agente.pasoActual || 1, ultimoPasoRetomable()));
+      pintar();
+    });
+  }
+  el('#btnIdent').onclick = enviarIdentidad;
+  el('#btnVolverPortada').onclick = pintarTitular;
+  el('#inApellido').onkeydown = function(ev){ if (ev.key === 'Enter') enviarIdentidad(); };
+  el('#inNombre').focus();
+}
+
+function pintarModulo(p){
+  el('#lienzo').innerHTML =
+    '<div class="modulo-portada"><div><h2>' + esc(p.modulo.titulo) + '</h2>' +
+    (p.modulo.resumen ? '<p class="modulo-resumen">' + esc(p.modulo.resumen) + '</p>' : '') +
+    (p.modulo.duracion ? '<div class="chips"><span class="chip">' + esc(p.modulo.duracion) + '</span></div>' : '') +
+    '</div><div class="modulo-n">' + p.n + '</div></div>';
+  el('#btnSiguiente').disabled = false;
+  el('#btnSiguiente').textContent = 'Comenzar';
+}
+
+/** Retos de una pantalla: `retos` (varios) o `reto` (uno). */
+function retosDe(pantalla){
+  if (Array.isArray(pantalla.retos)) return pantalla.retos;
+  return pantalla.reto ? [pantalla.reto] : [];
+}
+
+function pintarPantalla(p){
+  var h = '<h2>' + esc(p.pantalla.titulo) + '</h2>';
+
+  if (p.pantalla.gancho){
+    var g = p.pantalla.gancho;
+    h += '<div class="tarjeta"><div class="gancho">' +
+      '<div class="avatar">' + esc(g.persona.charAt(0)) + '</div><div>' +
+      '<div class="gancho-quien">' + esc(g.persona) + ' · ' + esc(g.rol) + '</div>' +
+      '<div class="gancho-txt">' + esc(g.pregunta) + '</div>' +
+      '<button class="revelar" id="btnRevelar">Ver explicación</button>' +
+      '<div class="respuesta" id="respGancho">' + esc(g.respuesta) + '</div>' +
+      '</div></div></div>';
+  }
+
+  (p.pantalla.bloques || []).forEach(function(b){ h += pintarBloque(b); });
+
+  var retos = retosDe(p.pantalla);
+  retos.forEach(function(r, idx){ h += pintarReto(r, idx, retos.length); });
+
+  el('#lienzo').innerHTML = h;
+
+  if (p.pantalla.gancho){
+    el('#btnRevelar').onclick = function(){
+      el('#respGancho').classList.add('ver');
+      this.style.display = 'none';
+    };
+  }
+
+  el('#btnSiguiente').textContent = 'Siguiente';
+  if (retos.length){
+    el('#btnSiguiente').disabled = true;
+    conectarRetos(retos, p.modulo.id);
+  } else {
+    el('#btnSiguiente').disabled = false;
+  }
+}
+
+function pintarBloque(b){
+  if (b.t === 'parrafo') return '<p>' + esc(b.texto) + '</p>';
+
+  if (b.t === 'cita')
+    return '<div class="cita"><b>' + esc(b.quien) + '</b><span>' + esc(b.texto) + '</span></div>';
+
+  if (b.t === 'guion')
+    return '<div class="guion"><b>Guion</b><span>' + esc(b.texto) + '</span></div>';
+
+  if (b.t === 'aviso')
+    return '<div class="aviso ' + esc(b.tono || 'info') + '">' + esc(b.texto) + '</div>';
+
+  if (b.t === 'tarjetas'){
+    var s = '<div class="rejilla">';
+    b.items.forEach(function(it){
+      s += '<div class="tarjeta"><h3>' + esc(it.titulo) + '</h3>' +
+           '<div class="tenue">' + esc(it.texto) + '</div></div>';
+    });
+    return s + '</div>';
+  }
+
+  if (b.t === 'enlaces'){
+    var en = '<div class="rejilla">';
+    b.items.forEach(function(it){
+      en += '<a class="tarjeta enlace" href="' + esc(it.url) + '" target="_blank" rel="noopener">' +
+            '<h3>' + esc(it.titulo) + '</h3>' +
+            '<div class="tenue">' + esc(it.texto) + '</div></a>';
+    });
+    return en + '</div>';
+  }
+
+  if (b.t === 'tabla'){
+    var t = '<div class="tabla-scroll"><table><thead><tr>';
+    b.encabezados.forEach(function(c){ t += '<th>' + esc(c) + '</th>'; });
+    t += '</tr></thead><tbody>';
+    b.filas.forEach(function(f){
+      t += '<tr>';
+      f.forEach(function(c, idx){
+        t += '<td>' + (idx === 0 ? '<b>' + esc(c) + '</b>' : esc(c)) + '</td>';
+      });
+      t += '</tr>';
+    });
+    return t + '</tbody></table></div>';
+  }
+
+  if (b.t === 'lista'){
+    var l = '<ul class="lista">';
+    b.items.forEach(function(it){ l += '<li>' + esc(it) + '</li>'; });
+    return l + '</ul>';
+  }
+
+  if (b.t === 'pasos'){
+    // items como {titulo, texto} (Día 1) o como ['titulo', 'texto'] (Día 2)
+    var ps = '<div class="tarjeta">';
+    b.items.forEach(function(it, idx){
+      var titulo = Array.isArray(it) ? it[0] : it.titulo;
+      var texto = Array.isArray(it) ? it[1] : it.texto;
+      ps += '<div class="paso"><div class="paso-n">' + (idx + 1) + '</div><div>' +
+            '<h3>' + esc(titulo) + '</h3>' +
+            '<div class="tenue">' + esc(texto) + '</div></div></div>';
+    });
+    return ps + '</div>';
+  }
+
+  return '';
+}
+
+// ---------------------------------------------------------------- preguntas (lógica común)
+/** 'multiple' si lo dice la pregunta o si tiene más de una opción correcta; si no, 'unica'. */
+function tipoPregunta(p){
+  if (p.tipo === 'multiple' || p.tipo === 'unica') return p.tipo;
+  return idsCorrectas(p).length > 1 ? 'multiple' : 'unica';
+}
+
+/** Ids de las opciones correctas: `correcta` en la pregunta (reto) o `correcta:true` en las opciones. */
+function idsCorrectas(p){
+  if (p.correcta != null) return [p.correcta];
+  return p.opciones.filter(function(o){ return o.correcta; }).map(function(o){ return o.id; });
+}
+
+/** Una respuesta es correcta solo si el conjunto elegido coincide exactamente con el correcto. */
+function esCorrecta_(p, opcionIds){
+  var elegidas = (opcionIds || []).slice().sort();
+  var correctas = idsCorrectas(p).slice().sort();
+  return elegidas.length === correctas.length &&
+         elegidas.every(function(id, k){ return id === correctas[k]; });
+}
+
+/**
+ * Califica una lista de preguntas. respuestas: [{preguntaId, opcionIds:[...]}]
+ * Devuelve aciertos, total, detalle por pregunta y el bloque `respuestas` que se envía.
+ */
+function calificar_(preguntas, respuestas){
+  var indice = {};
+  preguntas.forEach(function(p){ indice[p.id] = p; });
+  var aciertos = 0, detalle = [], envio = [];
+
+  respuestas.forEach(function(r){
+    var p = indice[r.preguntaId];
+    if (!p) return;
+    var elegidas = (r.opcionIds || []).slice().sort();
+    var bien = esCorrecta_(p, elegidas);
+    if (bien) aciertos++;
+
+    // Sin opciones elegidas → el receptor guarda una fila '(sin respuesta)', correcto no.
+    var opciones = elegidas.map(function(id){
+      var op = p.opciones.filter(function(o){ return o.id === id; })[0];
+      return { id: id, texto: op ? op.texto : '' };
+    });
+    envio.push({ preguntaId:p.id, tema:p.tema, pregunta:p.texto, correcto:bien, opciones:opciones });
+    detalle.push({ preguntaId:p.id, tema:p.tema, correcto:bien });
+  });
+
+  return { aciertos: aciertos, total: preguntas.length, detalle: detalle, envio: envio };
+}
+
+// ---------------------------------------------------------------- retos de práctica
+function pintarReto(r, idx, total){
+  var tipo = tipoPregunta(r);
+  var ops = barajar(r.opciones);
+  var etiqueta = 'Práctica · no se califica' + (total > 1 ? ' · ' + (idx + 1) + ' de ' + total : '');
+  var h = '<div class="reto" data-reto="' + idx + '"><div class="reto-et">' + etiqueta + '</div>' +
+          '<h3>' + esc(r.texto) + '</h3>' +
+          '<div class="tenue">' + (tipo === 'multiple' ? 'Elige todas las que correspondan y comprueba.' : 'Elige una opción.') +
+          '</div><div class="opciones">';
+  ops.forEach(function(o){
+    h += '<button class="opcion" data-tipo="' + tipo + '" data-id="' + esc(o.id) + '">' +
+         '<span class="marca"></span><span>' + esc(o.texto) + '</span></button>';
+  });
+  h += '</div>';
+  if (tipo === 'multiple') h += '<button class="btn primario btn-comprobar" disabled>Comprobar</button>';
+  return h + '<div class="veredicto-reto"></div></div>';
+}
+
+function conectarRetos(retos, moduloId){
+  var pendientes = retos.length;
+  var cajas = document.querySelectorAll('.reto');
+
+  Array.prototype.forEach.call(cajas, function(caja, idx){
+    var r = retos[idx];
+    var tipo = tipoPregunta(r);
+    var botones = caja.querySelectorAll('.opcion');
+    var correctas = idsCorrectas(r);
+    var elegidas = [];
+
+    function resolver(ids){
+      var bien = esCorrecta_(r, ids);
+      Array.prototype.forEach.call(botones, function(x){
+        x.disabled = true;
+        var xid = x.getAttribute('data-id');
+        if (correctas.indexOf(xid) !== -1) x.classList.add('bien');
+        else if (ids.indexOf(xid) !== -1) x.classList.add('mal');
+      });
+      var comprobar = caja.querySelector('.btn-comprobar');
+      if (comprobar) comprobar.style.display = 'none';
+      caja.querySelector('.veredicto-reto').innerHTML =
+        '<div class="veredicto ' + (bien ? 'bien' : 'mal') + '">' +
+        '<b>' + (bien ? 'Así es.' : 'No del todo.') + '</b>' + esc(r.explicacion) + '</div>';
+      pendientes--;
+      if (pendientes <= 0) el('#btnSiguiente').disabled = false;
+
+      if (agente){
+        ids.forEach(function(id){
+          var textoOp = (r.opciones.filter(function(o){ return o.id === id; })[0] || {}).texto || '';
+          enviar({ accion:'practica', nombre:agente.nombre, apellido:agente.apellido,
+            r: { modulo:moduloId, preguntaId:r.id, tema:r.tema, pregunta:r.texto,
+                 opcionId:id, opcionTexto:textoOp, correcto:bien } });
+        });
+      }
+    }
+
+    Array.prototype.forEach.call(botones, function(b){
+      b.onclick = function(){
+        var id = b.getAttribute('data-id');
+        if (tipo !== 'multiple'){ resolver([id]); return; }
+        var k = elegidas.indexOf(id);
+        if (k >= 0){ elegidas.splice(k, 1); b.classList.remove('sel'); }
+        else { elegidas.push(id); b.classList.add('sel'); }
+        caja.querySelector('.btn-comprobar').disabled = !elegidas.length;
+      };
+    });
+    var comprobar = caja.querySelector('.btn-comprobar');
+    if (comprobar) comprobar.onclick = function(){ if (elegidas.length) resolver(elegidas.slice()); };
+  });
+}
+
+// ---------------------------------------------------------------- quiz del módulo
+function pintarQuiz(p){
+  if (revisiones[p.modulo.id]){ pintarRevision(p); return; }
+  respuestasQuiz = {};
+  var c = p.modulo.quiz;
+  var h = '<h2>' + esc(c.titulo) + '</h2><p class="tenue">' + esc(c.intro) + '</p>';
+
+  c.preguntas.forEach(function(p, idx){
+    var ops = barajar(p.opciones);
+    var tipo = tipoPregunta(p);
+    h += '<div class="tarjeta" data-pregunta="' + esc(p.id) + '">' +
+         '<div class="reto-et">Pregunta ' + (idx + 1) + ' de ' + c.preguntas.length + '</div>' +
+         '<h3>' + esc(p.texto) + '</h3>' +
+         '<div class="tenue">' + (tipo === 'multiple' ? 'Elige todas las correctas.' : 'Elige una opción.') + '</div>' +
+         '<div class="opciones">';
+    ops.forEach(function(o){
+      h += '<button class="opcion" data-tipo="' + tipo + '" data-preg="' + esc(p.id) +
+           '" data-id="' + esc(o.id) + '"><span class="marca"></span><span>' +
+           esc(o.texto) + '</span></button>';
+    });
+    h += '</div></div>';
+  });
+
+  h += '<div class="error" id="errorQuiz"></div>';
+  el('#lienzo').innerHTML = h;
+  el('#btnSiguiente').textContent = 'Ver cómo te fue';
+  el('#btnSiguiente').disabled = false;
+
+  conectarOpciones(respuestasQuiz, null);
+}
+
+/** Selección de opciones en una página de preguntas (quiz o certificación). */
+function conectarOpciones(respuestas, alCambiar){
+  Array.prototype.forEach.call(document.querySelectorAll('.opcion'), function(b){
+    b.onclick = function(){
+      var preg = b.getAttribute('data-preg');
+      var id = b.getAttribute('data-id');
+      var tipo = b.getAttribute('data-tipo');
+      respuestas[preg] = respuestas[preg] || [];
+      var lista = respuestas[preg];
+
+      if (tipo === 'multiple'){
+        var k = lista.indexOf(id);
+        if (k >= 0){ lista.splice(k, 1); b.classList.remove('sel'); }
+        else { lista.push(id); b.classList.add('sel'); }
+      } else {
+        respuestas[preg] = [id];
+        Array.prototype.forEach.call(
+          document.querySelectorAll('.opcion[data-preg="' + preg + '"]'),
+          function(x){ x.classList.remove('sel'); });
+        b.classList.add('sel');
+      }
+      if (alCambiar) alCambiar();
+    };
+  });
+}
+
+function buscarModulo_(moduloId){
+  for (var k = 0; k < curso.modulos.length; k++){
+    if (curso.modulos[k].id === moduloId) return curso.modulos[k];
+  }
+  return null;
+}
+
+/**
+ * Revisa el quiz de un módulo en el cliente, actualiza modulosHechos / estado en
+ * localStorage y envía las respuestas al receptor. respuestas: [{preguntaId, opcionIds:[...]}]
+ */
+function revisarQuiz(moduloId, respuestas){
+  var modulo = buscarModulo_(moduloId);
+  if (!modulo) throw new Error('Módulo desconocido: ' + moduloId);
+  if (!agente) throw new Error('No te encontramos. Vuelve a escribir tu nombre.');
+
+  var prog = leerProgreso(agente.clave);
+  var hechos = prog.modulosHechos.slice();
+  var res = calificar_(modulo.quiz.preguntas, respuestas);
+
+  if (hechos.indexOf(moduloId) === -1) hechos.push(moduloId);
+  var completo = hechos.length >= curso.modulos.length;
+  var ahora = new Date().toISOString();
+
+  guardarProgreso(agente.clave, {
+    modulosHechos: hechos,
+    estado: completo ? 'terminado' : 'en progreso',
+    fechaTermino: completo ? (prog.fechaTermino || ahora) : prog.fechaTermino
+  });
+  agente.modulosHechos = hechos;
+  agente.estado = completo ? 'terminado' : 'en progreso';
+
+  enviar({ accion:'quiz', nombre:agente.nombre, apellido:agente.apellido,
+           tipo: 'quiz', moduloId: moduloId, respuestas: res.envio });
+
+  return { aciertos: res.aciertos, total: res.total, detalle: res.detalle,
+           modulosHechos: hechos, cursoTerminado: completo };
+}
+
+function enviarQuiz(paso){
+  var c = paso.modulo.quiz;
+  var faltan = c.preguntas.filter(function(p){
+    return !respuestasQuiz[p.id] || !respuestasQuiz[p.id].length;
+  });
+  var err = el('#errorQuiz');
+  if (faltan.length){
+    err.textContent = 'Te faltan ' + faltan.length + ' pregunta(s) por contestar.';
+    err.classList.add('ver');
+    return;
+  }
+  err.classList.remove('ver');
+  el('#btnSiguiente').disabled = true;
+  el('#btnSiguiente').textContent = 'Revisando…';
+
+  var payload = c.preguntas.map(function(p){
+    return { preguntaId:p.id, opcionIds:respuestasQuiz[p.id] };
+  });
+
+  try {
+    var res = revisarQuiz(paso.modulo.id, payload);
+    revisiones[paso.modulo.id] = res;
+    pintar();
+  } catch(e){
+    err.textContent = e.message || 'No se pudo enviar. Intenta de nuevo.';
+    err.classList.add('ver');
+    el('#btnSiguiente').disabled = false;
+    el('#btnSiguiente').textContent = 'Ver cómo te fue';
+  }
+}
+
+// Revisión del quiz: se queda en el mismo paso, debajo del título del módulo.
+function pintarRevision(paso){
+  var r = revisiones[paso.modulo.id];
+  var indice = {};
+  paso.modulo.quiz.preguntas.forEach(function(p){ indice[p.id] = p; });
+  var fallos = (r.detalle || []).filter(function(d){ return !d.correcto; });
+
+  var h = '<div class="tarjeta">' +
+    '<h2 style="margin:0 0 6px">Módulo ' + paso.n + ' terminado</h2>' +
+    '<p class="tenue">Contestaste bien ' + r.aciertos + ' de ' + r.total +
+    '. El quiz no lleva calificación: sirve para ver qué repasar.</p>' +
+    '<button class="btn" id="btnRepetir">Repetir el quiz</button></div>' +
+    '<h2>' + (fallos.length ? 'Qué conviene repasar' : 'Repaso de las respuestas') + '</h2>';
+
+  (r.detalle || []).forEach(function(d){
+    var p = indice[d.preguntaId];
+    if (!p) return;
+    var correctas = p.opciones.filter(function(o){ return o.correcta; })
+                      .map(function(o){ return o.texto; }).join(' · ');
+    h += '<div class="tarjeta" style="border-left:3px solid ' +
+         (d.correcto ? 'var(--verde)' : 'var(--naranja)') + '">' +
+         '<div class="reto-et">' + esc(curso.temas[d.tema] || d.tema) + '</div>' +
+         '<h3>' + esc(p.texto) + '</h3>' +
+         '<p class="tenue"><b>' + (d.correcto ? 'La tenías. ' : 'Respuesta correcta: ') + '</b>' +
+         (d.correcto ? '' : esc(correctas)) + '</p>' +
+         '<p class="tenue">' + esc(p.explicacion) + '</p></div>';
+  });
+
+  el('#lienzo').innerHTML = h;
+  el('#btnSiguiente').disabled = false;
+  el('#btnSiguiente').textContent =
+    (i === pasos.length - 2) ? ('Terminar el ' + nombreDia()) : 'Siguiente módulo';
+  el('#btnRepetir').onclick = function(){
+    delete revisiones[paso.modulo.id];
+    pintar();
+  };
+}
+
+function pintarResultado(){
+  var cierre = curso.cierre || (dia === 1
+    ? { titulo: 'Terminaste el Día 1',
+        texto: 'Pasaste por los cuatro módulos. Nada de esto llevó calificación: el Día 2 ' +
+               'cierra con la certificación, y ahí sí hay puntaje.' }
+    : { titulo: 'Terminaste el ' + nombreDia(),
+        texto: 'Pasaste por todos los módulos.' });
+
+  var h = '<div class="portada"><h1>' + esc(cierre.titulo) + '</h1>' +
+    '<p>' + esc(cierre.texto) + '</p></div>' +
+    '<h2>Cómo te fue por módulo</h2>';
+
+  curso.modulos.forEach(function(m, mi){
+    var r = revisiones[m.id];
+    var fallos = r ? (r.detalle || []).filter(function(d){ return !d.correcto; }) : [];
+    var temas = [];
+    fallos.forEach(function(d){
+      var t = curso.temas[d.tema] || d.tema;
+      if (temas.indexOf(t) === -1) temas.push(t);
+    });
+    h += '<div class="tarjeta"><div class="reto-et">Módulo ' + (mi + 1) + '</div>' +
+         '<h3>' + esc(m.titulo) + '</h3>' +
+         '<p class="tenue">' + (r
+            ? ('Contestaste bien ' + r.aciertos + ' de ' + r.total +
+               (temas.length ? '. Temas por repasar: ' + esc(temas.join(', ')) : '.'))
+            : 'Sin quiz contestado.') + '</p></div>';
+  });
+
+  h += '<button class="btn" id="btnVolver">Volver al inicio del curso</button> ' +
+       '<button class="btn" id="btnPortada">Ir a la portada</button>';
+  el('#lienzo').innerHTML = h;
+  el('#pie').style.display = 'none';
+  el('#barraProgreso').style.width = '100%';
+  el('#btnVolver').onclick = function(){ i = 1; pintar(); };
+  el('#btnPortada').onclick = pintarTitular;
+}
+
+// ---------------------------------------------------------------- certificación (Día 2)
+/**
+ * Los módulos sin quiz se dan por hechos al llegar a la certificación: se envía
+ * accion='quiz' con respuestas vacías una sola vez por módulo.
+ */
+function cerrarModulosSinQuiz(){
+  if (!agente) return;
+  var prog = leerProgreso(agente.clave);
+  var hechos = prog.modulosHechos.slice(), nuevos = false;
+  curso.modulos.forEach(function(m){
+    if (m.quiz || hechos.indexOf(m.id) !== -1) return;
+    hechos.push(m.id); nuevos = true;
+    enviar({ accion:'quiz', nombre:agente.nombre, apellido:agente.apellido,
+             tipo:'quiz', moduloId:m.id, respuestas:[] });
+  });
+  if (nuevos){
+    guardarProgreso(agente.clave, { modulosHechos: hechos });
+    agente.modulosHechos = hechos;
+  }
+}
+
+function estadoCert(){
+  return agente ? leerProgreso(agente.clave).cert : { intentos: [] };
+}
+
+function certTerminada(c){
+  var ultimo = c.intentos[c.intentos.length - 1];
+  return !!ultimo && (ultimo.aprobada || c.intentos.length >= CERT.intentosMaximos);
+}
+
+function contarCert(){
+  return CERT.preguntas.filter(function(p){
+    return respuestasCert[p.id] && respuestasCert[p.id].length;
+  }).length;
+}
+
+function pintarCert(){
+  cerrarModulosSinQuiz();
+  var c = estadoCert();
+  var ultimo = c.intentos[c.intentos.length - 1] || null;
+  var terminada = certTerminada(c);
+
+  if (terminada) certFase = 'resultado';
+  else if (certFase !== 'preguntas') certFase = ultimo ? 'resultado' : 'intro';
+
+  if (certFase === 'intro') pintarCertIntro();
+  else if (certFase === 'preguntas') pintarCertPreguntas(c.intentos.length + 1);
+  else pintarCertResultado(ultimo, terminada);
+}
+
+/** Repinta el paso de certificación sin volver a guardar el avance. */
+function repintarCert(){
+  window.scrollTo(0,0);
+  pintarCert();
+  actualizarCromo(pasos[i]);
+}
+
+function pintarCertIntro(){
+  var n = CERT.preguntas.length;
+  el('#lienzo').innerHTML =
+    '<div class="portada"><div class="reto-et" style="color:#fff;opacity:.85">Día 2 · cierre del curso</div>' +
+    '<h1>' + esc(CERT.titulo) + '</h1><p>' + esc(CERT.intro) + '</p></div>' +
+    '<h2>Cómo funciona</h2>' +
+    '<div class="rejilla reglas">' +
+      '<div class="tarjeta"><h3>' + n + ' preguntas</h3><div class="tenue">Sobre el curso completo: Día 1 y Día 2. Todas en una sola página.</div></div>' +
+      '<div class="tarjeta"><h3>' + CERT.minimoCorrectas + ' correctas para aprobar</h3><div class="tenue">De ' + n + '. Al enviar ves tu puntaje y los temas por repasar.</div></div>' +
+      '<div class="tarjeta"><h3>' + CERT.intentosMaximos + ' intentos</h3><div class="tenue">Si no apruebas a la primera, tienes un segundo intento.</div></div>' +
+      '<div class="tarjeta"><h3>Sin revisión al instante</h3><div class="tenue">No se muestra la respuesta correcta de cada pregunta. Los resultados los revisas con tu entrenador.</div></div>' +
+    '</div>' +
+    '<div class="aviso info">Responde con calma: solo puedes enviar cuando hayas contestado las ' + n + ' preguntas.</div>';
+  el('#btnSiguiente').disabled = false;
+  el('#btnSiguiente').textContent = 'Empezar la certificación';
+}
+
+function empezarCert(){
+  var c = estadoCert();
+  if (certTerminada(c)) { certFase = 'resultado'; repintarCert(); return; }
+  respuestasCert = {}; ordenCert = {};
+  CERT.preguntas.forEach(function(p){ ordenCert[p.id] = barajar(p.opciones); });
+  certFase = 'preguntas';
+  repintarCert();
+}
+
+function pintarCertPreguntas(intentoN){
+  var n = CERT.preguntas.length;
+  var h = '<h2>' + esc(CERT.titulo) + '</h2>' +
+    '<p class="tenue">Intento ' + intentoN + ' de ' + CERT.intentosMaximos + ' · ' + n +
+    ' preguntas · necesitas ' + CERT.minimoCorrectas + ' correctas. No verás la respuesta correcta de cada pregunta.</p>' +
+    '<div class="contador" id="contadorCert"></div>';
+
+  CERT.preguntas.forEach(function(p, idx){
+    var tipo = tipoPregunta(p);
+    var ops = ordenCert[p.id] || (ordenCert[p.id] = barajar(p.opciones));
+    var marcadas = respuestasCert[p.id] || [];
+    h += '<div class="tarjeta" data-pregunta="' + esc(p.id) + '">' +
+         '<div class="reto-et">Pregunta ' + (idx + 1) + ' de ' + n + '</div>' +
+         '<h3>' + esc(p.texto) + '</h3>' +
+         '<div class="tenue">' + (tipo === 'multiple' ? 'Elige todas las correctas.' : 'Elige una opción.') + '</div>' +
+         '<div class="opciones">';
+    ops.forEach(function(o){
+      h += '<button class="opcion' + (marcadas.indexOf(o.id) !== -1 ? ' sel' : '') +
+           '" data-tipo="' + tipo + '" data-preg="' + esc(p.id) +
+           '" data-id="' + esc(o.id) + '"><span class="marca"></span><span>' +
+           esc(o.texto) + '</span></button>';
+    });
+    h += '</div></div>';
+  });
+
+  h += '<div class="error" id="errorCert"></div>';
+  el('#lienzo').innerHTML = h;
+
+  function refrescar(){
+    var k = contarCert();
+    el('#contadorCert').textContent = 'Respondidas ' + k + ' de ' + n;
+    el('#pieEtiqueta').textContent = 'Respondidas ' + k + ' de ' + n;
+    el('#btnSiguiente').disabled = (k < n);
+    el('#btnSiguiente').textContent = 'Enviar certificación';
+    if (k >= n) el('#errorCert').classList.remove('ver');
+  }
+  conectarOpciones(respuestasCert, refrescar);
+  refrescar();
+}
+
+/**
+ * Califica la certificación en el cliente (misma regla que el quiz: una pregunta múltiple
+ * solo es correcta con el conjunto exacto), guarda el intento y envía las respuestas.
+ */
+function revisarCertificacion(respuestas){
+  if (!agente) throw new Error('No te encontramos. Vuelve a escribir tu nombre.');
+  var prog = leerProgreso(agente.clave);
+  if (prog.cert.intentos.length >= CERT.intentosMaximos)
+    throw new Error('Ya usaste tus ' + CERT.intentosMaximos + ' intentos.');
+
+  var res = calificar_(CERT.preguntas, respuestas);
+  var aprobada = res.aciertos >= CERT.minimoCorrectas;
+  var temas = [];
+  res.detalle.forEach(function(d){
+    if (d.correcto) return;
+    var t = CERT.temas[d.tema] || d.tema;
+    if (temas.indexOf(t) === -1) temas.push(t);
+  });
+  var ahora = new Date().toISOString();
+  var intento = { n: prog.cert.intentos.length + 1, aciertos: res.aciertos, total: res.total,
+                  aprobada: aprobada, temas: temas, fecha: ahora };
+  var intentos = prog.cert.intentos.concat([intento]);
+  var terminada = aprobada || intentos.length >= CERT.intentosMaximos;
+
+  var hechos = prog.modulosHechos.slice();
+  if (hechos.indexOf(CERT.id) === -1) hechos.push(CERT.id);
+
+  guardarProgreso(agente.clave, {
+    cert: { intentos: intentos },
+    modulosHechos: hechos,
+    estado: terminada ? 'terminado' : 'en progreso',
+    fechaTermino: terminada ? (prog.fechaTermino || ahora) : prog.fechaTermino
+  });
+  agente.modulosHechos = hechos;
+  agente.estado = terminada ? 'terminado' : 'en progreso';
+
+  enviar({ accion:'quiz', nombre:agente.nombre, apellido:agente.apellido,
+           tipo:'certificacion', moduloId: CERT.id, respuestas: res.envio });
+  return intento;
+}
+
+function enviarCert(){
+  var faltan = CERT.preguntas.length - contarCert();
+  var err = el('#errorCert');
+  if (faltan > 0){
+    err.textContent = 'Te faltan ' + faltan + ' pregunta(s) por contestar.';
+    err.classList.add('ver');
+    return;
+  }
+  err.classList.remove('ver');
+  el('#btnSiguiente').disabled = true;
+  el('#btnSiguiente').textContent = 'Enviando…';
+
+  var payload = CERT.preguntas.map(function(p){
+    return { preguntaId:p.id, opcionIds:respuestasCert[p.id] };
+  });
+  try {
+    revisarCertificacion(payload);
+    respuestasCert = {}; ordenCert = {};
+    certFase = 'resultado';
+    repintarCert();
+  } catch(e){
+    err.textContent = e.message || 'No se pudo enviar. Intenta de nuevo.';
+    err.classList.add('ver');
+    el('#btnSiguiente').disabled = false;
+    el('#btnSiguiente').textContent = 'Enviar certificación';
+  }
+}
+
+function pintarCertResultado(intento, terminada){
+  var h = '<div class="tarjeta resultado-cert">' +
+    '<div class="reto-et">' + esc(CERT.titulo) + ' · intento ' + intento.n + ' de ' + CERT.intentosMaximos + '</div>' +
+    '<div class="marcador">' + intento.aciertos + ' de ' + intento.total + '</div>' +
+    '<h2 class="' + (intento.aprobada ? 'aprobada' : 'reprobada') + '">' +
+    (intento.aprobada ? 'Aprobada' : 'No aprobada') + '</h2>' +
+    '<p class="tenue">Para aprobar necesitas ' + CERT.minimoCorrectas + ' respuestas correctas de ' + intento.total + '.</p>' +
+    '</div>';
+
+  if (intento.temas && intento.temas.length){
+    h += '<h2>Temas por repasar</h2><div class="tarjeta"><ul class="lista" style="margin:0">';
+    intento.temas.forEach(function(t){ h += '<li>' + esc(t) + '</li>'; });
+    h += '</ul></div>';
+  } else {
+    h += '<div class="aviso ok">Contestaste bien todas las preguntas.</div>';
+  }
+  h += '<p class="tenue">En la certificación no se muestran las respuestas correctas de cada pregunta.</p>';
+
+  if (terminada){
+    h += '<div class="aviso info">Tu entrenador revisa los resultados y te los comparte.</div>' +
+         '<button class="btn" id="btnRepasar">Volver al módulo</button> ' +
+         '<button class="btn primario" id="btnPortadaCert">Ir a la portada</button>';
+  } else {
+    h += '<div class="aviso info">Te queda un intento. Repasa los temas y vuelve a intentarlo cuando quieras.</div>' +
+         '<button class="btn primario" id="btnSegundo">Segundo intento</button> ' +
+         '<button class="btn" id="btnRepasar">Volver al módulo</button> ' +
+         '<button class="btn" id="btnPortadaCert">Ir a la portada</button>';
+  }
+
+  el('#lienzo').innerHTML = h;
+  el('#barraProgreso').style.width = '100%';
+  var segundo = el('#btnSegundo');
+  if (segundo) segundo.onclick = empezarCert;
+  el('#btnRepasar').onclick = function(){ i = 1; pintar(); };
+  el('#btnPortadaCert').onclick = pintarTitular;
+}
+
+// ---------------------------------------------------------------- navegación
+el('#btnSiguiente').onclick = function(){
+  var p = pasos[i];
+  if (p.tipo === 'quiz' && !revisiones[p.modulo.id]){ enviarQuiz(p); return; }
+  if (p.tipo === 'cert'){
+    if (certFase === 'intro') empezarCert();
+    else if (certFase === 'preguntas') enviarCert();
+    return;
+  }
+  if (i < pasos.length - 1){ i++; pintar(); }
+};
+el('#btnAtras').onclick = function(){
+  var p = pasos[i];
+  if (p.tipo === 'cert' && certFase === 'preguntas') return;
+  if (i > 1){ i--; pintar(); }
+};
+
+el('#btnIndice').onclick = function(){ abrirIndice(true); };
+el('#velo').onclick = function(){ abrirIndice(false); };
+
+function abrirIndice(ver){
+  el('#indice').classList.toggle('ver', ver);
+  el('#velo').classList.toggle('ver', ver);
+  if (ver) pintarIndice();
+}
+
+function pintarIndice(){
+  var h = '';
+  pasos.forEach(function(p, idx){
+    if (p.tipo !== 'modulo' && p.tipo !== 'quiz' && p.tipo !== 'cert') return;
+    var titulo = p.tipo === 'modulo' ? p.modulo.titulo
+               : p.tipo === 'quiz' ? ('↳ ' + p.modulo.quiz.titulo)
+               : CERT.titulo;
+    var bloqueado = idx > maxVisto;
+    var clase = 'idx-item' + (idx === i ? ' actual' : '') + (idx < maxVisto ? ' hecho' : '');
+    h += '<button class="' + clase + '" data-idx="' + idx + '"' + (bloqueado ? ' disabled' : '') + '>' +
+         '<span class="idx-n">' + (p.tipo === 'modulo' ? p.n : (p.tipo === 'cert' ? '★' : '?')) + '</span>' +
+         '<span>' + esc(titulo) + '</span></button>';
+  });
+  el('#indiceLista').innerHTML = h;
+  Array.prototype.forEach.call(document.querySelectorAll('.idx-item'), function(b){
+    b.onclick = function(){
+      i = parseInt(b.getAttribute('data-idx'), 10);
+      abrirIndice(false);
+      pintar();
+    };
+  });
+}
+
+arrancar();
+</script>
+</body>
+</html>
