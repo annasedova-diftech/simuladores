@@ -50,6 +50,18 @@
     padding:8px 16px;font-size:14px;font-weight:600;
   }
   .btn-indice:hover{border-color:var(--tinta)}
+  .btn-inicio{
+    display:inline-flex;align-items:center;gap:6px;border:1px solid var(--linea);background:var(--blanco);
+    border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;color:var(--tinta);
+  }
+  .btn-inicio:hover{border-color:var(--tinta)}
+  .btn-inicio svg{width:16px;height:16px;flex:none}
+  .saludo{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-4px 0 18px;font-size:15px}
+  .btn-mini{
+    border:1px solid var(--linea);background:var(--blanco);border-radius:999px;
+    padding:4px 12px;font-size:12px;font-weight:600;color:var(--gris);
+  }
+  .btn-mini:hover{border-color:var(--tinta);color:var(--tinta)}
   .progreso{height:3px;background:var(--linea)}
   .progreso span{display:block;height:3px;background:var(--naranja);width:0;transition:width .3s}
 
@@ -180,7 +192,253 @@
          font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
   .idx-item.actual .idx-n{background:var(--naranja);color:#fff}
   .idx-item.hecho .idx-n{background:var(--verde);color:#fff}
+  .idx-sub{padding:6px 8px 6px 44px;font-size:14px;color:var(--gris);line-height:1.35}
+  .idx-sub.actual{color:var(--naranja);font-weight:600}
 
+  /* ---------- «Lo esencial del módulo»: lista con casillas ---------- */
+  .esencial{display:flex;flex-direction:column;gap:10px;margin:0 0 16px}
+  .esencial-item{
+    display:flex;gap:14px;align-items:flex-start;background:var(--blanco);border:1px solid var(--linea);
+    border-radius:var(--radio);padding:16px 18px;cursor:pointer;margin:0;
+  }
+  .esencial-item:hover{border-color:var(--tinta)}
+  .esencial-item input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--naranja);flex:none;cursor:pointer}
+  .esencial-item.marcado{border-color:#CFEBDA;background:var(--verde-suave)}
+  .esencial-item b{display:block;margin-bottom:2px}
+  .esencial-item .tenue{font-size:15px}
+
+  /* ---------- esquemas (HTML/CSS) ---------- */
+  .esq{background:#F0F3FA;border-radius:20px;padding:24px;margin:0 0 20px;color:#1B1F2B}
+  .esq-titulo{font-size:20px;font-weight:700;margin:0 0 18px;letter-spacing:-.01em}
+  .pildora{
+    display:inline-flex;align-items:center;border-radius:999px;padding:4px 12px;
+    font-size:12px;font-weight:600;line-height:1.3;white-space:nowrap;
+  }
+  .pildora.cliente{background:#FF4F12;color:#fff}
+  .pildora.banco{background:#1B1F2B;color:#fff}
+  .pildora.plazo{background:#F0F3FA;color:#1B1F2B}
+  .esq-flecha{display:flex;justify-content:center;padding:2px 0;color:#B8BEC9}
+  .esq-flecha svg{width:18px;height:22px}
+  .esq-nota{font-size:13px;color:#6B7080;margin:16px 0 0}
+
+  /* pasos uno bajo otro */
+  .esq-v .esq-paso{
+    background:#fff;border-radius:20px;padding:20px 22px;display:grid;
+    grid-template-columns:36px minmax(180px,250px) 1fr;gap:16px 18px;align-items:start;
+  }
+  .esq-n{
+    flex:none;width:36px;height:36px;border-radius:50%;color:#fff;font-weight:700;font-size:15px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .esq-n.cliente{background:#FF4F12} .esq-n.banco{background:#1B1F2B}
+  .esq-paso h4{margin:0 0 8px;font-size:17px;line-height:1.25}
+  .esq-pildoras{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .esq-texto{color:#5B6070;font-size:15px;line-height:1.5}
+
+  /* flujo horizontal */
+  .esq-h{display:flex;gap:10px;align-items:stretch}
+  .esq-tu{background:#FFEDE4;border-radius:20px;padding:18px;flex:none;width:190px;display:flex;flex-direction:column;gap:12px}
+  .esq-et{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#FF4F12}
+  .esq-card{border-radius:20px;padding:18px 16px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+  .esq-card.naranja{background:#FF4F12;color:#fff}
+  .esq-card.clara{background:#F0F3FA}
+  .esq-ico{width:28px;height:28px;margin-bottom:4px;flex:none}
+  .esq-paso-et{font-size:12px;font-weight:600;opacity:.75}
+  .esq-card h4{margin:0;font-size:15px;line-height:1.3}
+  .esq-card p{margin:0;font-size:13px;line-height:1.45;color:#5B6070}
+  .esq-card.naranja p{color:rgba(255,255,255,.85)}
+  .esq-despues{background:#fff;border-radius:20px;padding:18px;flex:1;min-width:0;display:flex;flex-direction:column}
+  .esq-sub{margin:0 0 14px;font-size:15px;font-weight:700}
+  .esq-fila{display:flex;gap:8px;align-items:stretch;flex:1}
+  .esq-flecha-h{display:flex;align-items:center;justify-content:center;color:#B8BEC9;flex:none}
+  .esq-flecha-h svg{width:18px;height:18px}
+  @media (max-width:1000px){
+    .esq-h{flex-direction:column}
+    .esq-tu{width:auto}
+    .esq-h > .esq-flecha-h svg{transform:rotate(90deg)}
+  }
+  @media (max-width:700px){
+    .esq{padding:18px}
+    .esq-v .esq-paso{grid-template-columns:36px 1fr;padding:18px}
+    .esq-v .esq-texto{grid-column:2}
+    .esq-fila{flex-direction:column}
+    .esq-flecha-h svg{transform:rotate(90deg)}
+  }
+
+
+  /* ---------- imágenes y lightbox ---------- */
+  .figura{margin:0 0 20px}
+  .figura img{display:block;max-width:100%;height:auto;border-radius:12px;border:1px solid var(--linea);background:var(--blanco);cursor:zoom-in}
+  .figura figcaption{font-size:13px;color:var(--gris);margin-top:8px}
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(20,20,20,.88);display:none;align-items:center;justify-content:center;padding:24px;cursor:zoom-out}
+  .lightbox.ver{display:flex}
+  .lightbox img{max-width:100%;max-height:100%;border-radius:8px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .lightbox-cerrar{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:22px;line-height:40px;text-align:center;padding:0}
+  .lightbox-cerrar:hover{background:rgba(255,255,255,.3)}
+  .lightbox-pie{position:absolute;left:24px;right:24px;bottom:16px;text-align:center;color:rgba(255,255,255,.8);font-size:14px;pointer-events:none}
+  .modulo-portada .modulo-img{flex:none;width:200px}
+  .modulo-portada .modulo-img img{display:block;width:100%;height:auto;border-radius:16px}
+
+  /* comunes de los esquemas nuevos */
+  .esq-sub2{font-size:15px;color:#5B6070;margin:-10px 0 18px}
+  .esq-sub2 .pildora{margin:0 4px}
+  .pildora svg{width:14px;height:14px;margin-right:5px;flex:none}
+  .pildora.aplica{background:#FFEDE4;color:#FF4F12;font-size:11px;padding:2px 8px}
+  .pildora.gris{background:#E9ECF3;color:#1B1F2B}
+  .esq-card.blanca{background:#fff}
+  .esq-card.borde{background:#fff;box-shadow:inset 0 0 0 2px #FF4F12}
+  .esq-ul{margin:0;padding:0;list-style:none}
+  .esq-ul li{position:relative;padding-left:16px;margin:0 0 6px;font-size:14px;line-height:1.45}
+  .esq-ul li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:50%;background:#FF4F12}
+  .esq-flecha-h .pildora,.esq-flecha .pildora{margin-left:6px}
+
+  /* carriles (Tú → El cliente → El banco y el embajador) */
+  .esq-carriles{display:flex;flex-direction:column;gap:4px}
+  .esq-carril{display:grid;grid-template-columns:150px repeat(var(--cols,6),1fr);gap:0 10px;align-items:center;border-radius:20px;padding:16px 18px;min-height:110px}
+  .esq-carril.clara{background:#fff}
+  .esq-carril.naranja{background:#FFEDE4}
+  .esq-carril-nombre{font-weight:700;font-size:17px;line-height:1.25;padding-right:10px}
+  .esq-carril-paso{text-align:center;display:flex;flex-direction:column;align-items:stretch}
+  .esq-carril-card{border-radius:14px;padding:12px 10px;border:1px solid #E1E5EE;background:#fff;font-size:13px;line-height:1.4;color:#5B6070;min-height:84px;display:flex;flex-direction:column;justify-content:center}
+  .esq-carril-card b{display:block;color:#1B1F2B;font-size:14px;line-height:1.3;margin-bottom:2px}
+  .esq-carril-card.destacado{background:#FF4F12;border-color:#FF4F12;color:#fff}
+  .esq-carril-card.destacado b{color:#fff;font-size:17px;margin:0}
+  .esq-carril-nota{font-size:12px;color:#5B6070;line-height:1.35;margin-top:6px}
+  .esq-carril-flecha{display:grid;grid-template-columns:150px repeat(var(--cols,6),1fr);gap:0 10px;height:30px}
+  .esq-carril-flecha > div{display:flex;align-items:center;color:#B8BEC9;font-size:12px;gap:6px;padding-left:24px}
+  .esq-carril-flecha svg{width:16px;height:20px;flex:none}
+  .esq-carril-flecha span{color:#5B6070;max-width:260px;line-height:1.25}
+  .esq-carril-paso .esq-flecha-h{display:none}
+  @media (max-width:900px){
+    .esq-carril,.esq-carril-flecha{grid-template-columns:1fr}
+    .esq-carril-flecha{height:auto;padding:4px 0 4px 18px}
+    .esq-carril-flecha > div{padding-left:0;grid-column:1 !important}
+    .esq-carril-nombre{margin-bottom:10px}
+    .esq-carril-paso{grid-column:1 !important;text-align:left}
+    .esq-carril-paso .esq-flecha-h{display:flex;justify-content:flex-start;padding:4px 0 4px 16px}
+    .esq-carril-paso .esq-flecha-h svg{transform:rotate(90deg)}
+    .esq-carril-card{min-height:0}
+  }
+
+  /* flujo vertical con ramas (la llamada de un vistazo) */
+  .esq-flujo{display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:0 28px;align-items:center}
+  .esq-nodo{background:#fff;border-radius:16px;padding:14px 20px;text-align:center;font-size:15px;line-height:1.4;color:#1B1F2B}
+  .esq-nodo b{color:#1B1F2B}
+  .esq-nodo.destacado{background:#FF4F12;color:#fff}
+  .esq-nodo.destacado b{color:#fff}
+  .esq-rombo{position:relative;padding:34px 44px;text-align:center;font-weight:700;font-size:15px;line-height:1.3;color:#1B1F2B}
+  .esq-rombo::before{content:"";position:absolute;inset:0;background:#FFEDE4;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);z-index:0}
+  .esq-rombo span{position:relative;z-index:1;display:block}
+  .esq-flujo-vacio{min-height:1px}
+  .esq-flujo-flecha{display:flex;align-items:center;gap:6px;justify-content:center;padding:2px 0;color:#B8BEC9;font-size:13px}
+  .esq-flujo-flecha svg{width:18px;height:22px}
+  .esq-flujo-flecha span{color:#5B6070}
+  .esq-rama{display:flex;align-items:center;gap:8px}
+  .esq-rama .esq-flecha-h{flex-direction:column;gap:2px;font-size:12px;color:#5B6070;min-width:46px}
+  .esq-rama .esq-flecha-h svg{width:24px;height:18px}
+  .esq-rama-card{background:#E9ECF3;border-radius:16px;padding:14px 18px;font-size:14px;line-height:1.4;flex:1}
+  @media (max-width:700px){
+    .esq-flujo{grid-template-columns:1fr;gap:0}
+    .esq-flujo-vacio{display:none}
+    .esq-rama{padding:6px 0 6px 24px}
+    .esq-rama .esq-flecha-h svg{transform:none}
+    .esq-rombo{padding:30px 28px;font-size:14px}
+    .esq-nodo{font-size:14px;padding:12px 14px}
+  }
+
+  /* Característica → Puente → Beneficio */
+  .esq-cpb{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:0 20px;align-items:end}
+  .esq-cpb-card{background:#fff;border-radius:16px;padding:22px 16px 26px;text-align:center}
+  .esq-cpb-card.borde{box-shadow:inset 0 0 0 2px #FF4F12}
+  .esq-cpb-card.borde h4{color:#FF4F12}
+  .esq-cpb-card h4{margin:0;font-size:24px;letter-spacing:-.01em}
+  .esq-cpb-n{width:28px;height:28px;border-radius:50%;background:#6B7080;color:#fff;font-weight:700;font-size:13px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px}
+  .esq-cpb-n.naranja{background:#FF4F12}
+  .esq-cpb-puente{text-align:center;align-self:stretch;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+  .esq-cpb-puente > div:not(.esq-cpb-n){width:100%}
+  .esq-cpb-puente h4{margin:0 0 4px;font-size:24px}
+  .esq-cpb-puente svg{width:100%;height:auto;display:block;overflow:visible}
+  .esq-cpb-texto{text-align:center;font-size:14px;color:#5B6070;line-height:1.45;padding:14px 4px 0}
+  .esq-cpb-texto.fuerte{font-weight:700;color:#1B1F2B}
+  .esq-cpb-texto.medio{font-weight:600;color:#1B1F2B}
+  @media (max-width:700px){
+    .esq-cpb{grid-template-columns:1fr;gap:12px}
+    .esq-cpb-puente svg{display:none}
+    .esq-cpb-puente{background:#fff;border-radius:16px;padding:18px 16px}
+    .esq-cpb-puente .esq-cpb-texto{padding-top:6px}
+    .esq-cpb .esq-cpb-texto{padding-top:4px}
+    .esq-cpb-flecha-m{display:flex;justify-content:center;color:#B8BEC9}
+    .esq-cpb-flecha-m svg{width:18px;height:22px}
+  }
+  .esq-cpb-flecha-m{display:none}
+
+  /* bloques numerados (lo que el cliente ve en su solicitud) */
+  .esq-bloque{background:#fff;border-radius:20px;padding:22px 24px;display:grid;grid-template-columns:minmax(200px,.9fr) 1.6fr minmax(180px,.9fr);gap:16px 24px;align-items:start}
+  .esq-bloque.destacado{background:#FF4F12;color:#fff}
+  .esq-bloque-cab{display:flex;gap:14px;align-items:flex-start}
+  .esq-bloque-cab h4{margin:4px 0 0;font-size:20px;line-height:1.2}
+  .esq-bloque-n{width:40px;height:40px;border-radius:50%;background:#FF4F12;color:#fff;font-weight:700;font-size:17px;display:flex;align-items:center;justify-content:center;flex:none}
+  .esq-bloque.destacado .esq-bloque-n{background:#fff;color:#FF4F12}
+  .esq-bloque p{margin:0;font-size:15px;line-height:1.45}
+  .esq-bloque-nota{background:#FFEDE4;border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.4;color:#1B1F2B}
+  .esq-bloque.destacado .esq-bloque-nota{background:none;padding:0;color:#fff;font-weight:700;font-size:16px}
+  @media (max-width:800px){
+    .esq-bloque{grid-template-columns:1fr;padding:18px}
+  }
+
+  /* proceso QA */
+  .esq-qa-pasos{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:12px;align-items:stretch;margin-bottom:16px}
+  .esq-qa-paso{background:#fff;border-radius:20px;padding:18px}
+  .esq-qa-cab{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  .esq-qa-cab h4{margin:0;font-size:18px;line-height:1.2}
+  .esq-qa-paso p{margin:0;font-size:15px;line-height:1.45;color:#1B1F2B}
+  .esq-qa-si{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .pildora.ok{background:#E9F7EF;color:#0F9D58;font-size:14px;padding:6px 12px}
+  .pildora.no{background:#FDECEA;color:#D7342A;font-size:14px;padding:6px 12px}
+  .esq-qa-ejemplo{background:#fff;border-radius:20px;padding:20px 22px;margin-bottom:16px}
+  .esq-qa-ejemplo h4{margin:0 0 14px;font-size:19px}
+  .esq-qa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+  .esq-qa-item{border-radius:12px;padding:10px 12px;font-size:13px;line-height:1.35;min-height:80px}
+  .esq-qa-item.ok{background:#E9F7EF}
+  .esq-qa-item.no{background:#FDECEA}
+  .esq-qa-item .esq-qa-letra{display:flex;justify-content:space-between;font-weight:700;color:#6B7080;margin-bottom:4px}
+  .esq-qa-item.ok .esq-qa-letra svg{color:#0F9D58} .esq-qa-item.no .esq-qa-letra svg{color:#D7342A}
+  .esq-qa-letra svg{width:16px;height:16px}
+  .esq-qa-res{text-align:center;color:#FF4F12;font-weight:700;margin:14px 0 10px;font-size:15px}
+  .esq-escala{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .esq-escala > div{background:#F0F3FA;border-radius:12px;padding:10px 14px;font-size:14px;color:#5B6070}
+  .esq-escala b{display:block;font-size:20px;color:#1B1F2B}
+  .esq-escala > div.activo{background:#FF4F12;color:#fff}
+  .esq-escala > div.activo b{color:#fff}
+  .esq-graves{background:#1B1F2B;color:#fff;border-radius:20px;padding:22px 24px;display:grid;grid-template-columns:40px 1fr;gap:10px 16px;align-items:start}
+  .esq-graves-ico{width:40px;height:40px;border-radius:50%;background:#E5162A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px}
+  .esq-graves h4{margin:4px 0 4px;font-size:19px}
+  .esq-graves p{margin:0;color:rgba(255,255,255,.8);font-size:15px}
+  .esq-graves-lista{grid-column:2;display:flex;flex-wrap:wrap;gap:8px}
+  .esq-graves-lista span{border:1px solid #E5162A;border-radius:999px;padding:6px 14px;font-size:13px}
+  @media (max-width:900px){
+    .esq-qa-pasos{grid-template-columns:1fr}
+    .esq-qa-pasos .esq-flecha-h svg{transform:rotate(90deg)}
+    .esq-escala{grid-template-columns:1fr}
+    .esq-graves{grid-template-columns:1fr}
+    .esq-graves-lista{grid-column:1}
+  }
+
+  /* columnas de atributos */
+  .esq-columnas{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+  .esq-columna{background:#fff;border-radius:20px;padding:18px 16px;display:flex;flex-direction:column}
+  .esq-columna-cab{display:flex;gap:10px;align-items:center}
+  .esq-columna-cab h4{margin:0;font-size:16px;line-height:1.2}
+  .esq-columna-sub{font-size:13px;color:#6B7080;margin:8px 0 4px;padding-bottom:8px;border-bottom:1px solid #EEF0F5}
+  .esq-columna-paso{display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #EEF0F5;font-size:13.5px;line-height:1.35}
+  .esq-columna-paso:last-of-type{border-bottom:none}
+  .esq-columna-paso .pildora.aplica{margin-top:4px}
+  .esq-columna-paso > div{display:flex;flex-direction:column;align-items:flex-start}
+  .esq-letra{width:22px;height:22px;border-radius:7px;background:#E9ECF3;color:#5B6070;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex:none}
+  .esq-columna .esq-escala{margin-top:auto;padding-top:14px;gap:6px}
+  .esq-columna .esq-escala > div{padding:8px 6px;font-size:11px;text-align:center;border-radius:10px}
+  .esq-columna .esq-escala b{font-size:15px}
+  .esq-columna .esq-escala > div.medio{background:#FFEDE4;color:#1B1F2B}
   /* ---------- portada e identidad ---------- */
   .portada{background:var(--naranja);color:#fff;border-radius:22px;padding:48px 44px;margin-bottom:20px}
   .portada h1{color:#fff}
@@ -236,6 +494,7 @@
     .lienzo{padding:24px 16px 120px}
     .portada,.modulo-portada{padding:32px 24px}
     .modulo-n{display:none}
+    .modulo-portada .modulo-img{display:none}
     .barra-titulo{display:none}
   }
 </style>
@@ -246,6 +505,10 @@
   <div class="barra-in">
     <div class="marca">PLATA</div>
     <div class="barra-titulo" id="barraTitulo"></div>
+    <button class="btn-inicio" id="btnInicioBarra" style="display:none" title="Volver a la portada del curso">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h5v-5h3v5h5v-9.5"/></svg>
+      <span>Inicio</span>
+    </button>
     <button class="btn-indice" id="btnIndice" style="display:none">Contenido</button>
   </div>
   <div class="progreso"><span id="barraProgreso"></span></div>
@@ -263,6 +526,7 @@
 
 <div class="velo" id="velo"></div>
 <nav class="indice" id="indice"><h3>Contenido</h3><div id="indiceLista"></div></nav>
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Imagen ampliada"><button class="lightbox-cerrar" id="lightboxCerrar" aria-label="Cerrar">×</button><img id="lightboxImg" alt=""><div class="lightbox-pie" id="lightboxPie"></div></div>
 
 <script>
 // ---------------------------------------------------------------- configuración de envío
@@ -298,6 +562,7 @@ var CURSO = {
     // ══════════════════════════════════════════════════ MÓDULO 1
     {
       id: 'm1',
+      imagen: 'llamadas-persona-moral/img/d1-m1-1-1-portada-dia1-tarjetas-plata.png',
       titulo: 'Persona Moral: quién es y qué cambia en la llamada',
       resumen: 'Qué es un cliente empresa, con quién vas a hablar y cómo es la llamada',
       duracion: '45 min',
@@ -436,6 +701,16 @@ var CURSO = {
           titulo: 'El camino de la empresa hasta la cuenta',
           bloques: [
             { t:'parrafo', texto:'Tu parte es el paso 1. Los demás pasos los hacen el cliente, el banco y el embajador.' },
+            { t:'esquema', tipo:'flujo-horizontal',
+              tuParte:{ etiqueta:'Tu parte', paso:'Paso 1', titulo:'Tu llamada', icono:'telefono' },
+              titulo:'Después de la llamada: lo hacen el cliente, el banco y el embajador',
+              pasos:[
+                { paso:'Paso 2', titulo:'El cliente sube los documentos', icono:'nube', texto:'Él mismo, después de la llamada; mejor desde la computadora, en la versión web' },
+                { paso:'Paso 3', titulo:'El banco revisa los documentos', icono:'lupa', texto:'Normalmente hasta 3 días; puede pedir algo más' },
+                { paso:'Paso 4', titulo:'Cita con el embajador', icono:'persona-check', texto:'En la empresa: el representante muestra los originales, firma el contrato y recibe la tarjeta' },
+                { paso:'Paso 5', titulo:'Revisión final', icono:'escudo-check' },
+                { paso:'Paso 6', titulo:'Cuenta abierta', icono:'circulo-check' }
+              ] },
             { t:'pasos', items:[
               { titulo:'Averiguas quién está del otro lado', texto:'Una empresa o una persona con negocio, y si quien te contesta tiene derecho a abrir la cuenta a nombre de la empresa.' },
               { titulo:'Explicas y respondes objeciones', texto:'Le explicas para qué le sirve la cuenta a ese negocio en particular.' },
@@ -443,6 +718,21 @@ var CURSO = {
               { titulo:'Dices los documentos y dónde subirlos', texto:'Le ofreces quedarte en la línea mientras los sube. Si no puede ahora, lo impulsas a subirlos él mismo en los próximos dos días.' },
               { titulo:'Explicas qué sigue y registras el resultado', texto:'El detalle de cada paso está en los siguientes módulos.' }
             ] },
+            { t:'esquema', tipo:'carriles',
+              carriles:[
+                { nombre:'Tú', tono:'naranja', pasos:[
+                  { n:1, titulo:'Tu llamada', destacado:true, nota:'calificas · solicitud en CRM · documentos y plazo' }
+                ] },
+                { nombre:'El cliente', pasos:[
+                  { n:2, titulo:'El cliente sube los documentos', texto:'mejor desde la computadora, versión web', nota:'48 h después de la llamada: el sistema revisa si están todos los documentos' }
+                ] },
+                { nombre:'El banco y el embajador', pasos:[
+                  { n:3, titulo:'El banco revisa los documentos', nota:'normalmente hasta 3 días' },
+                  { n:4, titulo:'Cita con el embajador', texto:'el representante muestra originales y firma', nota:'en la empresa' },
+                  { n:5, titulo:'Revisión final' },
+                  { n:6, titulo:'Cuenta abierta' }
+                ] }
+              ] },
             { t:'aviso', tono:'info', texto:'Tu llamada cuenta como exitosa cuando el cliente subió todos los documentos dentro de las 48 horas después de la llamada. No «solicitud creada», no «el cliente dijo que sí»: todos los documentos subidos.' }
           ]
         },
@@ -551,6 +841,7 @@ var CURSO = {
           bloques: [
             { t:'parrafo', texto:'Calificar al cliente es el segundo paso de la llamada: justo después del saludo y antes de leer el aviso de privacidad. En la pantalla «Tipo de empresa» del CRM eliges PFAE o PM.' },
             { t:'guion', texto:'¿Te registraste ante el SAT como persona física o como una empresa con razón social propia?' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-3-1-crm-tipo-de-empresa-pfae-pm.png', alt:'Pantalla «Tipo de empresa» del CRM con los botones PFAE y PM', pie:'CRM, pantalla «Tipo de empresa»: eliges PFAE o PM' },
             { t:'parrafo', texto:'La mayoría contesta de inmediato. Si el cliente no entiende la pregunta, en esa misma pantalla del CRM tienes la pista para explicar la diferencia:' },
             { t:'tarjetas', items:[
               { titulo:'PFAE', texto:'«Trabajas por tu cuenta y tu negocio está registrado a tu nombre»' },
@@ -579,10 +870,12 @@ var CURSO = {
             { t:'aviso', tono:'info', texto:'La más confiable es el RFC: de todos modos lo vas a necesitar más adelante en la solicitud, y la respuesta no depende de cómo entienda el cliente las palabras «empresa» y «negocio».' },
             { t:'parrafo', texto:'Si el cliente no sabe ni el RFC ni qué es el acta, mándalo a su Constancia de Situación Fiscal:' },
             { t:'guion', texto:'Lo puedes ver en tu Constancia de Situación Fiscal. La descargas en sat.gob.mx — Constancias → Constancia de Situación Fiscal — o en la app SAT Móvil. También te la puede dar tu contador' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-4-1-csf-ejemplo-en-blanco.png', alt:'Ejemplo de Constancia de Situación Fiscal con el bloque «Datos de Identificación del Contribuyente»', pie:'Ejemplo de CSF: la primera página, bloque «Datos de Identificación del Contribuyente»' },
             { t:'tabla', encabezados:['Qué ves en el primer bloque de la CSF','Quién está del otro lado'], filas:[
               ['RFC de 13 caracteres; la línea «CURP»; las líneas «Nombre(s)», «Primer Apellido», «Segundo Apellido»','Persona (PFAE)'],
               ['RFC de 12 caracteres; la línea «Denominación/Razón Social» con el nombre de la empresa; la línea «Régimen Capital»','Empresa (PM)']
-            ] }
+            ] },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-4-2-csf-pfae-vs-pm.jpg', alt:'Comparación de dos CSF: la de una PFAE y la de una PM', pie:'CSF de PFAE y CSF de PM: así se distinguen en el primer bloque' }
           ],
           reto: {
             id:'m2-r1', tema:'pm-vs-pfae', tipo:'unica',
@@ -640,7 +933,8 @@ var CURSO = {
               { titulo:'El régimen es compatible, pero la forma no', texto:'Una Asociación Civil (A.C.) tiene régimen 603 compatible, pero hoy no se abren cuentas para A.C. Si el cliente mismo te lo dice, contestas con la frase de la base de conocimiento.' }
             ] },
             { t:'guion', texto:'En este momento no podemos abrir Cuentas Empresa para empresas constituidas como Asociación Civil (A.C.). Por ahora, el producto no está disponible para este tipo de entidad' },
-            { t:'aviso', tono:'info', texto:'La lista completa de regímenes compatibles está en la base de conocimiento, artículo «Descripción general del PyME + preguntas».' }
+            { t:'aviso', tono:'info', texto:'La lista completa de regímenes compatibles está en la base de conocimiento, artículo «Descripción general del PyME + preguntas».' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-6-1-kb-pyme-regimenes-fiscales-compatibles.png', alt:'Base de conocimiento PyME: secciones sobre los regímenes fiscales compatibles y no compatibles con PM', pie:'Base de conocimiento: lista de regímenes fiscales compatibles y no compatibles con PM' },
           ]
         },
         {
@@ -657,6 +951,8 @@ var CURSO = {
               { titulo:'Poder notarial', texto:'Un poder otorgado ante notario cuando las facultades se dan después o a otra persona. Muchas veces viene como acta de asamblea.' }
             ] },
             { t:'parrafo', texto:'En los dos, el banco necesita ver el derecho de abrir cuentas bancarias: en el texto aparece como «abrir cuentas bancarias» o «poder de administración».' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-7-1-rpc-sas-administrador.jpg', alt:'Forma M47 del Registro Público de Comercio (constitución de una S.A.S.) con el administrador señalado', pie:'En una S.A.S. el administrador aparece directo en la forma de registro (RPC, forma M47)' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-7-2-poder-general-derecho-abrir-cuentas.jpg', alt:'Poder general ante notario con la cláusula que da el derecho de abrir cuentas bancarias', pie:'Poder notarial: aquí viene el derecho de abrir cuentas (cláusula TERCERA)' },
             { t:'guion', texto:'Eso viene en los documentos de la empresa. Revisa en el acta constitutiva quién está nombrado como administrador o representante y si tiene facultades para abrir cuentas bancarias — busca "abrir cuentas bancarias" o "poder de administración"' }
           ],
           reto: {
@@ -786,6 +1082,20 @@ var CURSO = {
           titulo: 'La llamada de un vistazo',
           bloques: [
             { t:'parrafo', texto:'En la llamada con una empresa hay ocho pasos y tres puntos donde tomas una decisión en el CRM.' },
+            { t:'esquema', tipo:'flujo-ramas',
+              nodos:[
+                { tipo:'paso', n:1, titulo:'Saludo:', texto:'quién eres, por qué llamas y ¿Persona Moral, cierto?' },
+                { tipo:'paso', n:2, titulo:'Pitch:', texto:'preguntas sobre el negocio, 2–3 beneficios, objeciones' },
+                { tipo:'decision', pregunta:'¿PFAE o PM?', sigue:'PM', rama:{ etiqueta:'PFAE', titulo:'Rama PFAE:', texto:'sigues con tu proceso de siempre' } },
+                { tipo:'paso', n:3, titulo:'Aviso de privacidad,', texto:'tal cual, desde la pantalla' },
+                { tipo:'paso', n:4, titulo:'Datos de la empresa:', texto:'RFC, ingresos mensuales' },
+                { tipo:'decision', pregunta:'¿Está autorizado para abrir cuentas?', sigue:'Sí', rama:{ etiqueta:'No', titulo:'No:', texto:'pides el contacto del autorizado y cierras la tarea' } },
+                { tipo:'paso', n:5, titulo:'Datos del representante:', texto:'nombre como en la INE, fecha de nacimiento' },
+                { tipo:'decision', pregunta:'¿Tiene INE o permiso de residencia?', sigue:'Sí', rama:{ etiqueta:'No', titulo:'No:', texto:'lees el texto de la pantalla y cierras la tarea' } },
+                { tipo:'paso', n:6, titulo:'Solicitud creada:', texto:'lista completa de documentos y dónde subirlos', destacado:true },
+                { tipo:'paso', n:7, titulo:'Qué sigue:', texto:'revisión → cita → revisión final → cuenta' },
+                { tipo:'paso', n:8, titulo:'Resultado', texto:'y Cerrar tarea' }
+              ] },
             { t:'aviso', tono:'info', texto:'El orden de las pantallas lo marca el CRM: mientras no completes la actual, la siguiente no se abre. Pero el pitch va antes del CRM: el cliente primero tiene que querer la cuenta y después contestar preguntas sobre el RFC.' }
           ]
         },
@@ -811,6 +1121,11 @@ var CURSO = {
               '«¿Qué te quita más tiempo en la parte administrativa?»'
             ] },
             { t:'parrafo', texto:'Eliges el argumento según la respuesta y lo dices con la estructura Característica → Puente → Beneficio: qué hace la cuenta, «esto significa que», qué gana el cliente.' },
+            { t:'esquema', tipo:'cpb', pasos:[
+              { n:1, titulo:'Característica', texto:'¿Qué es? Un dato objetivo del producto.' },
+              { n:2, titulo:'Puente', texto:'«Qué significa esto para ti». Aterrizas la característica en el mundo del cliente.' },
+              { n:3, titulo:'Beneficio', texto:'La ganancia concreta que se lleva el cliente.' }
+            ] },
             { t:'tabla', encabezados:['Lo que escuchas','Lo que dices'], filas:[
               ['Quiere controlar a su equipo','«Puedes emitir tarjetas corporativas para tus empleados, cada una con su propio límite. Y con Roles para tu equipo cada persona tiene su nivel de acceso: dueño, administrador, contador o usuario de tarjeta»'],
               ['Quiere simplificar y no ir al banco','«Con Plata Negocios manejas la banca y los pagos desde una sola app, sin ir a ninguna sucursal: también los SPEI, que funcionan 24/7. Sin token. Y en la versión web emites CFDI y pagas la nómina»'],
@@ -819,7 +1134,8 @@ var CURSO = {
               ['Le preocupa el costo','«El plan Empieza cuesta 199 MXN al mes y no pagas la mensualidad si el saldo al cierre de cada día del mes es de 30,000 MXN o más. Además, los primeros dos meses no pagas mensualidad»']
             ] },
             { t:'guion', texto:'Perfecto, [nombre del cliente]. Vamos a avanzar de una vez con la apertura: te acompaño paso a paso y nos toma solo unos minutos.' },
-            { t:'guion', texto:'¿Quieres vincular la tarjeta al número de teléfono que termina en […]?' }
+            { t:'guion', texto:'¿Quieres vincular la tarjeta al número de teléfono que termina en […]?' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-4-2-crm-vincular-tarjeta-telefono.png', alt:'Pantalla del CRM: «¿Quieres vincular la tarjeta al número de teléfono…?» con las opciones Sí, continuar y No, cambiar teléfono', pie:'CRM, primera pantalla de la tarea: vincular la tarjeta al teléfono. Si confirma, «Sí, continuar»; si quiere otro número, «No, cambiar teléfono»' }
           ],
           reto: {
             id:'m3-r1', tema:'producto', tipo:'unica',
@@ -853,10 +1169,12 @@ var CURSO = {
           titulo: 'Paso 3: la rama y el consentimiento',
           bloques: [
             { t:'parrafo', texto:'Pantalla «Tipo de empresa»: eliges PM y la solicitud queda en la rama PM. Si resulta que es PFAE, eliges PFAE y sigues con el guion Golden o Non-Golden según la tarea.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-6-1-crm-tipo-de-empresa-pfae-pm.png', alt:'Pantalla «Tipo de empresa» del CRM con la pregunta al cliente y los botones PFAE y PM', pie:'CRM, pantalla «Tipo de empresa»: la rama PM o PFAE' },
             { t:'guion', texto:'Excelente, [nombre del cliente]. Antes de revisar los detalles de tu perfil operativo, por normatividad bancaria es necesario hacer una breve lectura legal.' },
             { t:'parrafo', texto:'En la pantalla «Obtener consentimiento del cliente» lees el aviso tal cual, palabra por palabra y de manera pausada:' },
             { t:'guion', texto:'Al continuar con este proceso autorizas a Banco Plata, S.A., Institución de Banca Múltiple para tratar tus datos personales de conformidad con el Aviso de Privacidad disponible en bancoplata.mx. ¿Estás de acuerdo en continuar con el proceso?' },
-            { t:'aviso', tono:'alerta', texto:'Sin consentimiento no avanzas: el CRM no te deja, y saltarte el aviso es una infracción grave.' }
+            { t:'aviso', tono:'alerta', texto:'Sin consentimiento no avanzas: el CRM no te deja, y saltarte el aviso es una infracción grave.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-6-2-crm-obtener-consentimiento.png', alt:'Pantalla «Obtener consentimiento del cliente» del CRM: aviso de privacidad, casilla «Recibí autorización del cliente» y botón Continuar', pie:'CRM, pantalla «Obtener consentimiento del cliente»: lees el aviso, marcas «Recibí autorización del cliente» → Continuar' }
           ],
           reto: {
             id:'m3-r2', tema:'limites', tipo:'unica',
@@ -874,11 +1192,13 @@ var CURSO = {
           titulo: 'Paso 4: datos de la empresa',
           bloques: [
             { t:'guion', texto:'Perfecto, muchas gracias. Para iniciar la validación de la cuenta, vamos a registrar los datos básicos de la empresa y del representante.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-7-1-crm-rfc-ingresos-autorizado.png', alt:'Pantalla del CRM con los campos RFC de la empresa, Ingresos mensuales esperados y la pregunta sobre la autorización para abrir cuentas', pie:'CRM, datos de la empresa: RFC, ingresos mensuales esperados y «¿Está autorizado para abrir cuentas en nombre de la empresa?»' },
             { t:'tabla', encabezados:['Campo en pantalla','Qué preguntas','En qué te fijas'], filas:[
               ['RFC de la empresa (12 dígitos)','«¿Me puedes compartir el RFC de la empresa?»','12 caracteres. Si son 13, es el RFC de una persona: la rama está mal elegida'],
               ['Ingresos mensuales esperados','«¿Cuánto espera facturar la empresa al mes, aproximadamente?»','Monto aproximado; no hace falta exactitud'],
               ['¿Está autorizado para abrir cuentas en nombre de la empresa?','«¿Tú estás autorizado para abrir cuentas a nombre de la empresa?»','Facultades en el acta o en un poder notarial vigente']
             ] },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-4-2-csf-pfae-vs-pm.jpg', alt:'Comparación de dos CSF: la de una PFAE y la de una PM', pie:'Dónde encuentra el cliente el RFC de la empresa: en la CSF, primer bloque. 12 caracteres (PM) frente a 13 (PFAE)' },
             { t:'parrafo', texto:'Si elige «No están autorizados», el CRM pide el contacto del autorizado:' },
             { t:'guion', texto:'La cuenta de la empresa solo la puede abrir quien tiene facultades para hacerlo. ¿Me compartes el nombre y el teléfono de esa persona? Nos ponemos en contacto con él o ella' },
             { t:'parrafo', texto:'Nombre y teléfono van en «Comentario del resultado», resultado «Respuesta - Otra persona autorizada», Cerrar tarea.' },
@@ -901,7 +1221,9 @@ var CURSO = {
           bloques: [
             { t:'parrafo', texto:'Campos: Nombre(s), Primer apellido, Segundo apellido, Fecha de nacimiento, Documento para verificación de identidad.' },
             { t:'aviso', tono:'alerta', texto:'El nombre va como en la INE, letra por letra: cualquier diferencia detiene la revisión. Pídele al cliente que tome su INE y te lo dicte de ahí.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-8-1-crm-datos-representante-nombre-ine.png', alt:'Pantalla del CRM con los campos Nombre completo, Fecha de nacimiento y Documento para verificación de identidad', pie:'CRM, datos del representante: nombre como en la INE, fecha de nacimiento y documento de identidad' },
             { t:'guion', texto:'¿Cuentas con tu INE física y vigente? La necesitarás para mostrársela al embajador cuando recibas tu tarjeta. Asegúrate de que esté en buen estado y con tus datos actualizados' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-8-2-crm-documento-verificacion-identidad-detalle.png', alt:'Bloque «Documento para verificación de identidad» del CRM con la pregunta al cliente sobre la INE', pie:'CRM, bloque «Documento para verificación de identidad»: INE, permiso de residencia o ninguna de las anteriores' },
             { t:'parrafo', texto:'Si no tiene ni INE ni permiso de residencia, eliges «Ninguna de las anteriores» y lees desde la pantalla:' },
             { t:'guion', texto:'Lo sentimos, pero no podemos abrir una cuenta para tu empresa sin una INE o tarjeta de residencia. Puedes volver a solicitarla en cuanto tengas alguno de estos documentos' }
           ],
@@ -921,6 +1243,7 @@ var CURSO = {
           titulo: 'Paso 6: solicitud creada y los documentos',
           bloques: [
             { t:'parrafo', texto:'El CRM muestra «Tu solicitud se creó correctamente». Le dices al cliente qué documentos va a subir y después explicas cada uno en una frase. Es la parte principal de la llamada.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-9-1-crm-solicitud-creada-exito.png', alt:'Pantalla de éxito del CRM: «Tu solicitud se creó correctamente» y el panel Resultado de la tarea', pie:'CRM: la solicitud quedó creada. Desde aquí el cliente sube los documentos en la app' },
             { t:'guion', texto:'Para la fase final de activación, el sistema te va a pedir subir de forma digital el acta constitutiva con el sello del Registro Público de Comercio, la Constancia de Situación Fiscal de la empresa, y la INE del representante legal y de los accionistas con 25 % o más. ¿Los tienes a la mano en este momento?' },
             { t:'aviso', tono:'alerta', texto:'Tú no envías ningún enlace. Los documentos los sube el cliente en su solicitud, en la app de Plata, mejor desde la computadora.' },
             { t:'guion', texto:'Si estás listo para subir todos los documentos ahora, me quedo contigo en la llamada y te ayudo en cada paso. ¿Lo hacemos ahora?' },
@@ -956,6 +1279,16 @@ var CURSO = {
           titulo: 'Paso 7: qué sigue',
           bloques: [
             { t:'parrafo', texto:'El cliente debe escuchar cuatro pasos: carga de documentos → revisión del banco → cita con el embajador → revisión final y cuenta.' },
+            { t:'esquema', tipo:'pasos-vertical', titulo:'Después de la llamada',
+              nota:'Los plazos son un estimado, no una promesa. La cuenta se abre solo después de la revisión final.',
+              pasos:[
+                { quien:'cliente', actor:'Cliente', titulo:'Carga de documentos', plazo:'48 h', texto:'Documentos de la empresa, dueños con 25 % o más, información del negocio y plan. Mejor desde la computadora' },
+                { quien:'banco', actor:'Banco', titulo:'Revisión KYB', plazo:'Hasta 3 días', texto:'Un oficial revisa la empresa y los documentos. Si falta algo, lo pide en la solicitud' },
+                { quien:'cliente', actor:'Cliente + embajador', titulo:'Cita con el embajador', plazo:'Menos de 10 min', texto:'Originales: INE, acta y poder si aplica. Se firma el contrato. En CDMX y Monterrey entrega la tarjeta' },
+                { quien:'banco', actor:'Banco', titulo:'Revisión final', plazo:'Hasta 3 días', texto:'Tres salidas: cuenta abierta, más documentos o rechazo' },
+                { quien:'cliente', actor:'Cliente', titulo:'Cuenta abierta', texto:'Entra a la app con el mismo número de teléfono' },
+                { quien:'cliente', actor:'Cliente', titulo:'Tarjeta', plazo:'1–3 días hábiles', texto:'CDMX y Monterrey: ya la tiene de la cita. Otras ciudades: la pide en la app y llega por paquetería. La virtual, de inmediato' }
+              ] },
             { t:'guion', texto:'Cuando subas todo, el banco revisa los documentos, normalmente hasta tres días. Después te visita un embajador: le muestras los originales y firmas el contrato. Después de la revisión final se abre la cuenta' },
             { t:'guion', texto:'¿Tienes alguna otra duda en la que te pueda apoyar antes de colgar? Te agradezco mucho tu tiempo y la confianza. ¡Que tengas un excelente día!' },
             { t:'aviso', tono:'info', texto:'El éxito de tu llamada: todos los documentos subidos en dos días. Todo lo que hiciste en los pasos 6 y 7 trabaja justo para eso.' }
@@ -965,6 +1298,7 @@ var CURSO = {
           titulo: 'Paso 8: resultado de la llamada',
           bloques: [
             { t:'parrafo', texto:'Panel «Resultado de la tarea»: eliges el resultado y en «Comentario del resultado» escribes lo que debe saber el siguiente que abra al cliente. El resultado habla de la llamada; el comentario, del cliente.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m3-11-1-crm-resultado-de-la-tarea-cerrar.png', alt:'Panel «Resultado de la tarea» del CRM: seleccionar resultado, comentario y botón Cerrar tarea', pie:'CRM, panel «Resultado de la tarea»: resultado, comentario del resultado y Cerrar tarea' },
             { t:'aviso', tono:'alerta', texto:'Si la solicitud quedó creada, no registras resultado.' },
             { t:'tabla', encabezados:['Resultado','Cuándo lo eliges'], filas:[
               ['Otra persona autorizada','Quien contestó no está autorizado. Pides nombre y teléfono del autorizado'],
@@ -1115,9 +1449,50 @@ var CURSO = {
       duracion: '50 min',
       pantallas: [
         {
+          titulo: 'Qué pasa después de la llamada',
+          bloques: [
+            { t:'parrafo', texto:'Tu llamada es el paso 1. Lo que sigue lo hacen el cliente, el banco y el embajador: así se ve el camino completo, con quién hace cada paso y en qué plazo.' },
+            { t:'esquema', tipo:'pasos-vertical', titulo:'Después de la llamada',
+              nota:'Los plazos son un estimado, no una promesa. La cuenta se abre solo después de la revisión final.',
+              pasos:[
+                { quien:'cliente', actor:'Cliente', titulo:'Carga de documentos', plazo:'48 h', texto:'Documentos de la empresa, dueños con 25 % o más, información del negocio y plan. Mejor desde la computadora' },
+                { quien:'banco', actor:'Banco', titulo:'Revisión KYB', plazo:'Hasta 3 días', texto:'Un oficial revisa la empresa y los documentos. Si falta algo, lo pide en la solicitud' },
+                { quien:'cliente', actor:'Cliente + embajador', titulo:'Cita con el embajador', plazo:'Menos de 10 min', texto:'Originales: INE, acta y poder si aplica. Se firma el contrato. En CDMX y Monterrey entrega la tarjeta' },
+                { quien:'banco', actor:'Banco', titulo:'Revisión final', plazo:'Hasta 3 días', texto:'Tres salidas: cuenta abierta, más documentos o rechazo' },
+                { quien:'cliente', actor:'Cliente', titulo:'Cuenta abierta', texto:'Entra a la app con el mismo número de teléfono' },
+                { quien:'cliente', actor:'Cliente', titulo:'Tarjeta', plazo:'1–3 días hábiles', texto:'CDMX y Monterrey: ya la tiene de la cita. Otras ciudades: la pide en la app y llega por paquetería. La virtual, de inmediato' }
+              ] }
+          ]
+        },
+        {
           titulo: 'Lo que el cliente ve en su solicitud',
           bloques: [
             { t:'parrafo', texto:'Tienes que saber cómo es la solicitud: tres bloques, luego el plan, y la solicitud pasa a revisión.' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-3-1-app-plata-empresa-agrega-informacion.png', alt:'App Plata Empresa: pantalla «Agrega información para abrir una cuenta de Negocios» con los bloques de documentos, propietarios reales, información de la empresa y plan', pie:'Lo que ve el cliente en la app: «Agrega información para abrir una cuenta de Negocios», tres bloques y el plan' },
+            { t:'esquema', tipo:'bloques-numerados', titulo:'Lo que el cliente ve en su solicitud',
+              bloques:[
+                { n:1, titulo:'Documentos de la empresa', items:[
+                    'CSF de la empresa',
+                    '¿El domicilio real es el fiscal? Si no: comprobante de domicilio',
+                    'Acta constitutiva',
+                    'Comprobante de inscripción en el RPC',
+                    'Poder notarial (opcional)',
+                    'Documentos adicionales (opcional)'
+                  ], nota:'Errores frecuentes: CSF personal, acta de asamblea en vez de constitutiva, acta en vez de boleta RPC' },
+                { n:2, titulo:'Propietarios reales', items:[
+                    'Cada dueño con 25 % o más, directo o a través de otra empresa',
+                    'Nombre, teléfono, INE por los dos lados o pasaporte',
+                    'Quién maneja la empresa'
+                  ], nota:'Error frecuente: falta un dueño; INE en blanco y negro o de un solo lado' },
+                { n:3, titulo:'Información de la empresa', items:[
+                    'Sitio web y redes',
+                    'A qué se dedica (50 caracteres o más)',
+                    'Empleados, movimientos al mes',
+                    'Origen y uso de los recursos, efectivo'
+                  ], nota:'Son datos orientativos: no hay sanción si después cambian' },
+                { n:4, titulo:'Plan', destacado:true, texto:'Empieza, Impulsa o Expande. El sistema sugiere uno; el cliente elige cualquiera', nota:'Enviar → Revisión KYB, hasta 3 días' }
+              ],
+              nota:'Cada documento se revisa al subirlo. El aviso no detiene la solicitud, pero si el cliente sigue sin corregir, el oficial lo vuelve a pedir: días perdidos.' },
             { t:'aviso', tono:'info', texto:'El sistema revisa cada documento en cuanto se sube y muestra un aviso si algo está mal. El aviso no detiene la solicitud: el cliente puede seguir, pero entonces el oficial le vuelve a pedir el documento. Por eso conviene prevenir los errores en la llamada.' }
           ]
         },
@@ -1131,6 +1506,7 @@ var CURSO = {
               ['Errores frecuentes','Suben solo la primera página; el documento tiene más de 3 meses; suben el acta en lugar de la CSF; suben la CSF personal (13 caracteres y CURP)']
             ] },
             { t:'guion', texto:'La CSF de la empresa, la del portal del SAT, no el acta: RFC de 12 caracteres, el nombre de la empresa arriba, con no más de tres meses y todas las páginas, no solo la primera' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-4-1-csf-que-buscar-anotado.jpg', alt:'CSF de ejemplo con anotaciones: fecha de emisión, RFC y denominación, domicilio fiscal, «página 1 de…»', pie:'CSF de la empresa: qué buscar (fecha de emisión, RFC y denominación, domicilio, todas las páginas)' },
             { t:'parrafo', texto:'Cómo se descarga, paso a paso, para dictárselo al cliente:' },
             { t:'lista', items:[
               'Entra al portal del SAT o busca «descargar CSF».',
@@ -1163,7 +1539,9 @@ var CURSO = {
               ['Error frecuente','Suben el acta de asamblea en lugar de la constitutiva; faltan páginas']
             ] },
             { t:'guion', texto:'El acta con la que se constituyó la empresa, todas las páginas hasta las firmas y el sello del notario' },
-            { t:'aviso', tono:'info', texto:'Acta de asamblea: el acta de una asamblea de accionistas ante notario con lo que cambió después de la constitución. Se sube además del acta constitutiva solo si algo cambió, y la más reciente. Se distingue fácil: el primer párrafo dice «PROTOCOLIZACIÓN DEL ACTA DE ASAMBLEA».' }
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-5-1-acta-constitutiva-que-buscar.jpg', alt:'Acta constitutiva de ejemplo, primera y última página, con anotaciones sobre qué buscar', pie:'Acta constitutiva: qué buscar (número de escritura, «el acta constitutiva de…», firmas y sello del notario)' },
+            { t:'aviso', tono:'info', texto:'Acta de asamblea: el acta de una asamblea de accionistas ante notario con lo que cambió después de la constitución. Se sube además del acta constitutiva solo si algo cambió, y la más reciente. Se distingue fácil: el primer párrafo dice «PROTOCOLIZACIÓN DEL ACTA DE ASAMBLEA».' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-5-2-acta-de-asamblea-como-distinguirla.jpg', alt:'Acta de asamblea de ejemplo con anotaciones: protocolización, escritura pública y fecha', pie:'Acta de asamblea: cómo distinguirla de la constitutiva (protocolización, escritura pública y fecha)' },
           ]
         },
         {
@@ -1175,7 +1553,9 @@ var CURSO = {
               ['Qué buscar','Arriba dice «Registro Público de Comercio» y tiene el número de FME. Si no tiene esas palabras ni el FME, no es este documento'],
               ['Error frecuente','Suben el acta en el paso del RPC: es lo que más vuelve a pedir el oficial']
             ] },
-            { t:'guion', texto:'Revisa las últimas páginas del acta: ahí viene la página del Registro Público de Comercio con el número de FME. Esa se sube aparte' }
+            { t:'guion', texto:'Revisa las últimas páginas del acta: ahí viene la página del Registro Público de Comercio con el número de FME. Esa se sube aparte' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-6-1-rpc-comprobante-inscripcion-economia.jpg', alt:'Comprobante de inscripción en el RPC (Secretaría de Economía, forma M4) con anotaciones sobre qué buscar', pie:'Comprobante de inscripción en el RPC: qué buscar (FME y NCI, instrumento, fecha y notario)' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-7-1-rpc-sas-administrador.jpg', alt:'Forma M47 del Registro Público de Comercio (constitución de una S.A.S.) con el administrador señalado', pie:'En una S.A.S. (forma M47) el administrador aparece directo en la forma de registro' }
           ],
           reto: {
             id:'m4-r2', tema:'documentos', tipo:'unica',
@@ -1198,7 +1578,9 @@ var CURSO = {
               ['Qué buscar','Las palabras «cuentas bancarias» o «actos de administración»: búscalas con Ctrl+F. El nombre, igual que en la INE. Número de escritura, firma y sello'],
               ['Error frecuente','Una carta simple de la empresa en lugar del poder notarial; un poder a nombre de otra persona']
             ] },
-            { t:'guion', texto:'El poder solo hace falta si el acta no te da la facultad de abrir cuentas. Si sí, omites el paso o subes ahí la misma acta' }
+            { t:'guion', texto:'El poder solo hace falta si el acta no te da la facultad de abrir cuentas. Si sí, omites el paso o subes ahí la misma acta' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m2-7-2-poder-general-derecho-abrir-cuentas.jpg', alt:'Poder general ante notario con las cláusulas SEGUNDA y TERCERA anotadas: el derecho de abrir cuentas', pie:'Poder notarial: aquí viene el derecho de abrir cuentas (cláusulas SEGUNDA y TERCERA)' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-7-2-poder-notarial-largo-facultad.jpg', alt:'Poder notarial largo de varias páginas con la facultad «abrir y cancelar cuentas bancarias» señalada en la página 5', pie:'Poder notarial largo: dónde está la facultad («Poder para abrir y cancelar cuentas bancarias», página 5)' },
           ]
         },
         {
@@ -1210,7 +1592,8 @@ var CURSO = {
               ['Qué revisar','Vigente; los dos lados; a color, no fotocopia. El nombre en la solicitud, letra por letra como en la INE'],
               ['Error frecuente','Falta uno de los dueños; INE en blanco y negro o de un solo lado']
             ] },
-            { t:'guion', texto:'La INE de cada quien tenga 25 % o más, directo o a través de otra empresa, por los dos lados y a color. A ti te agregas, pero tu INE no la subes otra vez' }
+            { t:'guion', texto:'La INE de cada quien tenga 25 % o más, directo o a través de otra empresa, por los dos lados y a color. A ti te agregas, pero tu INE no la subes otra vez' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-8-1-estructura-accionaria-duenos-beneficiarios.jpg', alt:'Documento de estructura accionaria con el esquema de participación y anotaciones sobre quién cuenta como dueño beneficiario', pie:'Dueños beneficiarios: quién cuenta (65 % directo, 15 % indirecto, beneficiarios controladores)' }
           ],
           reto: {
             id:'m4-r3', tema:'documentos', tipo:'unica',
@@ -1233,7 +1616,8 @@ var CURSO = {
               ['Qué revisar','El nombre de la empresa, la fecha o el periodo, el domicilio completo'],
               ['Error frecuente','Un recibo a nombre de alguien ajeno a la empresa o con más de 3 meses']
             ] },
-            { t:'guion', texto:'Si el domicilio es el de la CSF, no subes nada. Si es otro, un recibo a nombre de la empresa con no más de tres meses' }
+            { t:'guion', texto:'Si el domicilio es el de la CSF, no subes nada. Si es otro, un recibo a nombre de la empresa con no más de tres meses' },
+            { t:'imagen', src:'llamadas-persona-moral/img/d1-m4-9-1-comprobante-domicilio-cfe.jpg', alt:'Recibo de CFE de ejemplo con anotaciones: nombre y domicilio, periodo, fecha de expedición', pie:'Comprobante de domicilio: qué revisar (nombre y domicilio, periodo, fecha de expedición)' },
           ]
         },
         {
@@ -1395,23 +1779,28 @@ var CURSO2 = {
         titulo: 'Cómo QA evalúa tu llamada',
         bloques: [
           { t:'parrafo', texto:'QA revisa tu llamada con un checklist. No todos los pasos se evalúan en todas las llamadas: por ejemplo, los pasos de Manejo de objeciones solo si el cliente plantea una objeción.' },
-          { t:'pasos', items:[
-            ['Tu llamada', 'QA la revisa con un checklist'],
-            ['5 atributos', 'Precisión y cumplimiento del proceso · Relación y tono · Calificación y descubrimiento · Manejo de objeciones · Resultado y siguiente paso'],
-            ['Sí o no en cada paso', 'Un paso es una acción concreta, no un intento: lo hiciste o no lo hiciste'],
-            ['0, 1 o 2 puntos', 'QA cuenta los pasos cumplidos y pone los puntos de cada atributo']
-          ] },
-          { t:'parrafo', texto:'Ejemplo real: el atributo «Resultado y siguiente paso» tiene 6 pasos.' },
-          { t:'tabla', encabezados:['Paso','¿Lo hizo el agente?'], filas:[
-            ['a. Intento claro de cierre','Sí'],
-            ['b. Explica la siguiente acción','Sí'],
-            ['c. Confirma que el cliente entiende','No'],
-            ['d. Programa la devolución de llamada','Sí'],
-            ['e. Deja un resultado claro','Sí'],
-            ['f. Evita un cierre vago','Sí']
-          ] },
-          { t:'aviso', tono:'info', texto:'5 de 6 pasos → 1 punto. En este atributo: 0–3 pasos son 0 puntos, 4–5 pasos son 1 punto, 6 pasos son 2 puntos.' },
-          { t:'aviso', tono:'alerta', texto:'Las Infracciones Graves van aparte del checklist. Un incumplimiento legal o normativo se registra como Infracción Grave y no se duplica en los atributos.' }
+          { t:'esquema', tipo:'proceso-qa', titulo:'Cómo QA evalúa tu llamada',
+            pasos:[
+              { n:1, titulo:'Tu llamada', texto:'QA la revisa con un checklist' },
+              { n:2, titulo:'5 atributos', items:['Precisión y cumplimiento del proceso','Relación y tono','Calificación y descubrimiento','Manejo de objeciones','Resultado y siguiente paso'] },
+              { n:3, titulo:'Sí o no en cada paso', texto:'Un paso es una acción concreta, ', negrita:'no un intento', etiquetas:[{ ok:true, texto:'Lo hiciste' },{ ok:false, texto:'No' }] },
+              { n:4, titulo:'0, 1 o 2 puntos', texto:'QA cuenta los pasos cumplidos y pone los puntos de cada atributo' }
+            ],
+            ejemplo:{ titulo:'Ejemplo: Resultado y siguiente paso · 6 pasos',
+              pasos:[
+                { letra:'a', texto:'Intento claro de cierre', ok:true },
+                { letra:'b', texto:'Explica la siguiente acción', ok:true },
+                { letra:'c', texto:'Confirma que el cliente entiende', ok:false },
+                { letra:'d', texto:'Programa la devolución de llamada', ok:true },
+                { letra:'e', texto:'Deja un resultado claro', ok:true },
+                { letra:'f', texto:'Evita un cierre vago', ok:true }
+              ],
+              resultado:'Aquí: 5 de 6 pasos ✓ → 1 punto',
+              escala:[{ rango:'0–3 pasos', puntos:'0 puntos' },{ rango:'4–5 pasos', puntos:'1 punto', activo:true },{ rango:'6 pasos', puntos:'2 puntos' }] },
+            graves:{ titulo:'Infracciones Graves (HV): van aparte del checklist',
+              texto:'Un incumplimiento legal o normativo se registra como HV y no se duplica en los atributos',
+              items:['Divulgación de datos o incumplimiento legal','Información falsa o engañosa','Comportamiento agresivo, irrespetuoso o discriminatorio'] } },
+          { t:'parrafo', texto:'En el ejemplo, el agente cumplió 5 de 6 pasos en «Resultado y siguiente paso» y recibió 1 punto: le faltó confirmar que el cliente entendió el siguiente paso.' }
         ]
       },
 
@@ -1419,54 +1808,53 @@ var CURSO2 = {
         titulo: 'Los pasos de cada atributo',
         bloques: [
           { t:'parrafo', texto:'Un paso es una acción concreta. Los pasos marcados «si aplica» QA no los revisa en todas las llamadas, solo cuando se da la situación: por ejemplo, «Usa el nombre del cliente» se revisa solo si conoces su nombre.' },
-          { t:'tabla', encabezados:['1. Precisión y cumplimiento del proceso — 5 pasos',''], filas:[
-            ['a','Explica bien el producto, beneficios, condiciones y limitaciones'],
-            ['b','Guía al cliente en cada etapa del proceso'],
-            ['c','Pide vincular el teléfono (si aplica)'],
-            ['d','Hace las preguntas de precalificación requeridas'],
-            ['e','Registra bien el resultado en el CRM'],
-            ['Puntos','0–3 pasos: 0 pt · 4 pasos: 1 pt · 5 pasos: 2 pt']
-          ] },
-          { t:'tabla', encabezados:['2. Relación y tono — 7 pasos',''], filas:[
-            ['a','Tono profesional, respetuoso y amable'],
-            ['b','Explica claro, con lenguaje adecuado al cliente'],
-            ['c','Habla natural, no como robot'],
-            ['d','Reconoce la inquietud del cliente (si aplica)'],
-            ['e','Escucha sin interrumpir'],
-            ['f','Usa el nombre del cliente (si aplica)'],
-            ['g','Beneficios relevantes, sin presionar'],
-            ['Puntos','0–4 pasos: 0 pt · 5–6 pasos: 1 pt · 7 pasos: 2 pt']
-          ] },
-          { t:'tabla', encabezados:['3. Calificación y descubrimiento — 7 pasos',''], filas:[
-            ['a','Identifica el tipo de negocio'],
-            ['b','Pregunta cómo maneja hoy sus finanzas (si aplica)'],
-            ['c','Identifica dificultades y necesidades'],
-            ['d','Pregunta si usa otro banco (si aplica)'],
-            ['e','Identifica necesidades de transferencias y pagos (si aplica)'],
-            ['f','Aclara qué resultado espera'],
-            ['g','Conecta el producto con una necesidad'],
-            ['Puntos','0–4 pasos: 0 pt · 5–6 pasos: 1 pt · 7 pasos: 2 pt']
-          ] },
-          { t:'tabla', encabezados:['4. Manejo de objeciones — 8 pasos · solo si hay objeción',''], filas:[
-            ['a','Reconoce la objeción antes de responder'],
-            ['b','Pregunta la razón real'],
-            ['c','Responde con un beneficio relevante'],
-            ['d','Adapta la respuesta al cliente'],
-            ['e','Hace dos intentos distintos'],
-            ['f','Usa argumentos diferentes'],
-            ['g','Comprueba si se resolvió'],
-            ['h','Acepta el rechazo definitivo'],
-            ['Puntos','0–5 pasos: 0 pt · 6–7 pasos: 1 pt · 8 pasos: 2 pt']
-          ] },
-          { t:'tabla', encabezados:['5. Resultado y siguiente paso — 6 pasos',''], filas:[
-            ['a','Intento claro de cierre'],
-            ['b','Explica la siguiente acción'],
-            ['c','Confirma que el cliente entiende'],
-            ['d','Programa la devolución de llamada (si aplica)'],
-            ['e','Deja un resultado claro'],
-            ['f','Evita un cierre vago'],
-            ['Puntos','0–3 pasos: 0 pt · 4–5 pasos: 1 pt · 6 pasos: 2 pt']
-          ] }
+          { t:'esquema', tipo:'columnas-atributos', titulo:'Los pasos de cada atributo',
+            subtitulo:'Un paso = una acción concreta.', leyenda:'si aplica', subtitulo2:'= solo se evalúa cuando aplica en la llamada',
+            columnas:[
+              { n:1, titulo:'Precisión y cumplimiento del proceso', sub:'5 pasos', pasos:[
+                  { letra:'a', texto:'Explica bien el producto, beneficios, condiciones y limitaciones' },
+                  { letra:'b', texto:'Guía al cliente en cada etapa del proceso' },
+                  { letra:'c', texto:'Pide vincular el teléfono', siAplica:true },
+                  { letra:'d', texto:'Hace las preguntas de precalificación requeridas' },
+                  { letra:'e', texto:'Registra bien el resultado en el CRM' }
+                ], escala:[{ rango:'0–3 pasos', puntos:'0 pt' },{ rango:'4 pasos', puntos:'1 pt', tono:'medio' },{ rango:'5 pasos', puntos:'2 pt', tono:'activo' }] },
+              { n:2, titulo:'Relación y tono', sub:'7 pasos', pasos:[
+                  { letra:'a', texto:'Tono profesional, respetuoso y amable' },
+                  { letra:'b', texto:'Explica claro, con lenguaje adecuado al cliente' },
+                  { letra:'c', texto:'Habla natural, no como robot' },
+                  { letra:'d', texto:'Reconoce la inquietud del cliente', siAplica:true },
+                  { letra:'e', texto:'Escucha sin interrumpir' },
+                  { letra:'f', texto:'Usa el nombre del cliente', siAplica:true },
+                  { letra:'g', texto:'Beneficios relevantes, sin presionar' }
+                ], escala:[{ rango:'0–4 pasos', puntos:'0 pt' },{ rango:'5–6 pasos', puntos:'1 pt', tono:'medio' },{ rango:'7 pasos', puntos:'2 pt', tono:'activo' }] },
+              { n:3, titulo:'Calificación y descubrimiento', sub:'7 pasos', pasos:[
+                  { letra:'a', texto:'Identifica el tipo de negocio' },
+                  { letra:'b', texto:'Pregunta cómo maneja hoy sus finanzas', siAplica:true },
+                  { letra:'c', texto:'Identifica dificultades y necesidades' },
+                  { letra:'d', texto:'Pregunta si usa otro banco', siAplica:true },
+                  { letra:'e', texto:'Identifica necesidades de transferencias y pagos', siAplica:true },
+                  { letra:'f', texto:'Aclara qué resultado espera' },
+                  { letra:'g', texto:'Conecta el producto con una necesidad' }
+                ], escala:[{ rango:'0–4 pasos', puntos:'0 pt' },{ rango:'5–6 pasos', puntos:'1 pt', tono:'medio' },{ rango:'7 pasos', puntos:'2 pt', tono:'activo' }] },
+              { n:4, titulo:'Manejo de objeciones', sub:'8 pasos · Solo si hay objeción', pasos:[
+                  { letra:'a', texto:'Reconoce la objeción antes de responder' },
+                  { letra:'b', texto:'Pregunta la razón real' },
+                  { letra:'c', texto:'Responde con un beneficio relevante' },
+                  { letra:'d', texto:'Adapta la respuesta al cliente' },
+                  { letra:'e', texto:'Hace dos intentos distintos' },
+                  { letra:'f', texto:'Usa argumentos diferentes' },
+                  { letra:'g', texto:'Comprueba si se resolvió' },
+                  { letra:'h', texto:'Acepta el rechazo definitivo' }
+                ], escala:[{ rango:'0–5 pasos', puntos:'0 pt' },{ rango:'6–7 pasos', puntos:'1 pt', tono:'medio' },{ rango:'8 pasos', puntos:'2 pt', tono:'activo' }] },
+              { n:5, titulo:'Resultado y siguiente paso', sub:'6 pasos', pasos:[
+                  { letra:'a', texto:'Intento claro de cierre' },
+                  { letra:'b', texto:'Explica la siguiente acción' },
+                  { letra:'c', texto:'Confirma que el cliente entiende' },
+                  { letra:'d', texto:'Programa la devolución de llamada', siAplica:true },
+                  { letra:'e', texto:'Deja un resultado claro' },
+                  { letra:'f', texto:'Evita un cierre vago' }
+                ], escala:[{ rango:'0–3 pasos', puntos:'0 pt' },{ rango:'4–5 pasos', puntos:'1 pt', tono:'medio' },{ rango:'6 pasos', puntos:'2 pt', tono:'activo' }] }
+            ] }
         ]
       },
 
@@ -2047,10 +2435,12 @@ function pintarTitular(){
   respuestasQuiz = {}; revisiones = {}; certFase = 'intro'; respuestasCert = {}; ordenCert = {};
   el('#pie').style.display = 'none';
   el('#btnIndice').style.display = 'none';
+  el('#btnInicioBarra').style.display = 'none';
   el('#barraProgreso').style.width = '0';
   el('#barraTitulo').textContent = CURSO.titulo;
   window.scrollTo(0,0);
 
+  var g = identidadGuardada();
   var h =
     '<div class="portada">' +
       '<h1>' + esc(CURSO.titulo) + '</h1>' +
@@ -2059,6 +2449,8 @@ function pintarTitular(){
       '<span class="chip">Día 1 · práctica sin calificación</span>' +
       '<span class="chip">Día 2 · certificación</span></div>' +
     '</div>' +
+    (g ? '<div class="saludo"><span>Hola, <b>' + esc(g.nombre) + '</b></span>' +
+         '<button class="btn-mini" id="btnNoSoyYo">No soy yo</button></div>' : '') +
     '<div class="dias">' +
       '<div class="tarjeta dia">' +
         '<div class="reto-et">Día 1</div>' +
@@ -2087,6 +2479,10 @@ function pintarTitular(){
   el('#lienzo').innerHTML = h;
   el('#btnDia1').onclick = function(){ elegirDia(1); };
   if (DIA2) el('#btnDia2').onclick = function(){ elegirDia(2); };
+  if (g) el('#btnNoSoyYo').onclick = function(){
+    try { localStorage.removeItem(LS); } catch(e){}
+    pintarTitular();
+  };
 }
 
 function elegirDia(n){
@@ -2103,6 +2499,7 @@ function elegirDia(n){
 function pintarBienvenida(g){
   el('#pie').style.display = 'none';
   el('#btnIndice').style.display = 'none';
+  el('#btnInicioBarra').style.display = '';
   el('#barraTitulo').textContent = curso.titulo;
   window.scrollTo(0,0);
   el('#lienzo').innerHTML =
@@ -2185,6 +2582,7 @@ function actualizarCromo(p){
   el('#barraProgreso').style.width = pct + '%';
   el('#barraTitulo').textContent = curso.titulo;
   el('#btnIndice').style.display = (p.tipo === 'identidad') ? 'none' : '';
+  el('#btnInicioBarra').style.display = '';
   var sinPie = p.tipo === 'identidad' || p.tipo === 'resultado' ||
                (p.tipo === 'cert' && certFase === 'resultado');
   el('#pie').style.display = sinPie ? 'none' : '';
@@ -2235,7 +2633,9 @@ function pintarModulo(p){
     '<div class="modulo-portada"><div><h2>' + esc(p.modulo.titulo) + '</h2>' +
     (p.modulo.resumen ? '<p class="modulo-resumen">' + esc(p.modulo.resumen) + '</p>' : '') +
     (p.modulo.duracion ? '<div class="chips"><span class="chip">' + esc(p.modulo.duracion) + '</span></div>' : '') +
-    '</div><div class="modulo-n">' + p.n + '</div></div>';
+    '</div>' + (p.modulo.imagen
+      ? '<div class="modulo-img"><img src="' + esc(p.modulo.imagen) + '" alt="" loading="lazy"></div>'
+      : '<div class="modulo-n">' + p.n + '</div>') + '</div>';
   el('#btnSiguiente').disabled = false;
   el('#btnSiguiente').textContent = 'Comenzar';
 }
@@ -2260,12 +2660,17 @@ function pintarPantalla(p){
       '</div></div></div>';
   }
 
-  (p.pantalla.bloques || []).forEach(function(b){ h += pintarBloque(b); });
+  var esencial = esEsencial(p.pantalla);
+  (p.pantalla.bloques || []).forEach(function(b, bi){
+    h += esencial ? pintarBloqueEsencial(b, bi) : pintarBloque(b);
+  });
 
   var retos = retosDe(p.pantalla);
   retos.forEach(function(r, idx){ h += pintarReto(r, idx, retos.length); });
 
   el('#lienzo').innerHTML = h;
+
+  if (esencial) conectarEsencial(p);
 
   if (p.pantalla.gancho){
     el('#btnRevelar').onclick = function(){
@@ -2345,6 +2750,311 @@ function pintarBloque(b){
             '<div class="tenue">' + esc(texto) + '</div></div></div>';
     });
     return ps + '</div>';
+  }
+
+  if (b.t === 'imagen')
+    return '<figure class="figura"><img src="' + esc(b.src) + '" alt="' + esc(b.alt || '') + '" loading="lazy"' +
+           ' style="max-width:100%;height:auto;border-radius:12px;border:1px solid var(--linea)"' +
+           (b.ancho ? ' width="' + esc(b.ancho) + '"' : '') + '>' +
+           (b.pie ? '<figcaption>' + esc(b.pie) + '</figcaption>' : '') + '</figure>';
+
+  if (b.t === 'esquema') return pintarEsquema(b);
+
+  return '';
+}
+
+// ---------------------------------------------------------------- «Lo esencial del módulo»
+/** Pantalla de cierre del módulo: sus tarjetas y listas se pintan como lista con casillas. */
+function esEsencial(pantalla){
+  return /^\s*lo esencial/i.test(String(pantalla.titulo || ''));
+}
+
+/** Identificador estable de la pantalla: día, módulo y posición dentro del módulo. */
+function idPantalla(p){
+  var k = p.modulo.pantallas.indexOf(p.pantalla);
+  return 'd' + dia + '-' + p.modulo.id + '-p' + (k + 1);
+}
+
+function claveEsencial(p){
+  return 'pm-curso:esencial:' + (agente ? agente.clave : 'anonimo') + ':' + idPantalla(p);
+}
+
+/** Solo las tarjetas y las listas cambian de forma; el resto de bloques se pinta igual. */
+function pintarBloqueEsencial(b, bi){
+  if (b.t !== 'tarjetas' && b.t !== 'lista') return pintarBloque(b);
+  var s = '<div class="esencial" data-bloque="' + bi + '">';
+  b.items.forEach(function(it, k){
+    var id = 'esencial-' + bi + '-' + k;
+    s += '<label class="esencial-item" for="' + id + '">' +
+         '<input type="checkbox" id="' + id + '" data-bloque="' + bi + '" data-item="' + k + '">' +
+         '<div>' + (b.t === 'tarjetas'
+            ? '<b>' + esc(it.titulo) + '</b><div class="tenue">' + esc(it.texto) + '</div>'
+            : '<div>' + esc(it) + '</div>') +
+         '</div></label>';
+  });
+  return s + '</div>';
+}
+
+/** Las casillas se guardan solo en este navegador: no se envían a ningún lado. */
+function conectarEsencial(p){
+  var clave = claveEsencial(p);
+  var marcadas = [];
+  try { marcadas = JSON.parse(localStorage.getItem(clave) || '[]'); } catch(e){}
+  if (!Array.isArray(marcadas)) marcadas = [];
+  var cajas = document.querySelectorAll('.esencial-item input');
+  Array.prototype.forEach.call(cajas, function(c){
+    var id = c.getAttribute('data-bloque') + ':' + c.getAttribute('data-item');
+    c.checked = marcadas.indexOf(id) !== -1;
+    c.parentNode.classList.toggle('marcado', c.checked);
+    c.onchange = function(){
+      var k = marcadas.indexOf(id);
+      if (c.checked && k === -1) marcadas.push(id);
+      if (!c.checked && k !== -1) marcadas.splice(k, 1);
+      c.parentNode.classList.toggle('marcado', c.checked);
+      try { localStorage.setItem(clave, JSON.stringify(marcadas)); } catch(e){}
+    };
+  });
+}
+
+// ---------------------------------------------------------------- lightbox de imágenes
+/** Clic en una imagen del contenido: se abre a pantalla completa; se cierra con clic o Escape. */
+function abrirLightbox(img){
+  var lb = el('#lightbox');
+  el('#lightboxImg').src = img.src;
+  el('#lightboxImg').alt = img.alt || '';
+  var fig = img.closest ? img.closest('figure') : null;
+  var pie = fig ? fig.querySelector('figcaption') : null;
+  el('#lightboxPie').textContent = pie ? pie.textContent : '';
+  lb.classList.add('ver');
+}
+function cerrarLightbox(){
+  el('#lightbox').classList.remove('ver');
+  el('#lightboxImg').src = '';
+}
+document.addEventListener('click', function(ev){
+  var t = ev.target;
+  if (t && t.tagName === 'IMG' && t.parentNode && t.parentNode.classList && t.parentNode.classList.contains('figura')){
+    abrirLightbox(t); return;
+  }
+  if (t && (t.id === 'lightbox' || t.id === 'lightboxCerrar' || t.id === 'lightboxImg')) cerrarLightbox();
+});
+document.addEventListener('keydown', function(ev){
+  if (ev.key === 'Escape' && el('#lightbox').classList.contains('ver')) cerrarLightbox();
+});
+
+// ---------------------------------------------------------------- esquemas
+var ICONOS = {
+  'flecha-abajo': '<svg viewBox="0 0 18 22" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 1v19"/><path d="M3 14l6 6 6-6"/></svg>',
+  'flecha-derecha': '<svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 9h16"/><path d="M11 3l6 6-6 6"/></svg>',
+  'telefono': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>',
+  'nube': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 18a4 4 0 0 1-.6-7.95A6 6 0 0 1 18 8a4.5 4.5 0 0 1 .5 9H7z"/><path d="M12 20v-7"/><path d="M9 16l3-3 3 3"/></svg>',
+  'lupa': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>',
+  'persona-check': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9.5" cy="7.5" r="3.5"/><path d="M3 20a6.5 6.5 0 0 1 11-4.7"/><path d="M15 17l2.2 2.2L21.5 15"/></svg>',
+  'escudo-check': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.5-3 8-7 9.5-4-1.5-7-5-7-9.5V6z"/><path d="M8.8 12.2l2.2 2.2 4.3-4.4"/></svg>',
+  'check': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+  'cruz': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  'circulo-check': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.3 12.3l2.5 2.5 5-5.2"/></svg>'
+};
+function icono(nombre, clase){
+  var svg = ICONOS[nombre] || '';
+  return clase ? svg.replace('<svg ', '<svg class="' + clase + '" ') : svg;
+}
+
+/**
+ * { t:'esquema', tipo:'pasos-vertical', titulo, nota, pasos:[{quien:'cliente'|'banco', actor, titulo, plazo, texto}] }
+ * { t:'esquema', tipo:'flujo-horizontal', tuParte:{etiqueta, paso, titulo, icono}, titulo, pasos:[{paso, titulo, icono, texto}] }
+ * Tipos nuevos (datos en el bloque; ver cada rama): 'carriles', 'flujo-ramas', 'cpb', 'bloques-numerados', 'proceso-qa', 'columnas-atributos'
+ */
+function pintarEsquema(b){
+  if (b.tipo === 'pasos-vertical'){
+    var v = '<div class="esq esq-v">' +
+            (b.titulo ? '<div class="esq-titulo">' + esc(b.titulo) + '</div>' : '');
+    (b.pasos || []).forEach(function(s, k){
+      var quien = s.quien === 'banco' ? 'banco' : 'cliente';
+      if (k > 0) v += '<div class="esq-flecha">' + icono('flecha-abajo') + '</div>';
+      v += '<div class="esq-paso">' +
+           '<div class="esq-n ' + quien + '">' + (s.n != null ? esc(s.n) : (k + 1)) + '</div>' +
+           '<div><h4>' + esc(s.titulo) + '</h4><div class="esq-pildoras">' +
+           '<span class="pildora ' + quien + '">' + esc(s.actor || (quien === 'banco' ? 'Banco' : 'Cliente')) + '</span>' +
+           (s.plazo ? '<span class="pildora plazo">' + esc(s.plazo) + '</span>' : '') +
+           '</div></div>' +
+           '<div class="esq-texto">' + esc(s.texto || '') + '</div>' +
+           '</div>';
+    });
+    if (b.nota) v += '<p class="esq-nota">' + esc(b.nota) + '</p>';
+    return v + '</div>';
+  }
+
+  if (b.tipo === 'flujo-horizontal'){
+    var tu = b.tuParte || {};
+    var f = '<div class="esq"><div class="esq-h">' +
+            '<div class="esq-tu"><div class="esq-et">' + esc(tu.etiqueta || 'Tu parte') + '</div>' +
+            '<div class="esq-card naranja">' + icono(tu.icono || 'telefono', 'esq-ico') +
+            (tu.paso ? '<div class="esq-paso-et">' + esc(tu.paso) + '</div>' : '') +
+            '<h4>' + esc(tu.titulo || '') + '</h4>' +
+            (tu.texto ? '<p>' + esc(tu.texto) + '</p>' : '') +
+            '</div></div>' +
+            '<div class="esq-flecha-h">' + icono('flecha-derecha') + '</div>' +
+            '<div class="esq-despues">' +
+            (b.titulo ? '<div class="esq-sub">' + esc(b.titulo) + '</div>' : '') +
+            '<div class="esq-fila">';
+    (b.pasos || []).forEach(function(s, k){
+      if (k > 0) f += '<div class="esq-flecha-h">' + icono('flecha-derecha') + '</div>';
+      f += '<div class="esq-card clara">' + icono(s.icono, 'esq-ico') +
+           (s.paso ? '<div class="esq-paso-et">' + esc(s.paso) + '</div>' : '') +
+           '<h4>' + esc(s.titulo) + '</h4>' +
+           (s.texto ? '<p>' + esc(s.texto) + '</p>' : '') +
+           '</div>';
+    });
+    return f + '</div></div></div></div>';
+  }
+
+
+  if (b.tipo === 'carriles'){
+    // { carriles:[{nombre, tono:'naranja'|'clara', pasos:[{n, titulo, texto, nota, destacado}]}] }
+    // Cada paso ocupa la siguiente columna libre: los carriles se leen como una escalera.
+    var carriles = b.carriles || [];
+    var totalPasos = carriles.reduce(function(a, c){ return a + (c.pasos || []).length; }, 0);
+    var c = '<div class="esq"><div class="esq-carriles" style="--cols:' + totalPasos + '">';
+    var col = 0;
+    carriles.forEach(function(car, k){
+      if (k > 0){
+        c += '<div class="esq-carril-flecha" style="--cols:' + totalPasos + '">' +
+             '<div style="grid-column:' + (col + 2) + '">' + icono('flecha-abajo') +
+             (car.entrada ? '<span>' + esc(car.entrada) + '</span>' : '') + '</div></div>';
+      }
+      c += '<div class="esq-carril ' + (car.tono === 'naranja' ? 'naranja' : 'clara') + '">' +
+           '<div class="esq-carril-nombre">' + esc(car.nombre) + '</div>';
+      (car.pasos || []).forEach(function(s, j){
+        col++;
+        c += '<div class="esq-carril-paso" style="grid-column:' + (col + 1) + '">' +
+             (j > 0 ? '<div class="esq-flecha-h">' + icono('flecha-derecha') + '</div>' : '') +
+             '<div class="esq-carril-card' + (s.destacado ? ' destacado' : '') + '">' +
+             '<b>' + (s.n != null ? esc(s.n) + ' · ' : '') + esc(s.titulo) + '</b>' +
+             (s.texto ? esc(s.texto) : '') + '</div>' +
+             (s.nota ? '<div class="esq-carril-nota">' + esc(s.nota) + '</div>' : '') +
+             '</div>';
+      });
+      c += '</div>';
+    });
+    return c + '</div>' + (b.nota ? '<p class="esq-nota">' + esc(b.nota) + '</p>' : '') + '</div>';
+  }
+
+  if (b.tipo === 'flujo-ramas'){
+    // { nodos:[ {tipo:'paso', n, titulo, texto, destacado} | {tipo:'decision', pregunta, sigue, rama:{etiqueta, titulo, texto}} ] }
+    var fl = '<div class="esq"><div class="esq-flujo">';
+    (b.nodos || []).forEach(function(n, k){
+      if (k > 0){
+        var ant = b.nodos[k - 1];
+        fl += '<div class="esq-flujo-flecha">' + icono('flecha-abajo') +
+              (ant.tipo === 'decision' && ant.sigue ? '<span>' + esc(ant.sigue) + '</span>' : '') +
+              '</div><div class="esq-flujo-vacio"></div>';
+      }
+      if (n.tipo === 'decision'){
+        fl += '<div class="esq-rombo"><span>' + esc(n.pregunta) + '</span></div>';
+        var r = n.rama || {};
+        fl += '<div class="esq-rama"><div class="esq-flecha-h"><span>' + esc(r.etiqueta || '') + '</span>' + icono('flecha-derecha') + '</div>' +
+              '<div class="esq-rama-card"><b>' + esc(r.titulo || '') + '</b> ' + esc(r.texto || '') + '</div></div>';
+      } else {
+        fl += '<div class="esq-nodo' + (n.destacado ? ' destacado' : '') + '">' +
+              '<b>' + (n.n != null ? esc(n.n) + ' · ' : '') + esc(n.titulo) + '</b> ' + esc(n.texto || '') + '</div>' +
+              '<div class="esq-flujo-vacio"></div>';
+      }
+    });
+    return fl + '</div>' + (b.nota ? '<p class="esq-nota">' + esc(b.nota) + '</p>' : '') + '</div>';
+  }
+
+  if (b.tipo === 'cpb'){
+    // { pasos:[{n, titulo, texto}, {n, titulo, texto}, {n, titulo, texto}] } : característica → puente → beneficio
+    var ps3 = b.pasos || [];
+    var p1 = ps3[0] || {}, p2 = ps3[1] || {}, p3 = ps3[2] || {};
+    var arco = '<svg viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">' +
+               '<path d="M0 110 C 120 10, 280 10, 400 110" fill="none" stroke="#D9DCE3" stroke-width="7" transform="translate(0,6)"/>' +
+               '<path d="M0 110 C 120 10, 280 10, 400 110" fill="none" stroke="#D9DCE3" stroke-width="5" transform="translate(0,-6)"/>' +
+               '<path d="M0 110 C 120 10, 280 10, 400 110" fill="none" stroke="#FF4F12" stroke-width="6"/>' +
+               '</svg>' +
+               '<svg viewBox="0 0 24 24" style="width:22px;height:22px;position:absolute;right:-8px;bottom:-10px" aria-hidden="true"><path d="M12 2 22 20H2z" fill="#FF4F12" transform="rotate(35 12 12)"/></svg>';
+    return '<div class="esq"><div class="esq-cpb">' +
+      '<div><div class="esq-cpb-card"><div class="esq-cpb-n">' + esc(p1.n != null ? p1.n : 1) + '</div><h4>' + esc(p1.titulo) + '</h4></div>' +
+      '<div class="esq-cpb-texto medio">' + esc(p1.texto || '') + '</div></div>' +
+      '<div class="esq-cpb-flecha-m">' + icono('flecha-abajo') + '</div>' +
+      '<div class="esq-cpb-puente"><div class="esq-cpb-n naranja">' + esc(p2.n != null ? p2.n : 2) + '</div><h4>' + esc(p2.titulo) + '</h4>' +
+      '<div style="position:relative">' + arco + '</div>' +
+      '<div class="esq-cpb-texto medio">' + esc(p2.texto || '') + '</div></div>' +
+      '<div class="esq-cpb-flecha-m">' + icono('flecha-abajo') + '</div>' +
+      '<div><div class="esq-cpb-card borde"><div class="esq-cpb-n naranja">' + esc(p3.n != null ? p3.n : 3) + '</div><h4>' + esc(p3.titulo) + '</h4></div>' +
+      '<div class="esq-cpb-texto fuerte">' + esc(p3.texto || '') + '</div></div>' +
+      '</div></div>';
+  }
+
+  if (b.tipo === 'bloques-numerados'){
+    // { titulo, bloques:[{n, titulo, items:[], texto, nota, destacado}], nota }
+    var bn = '<div class="esq">' + (b.titulo ? '<div class="esq-titulo">' + esc(b.titulo) + '</div>' : '');
+    (b.bloques || []).forEach(function(bl, k){
+      if (k > 0) bn += '<div class="esq-flecha" style="justify-content:flex-start;padding-left:36px">' + icono('flecha-abajo') + '</div>';
+      bn += '<div class="esq-bloque' + (bl.destacado ? ' destacado' : '') + '">' +
+            '<div class="esq-bloque-cab"><div class="esq-bloque-n">' + esc(bl.n != null ? bl.n : (k + 1)) + '</div><h4>' + esc(bl.titulo) + '</h4></div>' +
+            '<div>' + (bl.items ? '<ul class="esq-ul">' + bl.items.map(function(it){ return '<li>' + esc(it) + '</li>'; }).join('') + '</ul>' : '') +
+            (bl.texto ? '<p>' + esc(bl.texto) + '</p>' : '') + '</div>' +
+            (bl.nota ? '<div class="esq-bloque-nota">' + esc(bl.nota) + '</div>' : '<div></div>') +
+            '</div>';
+    });
+    return bn + (b.nota ? '<p class="esq-nota">' + esc(b.nota) + '</p>' : '') + '</div>';
+  }
+
+  if (b.tipo === 'proceso-qa'){
+    // { titulo, pasos:[{n, titulo, texto, negrita, items, etiquetas:[{ok, texto}]}],
+    //   ejemplo:{titulo, pasos:[{letra, texto, ok}], resultado, escala:[{rango, puntos, activo}]},
+    //   graves:{titulo, texto, items:[]} }
+    var q = '<div class="esq">' + (b.titulo ? '<div class="esq-titulo">' + esc(b.titulo) + '</div>' : '') + '<div class="esq-qa-pasos">';
+    (b.pasos || []).forEach(function(s, k){
+      if (k > 0) q += '<div class="esq-flecha-h">' + icono('flecha-derecha') + '</div>';
+      q += '<div class="esq-qa-paso"><div class="esq-qa-cab"><div class="esq-n cliente">' + esc(s.n != null ? s.n : (k + 1)) + '</div><h4>' + esc(s.titulo) + '</h4></div>' +
+           (s.texto ? '<p>' + esc(s.texto) + (s.negrita ? '<b>' + esc(s.negrita) + '</b>' : '') + '</p>' : '') +
+           (s.items ? '<ul class="esq-ul">' + s.items.map(function(it){ return '<li>' + esc(it) + '</li>'; }).join('') + '</ul>' : '') +
+           (s.etiquetas ? '<div class="esq-qa-si">' + s.etiquetas.map(function(e){
+              return '<span class="pildora ' + (e.ok ? 'ok' : 'no') + '">' + icono(e.ok ? 'check' : 'cruz', 'esq-qa-mini') + ' ' + esc(e.texto) + '</span>';
+            }).join('') + '</div>' : '') +
+           '</div>';
+    });
+    q += '</div>';
+    var ej = b.ejemplo;
+    if (ej){
+      q += '<div class="esq-qa-ejemplo"><h4>' + esc(ej.titulo) + '</h4><div class="esq-qa-grid">';
+      (ej.pasos || []).forEach(function(s){
+        q += '<div class="esq-qa-item ' + (s.ok ? 'ok' : 'no') + '"><div class="esq-qa-letra"><span>' + esc(s.letra) + '</span>' + icono(s.ok ? 'check' : 'cruz') + '</div>' + esc(s.texto) + '</div>';
+      });
+      q += '</div>' + (ej.resultado ? '<div class="esq-qa-res">' + esc(ej.resultado) + '</div>' : '') +
+           '<div class="esq-escala">' + (ej.escala || []).map(function(e){
+             return '<div' + (e.activo ? ' class="activo"' : '') + '>' + esc(e.rango) + '<b>' + esc(e.puntos) + '</b></div>';
+           }).join('') + '</div></div>';
+    }
+    var gr = b.graves;
+    if (gr){
+      q += '<div class="esq-graves"><div class="esq-graves-ico">!</div><div><h4>' + esc(gr.titulo) + '</h4><p>' + esc(gr.texto || '') + '</p></div>' +
+           '<div class="esq-graves-lista">' + (gr.items || []).map(function(it){ return '<span>' + esc(it) + '</span>'; }).join('') + '</div></div>';
+    }
+    return q + '</div>';
+  }
+
+  if (b.tipo === 'columnas-atributos'){
+    // { titulo, subtitulo, leyenda, subtitulo2, columnas:[{n, titulo, sub, pasos:[{letra, texto, siAplica}], escala:[{rango, puntos, tono:'medio'|'activo'}]}] }
+    var ca = '<div class="esq">' + (b.titulo ? '<div class="esq-titulo">' + esc(b.titulo) + '</div>' : '') +
+             (b.subtitulo ? '<div class="esq-sub2">' + esc(b.subtitulo) +
+               (b.leyenda ? ' <span class="pildora aplica">' + esc(b.leyenda) + '</span> ' : '') + esc(b.subtitulo2 || '') + '</div>' : '') +
+             '<div class="esq-columnas">';
+    (b.columnas || []).forEach(function(col, k){
+      ca += '<div class="esq-columna"><div class="esq-columna-cab"><div class="esq-n cliente">' + esc(col.n != null ? col.n : (k + 1)) + '</div><h4>' + esc(col.titulo) + '</h4></div>' +
+            (col.sub ? '<div class="esq-columna-sub">' + esc(col.sub) + '</div>' : '');
+      (col.pasos || []).forEach(function(s){
+        ca += '<div class="esq-columna-paso"><div class="esq-letra">' + esc(s.letra) + '</div><div>' + esc(s.texto) +
+              (s.siAplica ? '<span class="pildora aplica">' + esc(b.leyenda || 'si aplica') + '</span>' : '') + '</div></div>';
+      });
+      ca += '<div class="esq-escala">' + (col.escala || []).map(function(e){
+              return '<div class="' + esc(e.tono || '') + '">' + esc(e.rango) + '<b>' + esc(e.puntos) + '</b></div>';
+            }).join('') + '</div></div>';
+    });
+    return ca + '</div>' + (b.nota ? '<p class="esq-nota">' + esc(b.nota) + '</p>' : '') + '</div>';
   }
 
   return '';
@@ -2918,6 +3628,7 @@ el('#btnAtras').onclick = function(){
 };
 
 el('#btnIndice').onclick = function(){ abrirIndice(true); };
+el('#btnInicioBarra').onclick = function(){ abrirIndice(false); pintarTitular(); };
 el('#velo').onclick = function(){ abrirIndice(false); };
 
 function abrirIndice(ver){
@@ -2926,16 +3637,22 @@ function abrirIndice(ver){
   if (ver) pintarIndice();
 }
 
+/** Navegación libre: todos los módulos y pantallas del día están abiertos, sin importar el avance. */
 function pintarIndice(){
   var h = '';
+  var visto = Math.max(maxVisto, agente ? (agente.pasoActual || 0) : 0);
   pasos.forEach(function(p, idx){
-    if (p.tipo !== 'modulo' && p.tipo !== 'quiz' && p.tipo !== 'cert') return;
+    if (p.tipo === 'identidad' || p.tipo === 'resultado') return;
+    if (p.tipo === 'pantalla'){
+      h += '<button class="idx-item idx-sub' + (idx === i ? ' actual' : '') + '" data-idx="' + idx + '">' +
+           esc(p.pantalla.titulo) + '</button>';
+      return;
+    }
     var titulo = p.tipo === 'modulo' ? p.modulo.titulo
                : p.tipo === 'quiz' ? ('↳ ' + p.modulo.quiz.titulo)
                : CERT.titulo;
-    var bloqueado = idx > maxVisto;
-    var clase = 'idx-item' + (idx === i ? ' actual' : '') + (idx < maxVisto ? ' hecho' : '');
-    h += '<button class="' + clase + '" data-idx="' + idx + '"' + (bloqueado ? ' disabled' : '') + '>' +
+    var clase = 'idx-item' + (idx === i ? ' actual' : '') + (idx < visto ? ' hecho' : '');
+    h += '<button class="' + clase + '" data-idx="' + idx + '">' +
          '<span class="idx-n">' + (p.tipo === 'modulo' ? p.n : (p.tipo === 'cert' ? '★' : '?')) + '</span>' +
          '<span>' + esc(titulo) + '</span></button>';
   });
